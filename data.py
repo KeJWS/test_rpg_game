@@ -9,9 +9,9 @@ class Battler():
 class Player(Battler):
     def __init__(self, name) -> None:
         stats = {
-            "hp": 10,
+            "hp": 100,
             "mp": 10,
-            "atk": 10,
+            "atk": 20,
             "def": 10,
             "mat": 10,
             "mdf": 10,
@@ -33,9 +33,9 @@ class Player(Battler):
 class Imp(Battler):
     def __init__(self) -> None:
         stats = {
-            "hp": 200,
+            "hp": 100,
             "mp": 5,
-            "atk": 5,
+            "atk": 15,
             "def": 5,
             "mat": 5,
             "mdf": 5,
@@ -54,14 +54,19 @@ def take_dmg(attacker, defender):
         print(f"{defender.name} 受到 \033[33m{dmg}\033[0m 点伤害！")
 
 def combat(player, enemy):
-    while True:
-        print()
-        cmd = input("攻击? y/n: ").lower()
-        if "y" in cmd:
+    while player.stats["hp"] > 0 and enemy.stats["hp"] > 0:
+        print("-----------------------")
+        decision = random.choice(["y", "n"])
+        print(f"自动决策: {decision}")
+        if decision == "y":
             print(f"{player.name}趁机进攻！")
             take_dmg(player, enemy)
-        elif "n" in cmd:
+        elif decision == "n":
             print(f"{enemy.name}趁机进攻！")
             take_dmg(enemy, player)
         else:
             pass
+
+        if player.stats["hp"] <= 0 or enemy.stats["hp"] <= 0:
+            print("战斗结束！")
+            break
