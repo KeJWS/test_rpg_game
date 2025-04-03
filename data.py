@@ -44,9 +44,11 @@ class Imp(Battler):
         }
         super().__init__("Imp", 1, stats)
 
-def take_dmg(attacker, defender):
+def take_dmg(attacker, defender, defending=False):
     dmg = attacker.stats["atk"] - defender.stats["def"]
     if dmg < 0: dmg = 0
+    if defending:
+        dmg = int(dmg * 0.5) # 如果处于防御状态，伤害减少50%
     defender.stats["hp"] -= dmg
     if defender.stats["hp"] <= 0:
         print(f"\033[31m{defender.name} 被击杀了。\033[0m")
@@ -56,14 +58,15 @@ def take_dmg(attacker, defender):
 def combat(player, enemy):
     while player.stats["hp"] > 0 and enemy.stats["hp"] > 0:
         print("-----------------------")
-        decision = random.choice(["y", "n"])
+        decision = random.choice(["attack", "defend"])
         print(f"自动决策: {decision}")
-        if decision == "y":
+        if decision == "attack":
             print(f"{player.name}趁机进攻！")
             take_dmg(player, enemy)
-        elif decision == "n":
+        elif decision == "defend":
+            print(f"{player.name} 选择防御，本回合受到的伤害将减少50%！")
             print(f"{enemy.name}趁机进攻！")
-            take_dmg(enemy, player)
+            take_dmg(enemy, player, defending=True)
         else:
             pass
 
