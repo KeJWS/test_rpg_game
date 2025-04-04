@@ -1,4 +1,6 @@
 import random
+import text
+from test.constants import EXPERIENCE_RATE
 
 class Battler():
 
@@ -20,6 +22,7 @@ class Player(Battler):
             "mat": 10,
             "mdf": 10,
             "agi": 10,
+            "luk": 10,
             "crit": 10
         }
 
@@ -44,7 +47,7 @@ class Enemy(Battler):
         self.xp_reward = xp_reward
 
 def take_dmg(attacker, defender, defending=False):
-    base_dmg = round(attacker.stats["atk"]*4 - defender.stats["def"]*2)
+    base_dmg = round(attacker.stats["atk"]*4 - defender.stats["def"]*2 + attacker.stats["luk"] - defender.stats["luk"])
     if base_dmg < 0: base_dmg = 0
 
     dmg = round(base_dmg * random.uniform(0.8, 1.2)) # 伤害浮动：±20%
@@ -80,7 +83,7 @@ def combat(player, enemy):
             add_exp(player, enemy.xp_reward)
 
 def add_exp(player, exp):
-    player.xp += exp
+    player.xp += (exp + player.stats["luk"]) * EXPERIENCE_RATE
     while(player.xp >= player.xp_to_next_level):
         player.xp -= player.xp_to_next_level
         player.level += 1
@@ -99,7 +102,8 @@ def show_stats(player):
         f"      \033[31mHP: {player.stats['hp']}/{player.stats['max_hp']}\033[0m    \033[34mMP: {player.stats['mp']}/{player.stats['max_mp']}\033[0m\n"
         f"      ATK: {player.stats['atk']}        DEF: {player.stats['def']}\n"
         f"      MAT: {player.stats['mat']}        MDF: {player.stats['mdf']}\n"
-        f"      AGI: {player.stats['agi']}        CRT: {player.stats['crit']}\n"
+        f"      AGI: {player.stats['agi']}        LUK: {player.stats['luk']}\n"
+        f"      CRT: {player.stats['crit']}\n"
         f"----------------------------------\n"
         f"  APTITUDES\n"
         f"----------------------------------\n"

@@ -12,6 +12,7 @@ class Imp(data.Enemy):
             "mat": 10,
             "mdf": 10,
             "agi": 10,
+            "luk": 10,
             "crit": 10
         }
         xp_reward = 40
@@ -29,6 +30,7 @@ class Golem(data.Enemy):
             "mat": 10,
             "mdf": 10,
             "agi": 10,
+            "luk": 10,
             "crit": 10
         }
         xp_reward = 100

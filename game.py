@@ -2,7 +2,7 @@ import cmd
 import textwrap
 import sys
 import os
-import data, enemies
+import data, enemies, text
 from test.clear_screen import clear_screen, enter_clear_screen
 
 def title_screen_selection():
@@ -32,7 +32,6 @@ def title_screen():
     title_screen_selection()
 
 def help_menu():
-    clear_screen()
     print("")
 
 def play():
