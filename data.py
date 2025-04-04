@@ -42,10 +42,13 @@ class Enemy(Battler):
         self.xp_reward = xp_reward
 
 def take_dmg(attacker, defender, defending=False):
-    dmg = round(attacker.stats["atk"]*4 - defender.stats["def"]*2)
-    if dmg < 0: dmg = 0
+    base_dmg = round(attacker.stats["atk"]*4 - defender.stats["def"]*2)
+    if base_dmg < 0: base_dmg = 0
+
+    dmg = round(base_dmg * random.uniform(0.8, 1.2)) # 伤害浮动：±20%
+
     if defending:
-        dmg = int(dmg * 0.5) # 如果处于防御状态，伤害减少50%
+        dmg = int(dmg * 0.5) # 防御状态，伤害减少50%
     defender.stats["hp"] -= dmg
     print(f"{defender.name} 受到 \033[33m{dmg}\033[0m 点伤害！")
     if defender.stats["hp"] <= 0:

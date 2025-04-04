@@ -3,13 +3,14 @@ import textwrap
 import sys
 import os
 import data, enemies
+from test.clear_screen import clear_screen, enter_clear_screen
 
 screen_width = 100
 
 def title_screen_selection():
     option = int(input("> "))
     if option == (1):
-        os.system("cls")
+        clear_screen()
         play()
     elif option == (2):
         help_menu()
@@ -33,7 +34,7 @@ def title_screen():
     title_screen_selection()
 
 def help_menu():
-    os.system("cls")
+    clear_screen()
     print("")
 
 def play():
@@ -52,13 +53,11 @@ def play():
         if option == (1):
             enemy = enemies.Imp()
             data.combat(my_play, enemy)
-            input("\n按 Enter 继续...")
-            os.system("cls")
+            enter_clear_screen()
         elif option == (2):
-            os.system("cls")
+            clear_screen()
             data.show_stats(my_play)
-            input("\n按 Enter 继续...")
-            os.system("cls")
+            enter_clear_screen()
         elif option == (3):
             pass
         else:
