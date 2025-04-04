@@ -3,8 +3,8 @@ import data
 class Imp(data.Enemy):
     def __init__(self) -> None:
         stats = {
-            "max_hp": 1000,
-            "hp": 1000,
+            "max_hp": 500,
+            "hp": 500,
             "max_mp": 10,
             "mp": 10,
             "atk": 15,
@@ -13,7 +13,7 @@ class Imp(data.Enemy):
             "mdf": 10,
             "agi": 10,
             "luk": 10,
-            "crit": 10
+            "crit": 5
         }
         xp_reward = 40
         super().__init__("小鬼", stats, xp_reward)
@@ -21,8 +21,8 @@ class Imp(data.Enemy):
 class Golem(data.Enemy):
     def __init__(self) -> None:
         stats = {
-            "max_hp": 1500,
-            "hp": 1500,
+            "max_hp": 1000,
+            "hp": 1000,
             "max_mp": 10,
             "mp": 10,
             "atk": 20,

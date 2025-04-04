@@ -26,26 +26,27 @@ def play():
     while my_play.alive:
         text.play_menu()
         option = int(input("> "))
-        if option == 1:
-            random_chosen_enemy = random.randint(1, 2)
-            if random_chosen_enemy == 1:
-                enemy = enemies.Imp()
-            elif random_chosen_enemy == 2:
-                enemy = enemies.Golem()
-            data.combat(my_play, enemy)
-            enter_clear_screen()
-        elif option == 2:
-            clear_screen()
-            text.show_stats(my_play)
-            enter_clear_screen()
-        elif option == 3:
-            clear_screen()
-            data.assign_aptitude_points(my_play)
-            enter_clear_screen()
-        elif option == 4:
-            data.fully_heal(my_play)
-        else:
-            pass
+        match option:
+            case 1:
+                random_chosen_enemy = random.randint(1, 2)
+                if random_chosen_enemy == 1:
+                    enemy = enemies.Imp()
+                elif random_chosen_enemy == 2:
+                    enemy = enemies.Golem()
+                data.combat(my_play, enemy)
+                enter_clear_screen()
+            case 2:
+                clear_screen()
+                text.show_stats(my_play)
+                enter_clear_screen()
+            case 3:
+                clear_screen()
+                data.assign_aptitude_points(my_play)
+                enter_clear_screen()
+            case 4:
+                data.fully_heal(my_play)
+            case _:
+                pass
 
 if __name__ == "__main__":
     title_screen_selection()

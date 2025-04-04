@@ -13,8 +13,8 @@ class Player(Battler):
 
     def __init__(self, name) -> None:
         stats = {
-            "max_hp": 200,
-            "hp": 200,
+            "max_hp": 500,
+            "hp": 500,
             "max_mp": 10,
             "mp": 10,
             "atk": 20,
@@ -23,7 +23,7 @@ class Player(Battler):
             "mdf": 10,
             "agi": 10,
             "luk": 10, # 幸运影响伤害和经验获得量
-            "crit": 100
+            "crit": 5
         }
 
         super().__init__(name, stats)
@@ -39,6 +39,7 @@ class Player(Battler):
             "const": 5
         }
         self.aptitude_points = 5
+        self.auto_mode = True
 
 class Enemy(Battler):
 
@@ -80,15 +81,18 @@ def combat(player, enemy):
     print(f"野生的 {enemy.name} 出现了！")
     while player.alive and enemy.alive:
         print("\n-----------------------")
-        decision = random.choice(["attack", "defend"])
-        print(f"自动决策: \033[32m{decision}\033[0m")
-        if decision == "attack":
+        if player.auto_mode == True:
+            decision = random.choice(["a", "d"])
+            print(f"自动决策: \033[32m{decision}\033[0m")
+        elif player.auto_mode == False:
+            decision = input("Attack or defense? (a/d): ").lower()
+        if decision == "a":
             print(f"{player.name} 趁机进攻！")
             take_dmg(player, enemy)
             if enemy.alive == True:
                 print(f"{enemy.name} 趁机进攻！")
                 take_dmg(enemy, player)
-        elif decision == "defend":
+        elif decision == "d":
             print(f"{player.name} 选择防御, 本回合受到的伤害将减少50%！")
             print(f"{enemy.name} 趁机进攻！")
             take_dmg(enemy, player, defending=True)
@@ -97,6 +101,7 @@ def combat(player, enemy):
 
     if player.alive:
             add_exp(player, enemy.xp_reward)
+            take_a_rest(player)
 
 def add_exp(player, exp):
     exp_value = (exp + player.stats["luk"]) * EXPERIENCE_RATE
@@ -149,3 +154,8 @@ def update_stats_to_aptitudes(player, aptitude):
 
 def fully_heal(target):
     target.stats["hp"] = target.stats["max_hp"]
+
+def take_a_rest(player):
+    player.stats["hp"] = min(player.stats["max_hp"], player.stats["hp"] + int(player.stats["max_hp"] * 0.2))
+    player.stats["mp"] = min(player.stats["max_mp"], player.stats["mp"] + int(player.stats["max_mp"] * 0.1))
+    print("稍作休整, 你恢复了一部分生命值和魔法, 准备迎接下一个怪物!")
