@@ -3,8 +3,8 @@ import data
 class Imp(data.Enemy):
     def __init__(self) -> None:
         stats = {
-            "max_hp": 200,
-            "hp": 200,
+            "max_hp": 2000,
+            "hp": 2000,
             "max_mp": 10,
             "mp": 10,
             "atk": 15,

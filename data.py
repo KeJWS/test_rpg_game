@@ -22,15 +22,15 @@ class Player(Battler):
             "mat": 10,
             "mdf": 10,
             "agi": 10,
-            "luk": 10,
-            "crit": 10
+            "luk": 10, # 幸运影响伤害和经验获得量
+            "crit": 100
         }
 
         super().__init__(name, stats)
 
         self.level = 1
         self.xp = 0
-        self.xp_to_next_level = 25
+        self.xp_to_next_level = 50
         self.aptitudes = {
             "str": 5,
             "dex": 5,
@@ -47,10 +47,23 @@ class Enemy(Battler):
         self.xp_reward = xp_reward
 
 def take_dmg(attacker, defender, defending=False):
-    base_dmg = round(attacker.stats["atk"]*4 - defender.stats["def"]*2 + attacker.stats["luk"] - defender.stats["luk"])
-    if base_dmg < 0: base_dmg = 0
+    if attacker.stats["crit"] > random.randint(1, 100):
+        crit_base = attacker.stats["atk"] * 4 + attacker.stats["luk"]
+        critical_rates = { # 暴击倍率 : 概率
+            1.5: 50,
+            2.0: 30,
+            2.5: 15,
+            3.0: 5
+            }
+        rate = random.choices(list(critical_rates.keys()), weights=critical_rates.values())[0]
+        print(f'\033[1;33m暴击！x{rate}\033[0m')
+        dmg = round(crit_base * random.uniform(1.0, 1.2) * rate)
 
-    dmg = round(base_dmg * random.uniform(0.8, 1.2)) # 伤害浮动：±20%
+    else:
+        base_dmg = round(attacker.stats["atk"]*4 - defender.stats["def"]*2 + attacker.stats["luk"] - defender.stats["luk"])
+        if base_dmg < 0: base_dmg = 0
+
+        dmg = round(base_dmg * random.uniform(0.8, 1.2)) # 伤害浮动：±20%
 
     if defending:
         dmg = int(dmg * 0.5) # 防御状态，伤害减少50%
@@ -70,11 +83,11 @@ def combat(player, enemy):
         decision = random.choice(["attack", "defend"])
         print(f"自动决策: \033[32m{decision}\033[0m")
         if decision == "attack":
-            print(f"{player.name}趁机进攻！")
+            print(f"{player.name} 趁机进攻！")
             take_dmg(player, enemy)
         elif decision == "defend":
             print(f"{player.name} 选择防御, 本回合受到的伤害将减少50%！")
-            print(f"{enemy.name}趁机进攻！")
+            print(f"{enemy.name} 趁机进攻！")
             take_dmg(enemy, player, defending=True)
         else:
             pass
