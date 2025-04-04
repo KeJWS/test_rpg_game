@@ -5,19 +5,17 @@ import os
 import data, enemies
 from test.clear_screen import clear_screen, enter_clear_screen
 
-screen_width = 100
-
 def title_screen_selection():
     option = int(input("> "))
-    if option == (1):
+    if option == 1:
         clear_screen()
         play()
-    elif option == (2):
+    elif option == 2:
         help_menu()
-    elif option == (3):
+    elif option == 3:
         sys.exit()
     while option not in [1,2,3]:
-        print("请输入有效命令")
+        print("请输入有效字符")
         option = int(input("> "))
 
 def title_screen():
@@ -50,16 +48,18 @@ def play():
     while True:
         print(display_content)
         option = int(input("> "))
-        if option == (1):
+        if option == 1:
             enemy = enemies.Imp()
             data.combat(my_play, enemy)
             enter_clear_screen()
-        elif option == (2):
+        elif option == 2:
             clear_screen()
             data.show_stats(my_play)
             enter_clear_screen()
-        elif option == (3):
-            pass
+        elif option == 3:
+            clear_screen()
+            data.assign_aptitude_points(my_play)
+            enter_clear_screen()
         else:
             pass
 
