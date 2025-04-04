@@ -85,6 +85,9 @@ def combat(player, enemy):
         if decision == "attack":
             print(f"{player.name} 趁机进攻！")
             take_dmg(player, enemy)
+            if enemy.alive == True:
+                print(f"{enemy.name} 趁机进攻！")
+                take_dmg(enemy, player)
         elif decision == "defend":
             print(f"{player.name} 选择防御, 本回合受到的伤害将减少50%！")
             print(f"{enemy.name} 趁机进攻！")
@@ -96,55 +99,20 @@ def combat(player, enemy):
             add_exp(player, enemy.xp_reward)
 
 def add_exp(player, exp):
-    player.xp += (exp + player.stats["luk"]) * EXPERIENCE_RATE
+    exp_value = (exp + player.stats["luk"]) * EXPERIENCE_RATE
+    player.xp += exp_value
+    print(f"你获得了 {exp_value}xp")
     while(player.xp >= player.xp_to_next_level):
         player.xp -= player.xp_to_next_level
         player.level += 1
         player.xp_to_next_level = round(player.xp_to_next_level * 1.5)
-        player.stats["hp"] = player.stats["max_hp"]
+        fully_heal(player)
         for stat in player.stats:
             player.stats[stat] += 1
         print(f"\033[33m升级！您现在的等级是: {player.level}\033[0m")
 
-def show_stats(player):
-    stats_template = (
-        f"----------------------------------\n"
-        f"  STATS\n"
-        f"----------------------------------\n"
-        f"      LV: {player.level}        EXP: {player.xp}/{player.xp_to_next_level}\n"
-        f"      \033[31mHP: {player.stats['hp']}/{player.stats['max_hp']}\033[0m    \033[34mMP: {player.stats['mp']}/{player.stats['max_mp']}\033[0m\n"
-        f"      ATK: {player.stats['atk']}        DEF: {player.stats['def']}\n"
-        f"      MAT: {player.stats['mat']}        MDF: {player.stats['mdf']}\n"
-        f"      AGI: {player.stats['agi']}        LUK: {player.stats['luk']}\n"
-        f"      CRT: {player.stats['crit']}\n"
-        f"----------------------------------\n"
-        f"  APTITUDES\n"
-        f"----------------------------------\n"
-        f"      STR: {player.aptitudes['str']}        DEX: {player.aptitudes['dex']}\n"
-        f"      INT: {player.aptitudes['int']}        WIS: {player.aptitudes['wis']}\n"
-        f"      CONST: {player.aptitudes['const']}\n"
-        f"----------------------------------\n"
-    )
-    print(stats_template)
-
-def show_aptitudes(player):
-    display_aptitudes = (
-        f"----------------------------------\n"
-        f"  POINTS: {player.aptitude_points}\n"
-        f"  SELECT AN APTITUDE\n"
-        f"----------------------------------\n"
-        f"      1 - STR (Current: {player.aptitudes['str']})\n"
-        f"      2 - DEX (Current: {player.aptitudes['dex']})\n"
-        f"      3 - INT (Current: {player.aptitudes['int']})\n"
-        f"      4 - WIS (Current: {player.aptitudes['wis']})\n"
-        f"      5 - CONST (Current: {player.aptitudes['const']})\n"
-        f"      0 - Quit menu\n"
-        f"----------------------------------\n"
-    )
-    print(display_aptitudes)
-
 def assign_aptitude_points(player):
-    show_aptitudes(player)
+    text.show_aptitudes(player)
     option = int(input("> "))
     options_dictionary = {
         1: "str",
@@ -169,12 +137,15 @@ def assign_aptitude_points(player):
 
 def update_stats_to_aptitudes(player, aptitude):
     aptitude_mapping = {
-        "str": {"atk": 2},
-        "dex": {"agi": 1, "crit": 1},
-        "int": {"mat": 2},
-        "wis": {"max_mp": 5},
-        "const": {"max_hp": 5}
+        "str": {"atk": 3},
+        "dex": {"agi": 3, "crit": 1},
+        "int": {"mat": 3},
+        "wis": {"max_mp": 10},
+        "const": {"max_hp": 10}
     }
     updates = aptitude_mapping.get(aptitude, {})
     for stat, value in updates.items():
         player.stats[stat] += value
+
+def fully_heal(target):
+    target.stats["hp"] = target.stats["max_hp"]
