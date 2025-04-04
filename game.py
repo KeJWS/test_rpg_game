@@ -3,7 +3,7 @@ import textwrap
 import sys
 import os
 import random
-import data, enemies, text
+import combat, enemies, text, inventory
 from test.clear_screen import clear_screen, enter_clear_screen
 
 def title_screen_selection():
@@ -20,10 +20,25 @@ def title_screen_selection():
         print("请输入有效字符")
         option = int(input("> "))
 
-def play():
-    my_play = data.Player("Test Player")
+def inventory_selections(player):
+    option = input("> ")
+    while option.lower() != "q":
+        if option.lower() == "s":
+            pass
+        elif option.lower() == "d":
+            player.inventory.drop_item()
+        else:
+            pass
+        option = input("> ")
 
-    while my_play.alive:
+def play():
+    my_player = combat.Player("Test Player")
+    potions = inventory.Item("生命药水", "a", 4, 10)
+    knife = inventory.Item("小刀", "a", 1, 10)
+    potions.add_to_inventory(my_player.inventory)
+    knife.add_to_inventory(my_player.inventory)
+
+    while my_player.alive:
         text.play_menu()
         option = int(input("> "))
         match option:
@@ -33,18 +48,23 @@ def play():
                     enemy = enemies.Imp()
                 elif random_chosen_enemy == 2:
                     enemy = enemies.Golem()
-                data.combat(my_play, enemy)
+                combat.combat(my_player, enemy)
                 enter_clear_screen()
             case 2:
                 clear_screen()
-                text.show_stats(my_play)
+                text.show_stats(my_player)
                 enter_clear_screen()
             case 3:
                 clear_screen()
-                data.assign_aptitude_points(my_play)
+                combat.assign_aptitude_points(my_player)
                 enter_clear_screen()
             case 4:
-                data.fully_heal(my_play)
+                clear_screen()
+                text.inventory_menu()
+                my_player.inventory.show_inventory()
+                inventory_selections(my_player)
+            case 5:
+                combat.fully_heal(my_player)
             case _:
                 pass
 

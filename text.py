@@ -20,6 +20,7 @@ def play_menu():
         "   1 - Battle\n"
         "   2 - See stats\n"
         "   3 - Assign aptitude points   \n"
+        "   4 - Inventory\n"
         "--------------------------------\n"
     )
     print(display_content)
@@ -59,3 +60,13 @@ def show_aptitudes(player):
         f"----------------------------------\n"
     )
     print(display_aptitudes)
+
+def inventory_menu():
+    display_inventory = (
+        "-------------------------------\n"
+        "       S - Sell an item\n"
+        "       D - Drop an item\n"
+        "           Q - Quit\n"
+        "-------------------------------"
+    )
+    print(display_inventory)

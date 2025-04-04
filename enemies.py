@@ -1,6 +1,6 @@
-import data
+import combat
 
-class Imp(data.Enemy):
+class Imp(combat.Enemy):
     def __init__(self) -> None:
         stats = {
             "max_hp": 500,
@@ -18,7 +18,7 @@ class Imp(data.Enemy):
         xp_reward = 40
         super().__init__("小鬼", stats, xp_reward)
 
-class Golem(data.Enemy):
+class Golem(combat.Enemy):
     def __init__(self) -> None:
         stats = {
             "max_hp": 1000,

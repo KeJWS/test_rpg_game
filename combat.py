@@ -1,5 +1,5 @@
 import random
-import text
+import text, inventory
 from test.constants import EXPERIENCE_RATE
 
 class Battler():
@@ -40,6 +40,7 @@ class Player(Battler):
         }
         self.aptitude_points = 5
         self.auto_mode = True
+        self.inventory = inventory.Inventory()
 
 class Enemy(Battler):
 
@@ -106,7 +107,7 @@ def combat(player, enemy):
 def add_exp(player, exp):
     exp_value = (exp + player.stats["luk"]) * EXPERIENCE_RATE
     player.xp += exp_value
-    print(f"你获得了 {exp_value}xp")
+    print(f"获得了 {exp_value}xp")
     while(player.xp >= player.xp_to_next_level):
         player.xp -= player.xp_to_next_level
         player.level += 1
