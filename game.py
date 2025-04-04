@@ -64,6 +64,7 @@ def play():
                 my_player.inventory.show_inventory()
                 inventory_selections(my_player)
             case 5:
+                my_player.auto_mode = not my_player.auto_mode
                 combat.fully_heal(my_player)
             case _:
                 pass

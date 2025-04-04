@@ -39,7 +39,7 @@ class Player(Battler):
             "const": 5
         }
         self.aptitude_points = 5
-        self.auto_mode = True
+        self.auto_mode = False
         self.inventory = inventory.Inventory()
 
 class Enemy(Battler):
@@ -79,30 +79,58 @@ def take_dmg(attacker, defender, defending=False):
 
 def combat(player, enemy):
     print("-----------------------")
-    print(f"野生的 {enemy.name} 出现了！")
+    print(f"野生的 {enemy.name} 出现了!")
     while player.alive and enemy.alive:
         print("\n-----------------------")
-        if player.auto_mode == True:
-            decision = random.choice(["a", "d"])
-            print(f"自动决策: \033[32m{decision}\033[0m")
-        elif player.auto_mode == False:
-            decision = input("Attack or defense? (a/d): ").lower()
-        if decision == "a":
-            print(f"{player.name} 趁机进攻！")
-            take_dmg(player, enemy)
-            if enemy.alive == True:
-                print(f"{enemy.name} 趁机进攻！")
-                take_dmg(enemy, player)
-        elif decision == "d":
-            print(f"{player.name} 选择防御, 本回合受到的伤害将减少50%！")
-            print(f"{enemy.name} 趁机进攻！")
-            take_dmg(enemy, player, defending=True)
-        else:
-            pass
+        decision = get_player_decision(player)
+
+        match decision:
+            case "a":
+                print(f"{player.name} 趁机进攻!")
+                take_dmg(player, enemy)
+                handle_enemy_attack(player, enemy)
+            case "d":
+                print(f"{player.name} 选择防御, 本回合受到的伤害将减少50%!")
+                handle_enemy_attack(player, enemy)
+            case "q":
+                if try_escape(player): # 逃跑成功，结束战斗
+                    return
+                else:
+                    print(f"{enemy.name} 乘胜追击!")
+                    take_dmg(enemy, player)
+            case _:
+                pass
 
     if player.alive:
             add_exp(player, enemy.xp_reward)
             take_a_rest(player)
+
+def get_player_decision(player):
+    """获取玩家的战斗决策"""
+    if player.auto_mode:
+        if player.stats["hp"] < player.stats["max_hp"] * 0.3 and random.random() < 0.5:
+            decision = "q"
+        else:
+            decision = random.choice(["a", "d"])
+        print(f"自动决策: \033[32m{decision}\033[0m")
+        return decision
+    return input("选择行动 (a. 攻击 d. 防御 q. 逃跑) ").lower()
+
+def handle_enemy_attack(player, enemy):
+    """处理敌人攻击逻辑"""
+    if enemy.alive:
+        print(f"{enemy.name} 趁势回击!")
+        take_dmg(enemy, player)
+
+def try_escape(player):
+    """尝试逃跑, 计算成功概率"""
+    escape_chance = min(90, max(10, player.stats["agi"] + player.stats["luk"]))
+    if random.randint(1, 100) <= escape_chance:
+        print("\033[32m逃跑成功!\033[0m")
+        return True
+    else:
+        print("\033[31m逃跑失败!\033[0m")
+        return False
 
 def add_exp(player, exp):
     exp_value = (exp + player.stats["luk"]) * EXPERIENCE_RATE
