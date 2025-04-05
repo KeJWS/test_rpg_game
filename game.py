@@ -35,7 +35,7 @@ def inventory_selections(player):
 
 def play():
     my_player = player.Player("Test Player")
-    potions = inventory.Item("生命药水", "a", 4, 10)
+    potions = inventory.Item("生命药水", "a", 10, 10)
     potions.add_to_inventory(my_player.inventory)
     items.debug_sword.add_to_inventory(my_player.inventory)
     items.dagger.add_to_inventory(my_player.inventory)

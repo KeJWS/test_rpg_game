@@ -7,6 +7,7 @@ class Inventory():
     def show_inventory(self):
         if not self.items:
             print("背包是空的。")
+        print(f"总价值: {self.total_worth}")
         for index, item in enumerate(self.items, start=1):
             print(f"{index} - {item.name} x{item.amount}")
 
@@ -29,12 +30,14 @@ class Inventory():
         i = int(input("> "))
         if i == 0:
             print("关闭背包...")
+            return 0
         elif i <= len(self.items):
             item = self.items[i-1]
             money_for_item = item.sell()
             if item.amount <= 0:
                 self.items.pop(i-1)
             return money_for_item
+        return 0
 
     def equip_item(self):
         print("\n装备什么? ['0' 退出]")
@@ -54,7 +57,7 @@ class Inventory():
     @property
     def total_worth(self):
         total_worth = sum(item.amount * item.individual_value for item in self.items)
-        print(f"总价值: {total_worth}")
+        return total_worth
 
 class Item():
 
@@ -83,16 +86,16 @@ class Item():
 
     def sell(self):
         if self.amount == 1:
-            print(f"出售了一个 {self.name}, 得 {self.individual_value}")
             self.amount -= 1
+            print(f"出售了一个 {self.name}, 得 {self.individual_value}")
             return self.individual_value
-        else:
+        elif self.amount > 1:
             print(f"有 {self.amount} 个 {self.name}, 出售多少?")
             amount_to_sell = int(input("> "))
             if 0 < amount_to_sell <= self.amount:
                 money_to_receive = self.individual_value * amount_to_sell
                 self.amount -= amount_to_sell
-                print(f"出售了 {self.name}x{amount_to_sell}, 得 {money_to_receive}")
+                print(f"售出 {self.name}x{amount_to_sell}, 得 {money_to_receive}")
                 return money_to_receive
             else:
                 print("数量无效!")
