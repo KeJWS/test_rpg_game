@@ -43,35 +43,6 @@ def take_dmg(attacker, defender, dmg):
         print(f"\033[31m{defender.name} 被杀死了\033[0m")
         defender.alive = False
 
-# def take_dmg(attacker, defender, defending=False):
-#     if attacker.stats["crit"] > random.randint(1, 100):
-#         crit_base = attacker.stats["atk"] * 4 + attacker.stats["luk"]
-#         critical_rates = { # 暴击倍率 : 概率
-#             1.5: 50,
-#             2.0: 30,
-#             2.5: 15,
-#             3.0: 5
-#             }
-#         rate = random.choices(list(critical_rates.keys()), weights=critical_rates.values())[0]
-#         print(f'\033[1;33m暴击！x{rate}\033[0m')
-#         dmg = round(crit_base * random.uniform(1.0, 1.2) * rate)
-
-#     else:
-#         base_dmg = round(attacker.stats["atk"]*4 - defender.stats["def"]*2 + attacker.stats["luk"] - defender.stats["luk"])
-#         if base_dmg < 0: base_dmg = 0
-
-#         dmg = round(base_dmg * random.uniform(0.8, 1.2)) # 伤害浮动：±20%
-
-#     if defending:
-#         dmg = int(dmg * 0.5) # 防御状态，伤害减少50%
-#     defender.stats["hp"] -= dmg
-#     print(f"{defender.name} 受到 \033[33m{dmg}\033[0m 点伤害！")
-#     if defender.stats["hp"] <= 0:
-#         print(f"\033[31m{defender.name} 被击杀了。\033[0m")
-#         defender.alive = False
-#     else:
-#         print(f"{defender.name} 还剩 \033[31m{defender.stats["hp"]}\033[0m 血量。")
-
 def combat(player, enemy):
     print("---------------------------------------")
     print(f"野生的 {enemy.name} 出现了!")
@@ -82,14 +53,18 @@ def combat(player, enemy):
         match decision:
             case "a":
                 normal_attack(player, enemy)
-                if enemy.alive == True:
+                if enemy.alive:
                         normal_attack(enemy, player)
             case "s":
                 text.spell_menu(player)
-                option = int(input("> "))
+                if player.auto_mode:
+                    option = random.randint(1, len(player.spells))
+                    print(f"自动施放技能: {player.spells[option - 1].name}")
+                else:
+                    option = int(input("> "))
                 if option != 0:
                     skill_effect(player.spells[option - 1], player, enemy)
-                    if enemy.alive == True:
+                    if enemy.alive:
                         normal_attack(enemy, player)
             case "d":
                 print(f"{player.name} 选择防御, 本回合受到的伤害将减少50%!")
@@ -98,7 +73,7 @@ def combat(player, enemy):
                 if try_escape(player): # 逃跑成功，结束战斗
                     return
                 else:
-                    if enemy.alive == True:
+                    if enemy.alive:
                         normal_attack(enemy, player)
             case _:
                 pass
@@ -110,10 +85,19 @@ def combat(player, enemy):
 def get_player_decision(player):
     """获取玩家的战斗决策"""
     if player.auto_mode:
-        if player.stats["hp"] < player.stats["max_hp"] * 0.3 and random.random() < 0.5:
-            decision = "q"
-        else:
-            decision = random.choice(["a", "d"])
+        decision_weights = []
+
+        has_spells = hasattr(player, "spells") and len(player.spells) > 0
+        can_use_spells = has_spells and player.stats["mp"] > player.stats["max_mp"] * 0.3
+
+        decision_weights.append("a")
+        decision_weights.append("d")
+        if can_use_spells:
+            decision_weights.append("s")
+        if player.stats["hp"] < player.stats["max_hp"] * 0.3:
+            decision_weights.append("q")
+
+        decision = random.choice(decision_weights)
         print(f"自动决策: \033[32m{decision}\033[0m")
         return decision
     return input("选择行动 (a. 攻击 s. 技能 d. 防御 q. 逃跑) ").lower()
@@ -141,6 +125,7 @@ def skill_effect(skill, attacker, defender):
 def fully_heal(target):
     target.stats["hp"] = target.stats["max_hp"]
     target.stats["mp"] = target.stats["max_mp"]
+    print(f"{target.name} 完全恢复了!")
 
 def take_a_rest(player):
     player.stats["hp"] = min(player.stats["max_hp"], player.stats["hp"] + int(player.stats["max_hp"] * 0.25))

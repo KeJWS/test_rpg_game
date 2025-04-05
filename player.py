@@ -7,8 +7,8 @@ class Player(combat.Battler):
         stats = {
             "max_hp": 500,
             "hp": 500,
-            "max_mp": 10,
-            "mp": 10,
+            "max_mp": 120,
+            "mp": 120,
             "atk": 20,
             "def": 20,
             "mat": 10,

@@ -22,4 +22,4 @@ class Simple_offensive_spell(Skill):
             caster.stats["mp"] -= self.mp_cost
             return dmg
 
-fire_ball = Simple_offensive_spell("火球术", "", 50, 3)
+fire_ball = Simple_offensive_spell("火球术", "", 75, 30)

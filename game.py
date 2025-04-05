@@ -31,7 +31,7 @@ def inventory_selections(player):
             player.equip_item(player.inventory.equip_item())
         else:
             pass
-        clear_screen()
+        enter_clear_screen()
         text.inventory_menu()
         option = input("> ")
 
