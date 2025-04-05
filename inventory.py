@@ -22,6 +22,7 @@ class Inventory():
             item.drop()
             if item.amount <= 0:
                 self.items.pop(i-1)
+            print('现在你的背包如下：')
             self.show_inventory()
 
     def sell_item(self):
@@ -52,6 +53,7 @@ class Inventory():
                 self.items.pop(i-1)
                 return item
             else:
+                print("选择一个可装备的物品")
                 return None
 
     @property

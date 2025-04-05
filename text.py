@@ -79,3 +79,23 @@ def inventory_menu():
         "-------------------------------"
     )
     print(display_inventory)
+
+def combat_menu(player, enemy):
+    display_combat = (
+        "---------------------------------------\n"
+        f"{player.name} - \033[31mHP: {player.stats['hp']}/{player.stats['max_hp']}\033[0m - MP: {player.stats['mp']}/{player.stats['max_mp']}\n"
+        f"{enemy.name} - \033[32mHP: {enemy.stats['hp']}/{enemy.stats['max_hp']}\033[0m\n"
+        "---------------------------------------\n"
+        "       A - Attack  C - Combos          \n"
+        "       S - Spells  D - Defense\n"
+        "       E - Escape\n"
+        "---------------------------------------\n"
+    )
+    print(display_combat)
+
+def spell_menu(player):
+    print("---------------------------------------")
+    print("         SPELLS ['0' to Quit]")
+    print("---------------------------------------")
+    for index, spell in enumerate(player.spells, start=1):
+        print(str(f"{index} - {spell.name}"))

@@ -1,4 +1,4 @@
-import  text, combat, inventory
+import  text, combat, inventory, skills
 from test.constants import EXPERIENCE_RATE
 
 class Player(combat.Battler):
@@ -38,6 +38,8 @@ class Player(combat.Battler):
             "Armor": None
         }
         self.money = 0
+        self.combos = []
+        self.spells = [skills.fire_ball]
 
     def equip_item(self, equipment):
         if equipment != None:
@@ -55,8 +57,8 @@ class Player(combat.Battler):
                     print(f"{stat} +{stat_change_list[stat]}")
             else:
                 print(f"{equipment.name} 无法装备")
-        else:
-            print("请选择要装备的物品")
+        text.inventory_menu()
+        self.inventory.show_inventory()
 
     def add_exp(self, exp):
         exp_value = (exp + self.stats["luk"]) * EXPERIENCE_RATE
@@ -66,9 +68,10 @@ class Player(combat.Battler):
             self.xp -= self.xp_to_next_level
             self.level += 1
             self.xp_to_next_level = round(self.xp_to_next_level * 1.5)
-            combat.fully_heal(self)
             for stat in self.stats:
                 self.stats[stat] += 1
+            self.aptitude_points +=1
+            combat.fully_heal(self)
             print(f"\033[33m升级！您现在的等级是: {self.level}\033[0m")
 
     def assign_aptitude_points(self):
