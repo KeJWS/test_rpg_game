@@ -5,10 +5,10 @@ class Inventory():
         self.items = []
 
     def show_inventory(self):
-        index = 1
-        for item in self.items:
-            print(str(f"{index} - {item.name}x{item.amount}"))
-            index += 1
+        if not self.items:
+            print("背包是空的。")
+        for index, item in enumerate(self.items, start=1):
+            print(f"{index} - {item.name} x{item.amount}")
 
     def drop_item(self):
         print("\n丢掉什么? ['0' 退出]")
@@ -53,9 +53,7 @@ class Inventory():
 
     @property
     def total_worth(self):
-        total_worth = 0
-        for item in self.items:
-            total_worth += item.amount * item.individual_value
+        total_worth = sum(item.amount * item.individual_value for item in self.items)
         print(f"总价值: {total_worth}")
 
 class Item():
@@ -75,43 +73,42 @@ class Item():
             print(f"丢弃了一个 {self.name}.\n当前背包:")
             self.amount -= 1
         else:
-            print(f"有 {self.amount} 个, 丢弃多少？")
+            print(f"有 {self.amount} 个 {self.name}, 丢弃多少?")
             amount_to_drop = int(input("> "))
-            if amount_to_drop > self.amount:
-                print("物品不够")
-            else:
+            if 0 < amount_to_drop <= self.amount:
                 self.amount -= amount_to_drop
-                print(f"丢弃 {self.name}x{amount_to_drop}.\n当前背包:")
+                print(f"丢弃了 {self.name}x{amount_to_drop}.\n当前背包:")
+            else:
+                print("数量无效!")
 
     def sell(self):
-        if self.amount >= 1:
-            print("卖多少?")
+        if self.amount == 1:
+            print(f"出售了一个 {self.name}, 得 {self.individual_value}")
+            self.amount -= 1
+            return self.individual_value
+        else:
+            print(f"有 {self.amount} 个 {self.name}, 出售多少?")
             amount_to_sell = int(input("> "))
-            if amount_to_sell <= self.amount and amount_to_sell != 0:
+            if 0 < amount_to_sell <= self.amount:
                 money_to_receive = self.individual_value * amount_to_sell
-                print(f"即将出售 {self.name}x{amount_to_sell}, 赚 {money_to_receive} ? [y/n]")
-                confirmation = input("> ")
-                if confirmation == "y":
-                    self.amount -= amount_to_sell
-                    print(f"售出 {self.name}x{amount_to_sell} 得 {money_to_receive}")
-                    return money_to_receive
-                else:
-                    pass
+                self.amount -= amount_to_sell
+                print(f"出售了 {self.name}x{amount_to_sell}, 得 {money_to_receive}")
+                return money_to_receive
             else:
-                print("数量不足!")
+                print("数量无效!")
         return 0
 
     def add_to_inventory(self, inventory):
-        already_in_inventory = False
         for item in inventory.items:
             if self.name == item.name:
                 item.amount += self.amount
-                already_in_inventory = True
-        if not already_in_inventory:
+                break
+        else:
             inventory.items.append(self)
-        print(f"{self.name}x{self.amount} 已放入背包!")
+            print(f"{self.name}x{self.amount} 已放入背包!")
 
 class Equipment(Item):
+
     def __init__(self, name, description, amount, individual_value, stat_change_list, equipment_type):
         super().__init__(name, description, amount, individual_value)
         self.stat_change_list = stat_change_list
