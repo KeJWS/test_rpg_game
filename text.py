@@ -29,7 +29,7 @@ def play_menu():
 def show_stats(player):
     stats_template = (
         f"----------------------------------\n"
-        f"  STATS\n"
+        f"  STATS               💰: {player.money}\n"
         f"----------------------------------\n"
         f"      LV: {player.level}        EXP: {player.xp}/{player.xp_to_next_level}\n"
         f"      \033[31mHP: {player.stats['hp']}/{player.stats['max_hp']}\033[0m    \033[34mMP: {player.stats['mp']}/{player.stats['max_mp']}\033[0m\n"
@@ -43,8 +43,15 @@ def show_stats(player):
         f"      INT: {player.aptitudes['int']}        WIS: {player.aptitudes['wis']}\n"
         f"      CONST: {player.aptitudes['const']}\n"
         f"----------------------------------\n"
+        f"  EQUIPMENT\n"
+        f"----------------------------------"
     )
     print(stats_template)
+    for equipment in player.equipment:
+        if player.equipment[equipment] is not None:
+            print(f"    {equipment}: {player.equipment[equipment].name}")
+        else:
+            print(f"    {equipment}:")
 
 def show_aptitudes(player):
     display_aptitudes = (
@@ -67,6 +74,7 @@ def inventory_menu():
         "-------------------------------\n"
         "       S - Sell an item\n"
         "       D - Drop an item\n"
+        "       E - Equip an item\n"
         "           Q - Quit\n"
         "-------------------------------"
     )

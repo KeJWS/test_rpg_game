@@ -11,22 +11,45 @@ class Inventory():
             index += 1
 
     def drop_item(self):
-        print("想丢弃掉什么? ['0' 退出]\n")
+        print("\n丢掉什么? ['0' 退出]")
         self.show_inventory()
         i = int(input("> "))
         if i == 0:
             print("关闭背包...")
-        else:
+        elif i <= len(self.items):
             item = self.items[i-1]
-            if item.amount == 1:
-                self.items.pop(i - 1)
-                print(f"丢弃了一个 {item.name}.\n当前背包: ")
-            else:
-                print(f"有 {item.amount} 个, 丢弃多少？")
-                amount_yo_drop = int(input("> "))
-                item.amount -= amount_yo_drop
-                print(f"丢弃 {item.name}x{amount_yo_drop}.\n当前背包: ")
+            item.drop()
+            if item.amount <= 0:
+                self.items.pop(i-1)
             self.show_inventory()
+
+    def sell_item(self):
+        print("\n出售什么? ['0' 退出]")
+        self.show_inventory()
+        i = int(input("> "))
+        if i == 0:
+            print("关闭背包...")
+        elif i <= len(self.items):
+            item = self.items[i-1]
+            money_for_item = item.sell()
+            if item.amount <= 0:
+                self.items.pop(i-1)
+            return money_for_item
+
+    def equip_item(self):
+        print("\n装备什么? ['0' 退出]")
+        self.show_inventory()
+        i = int(input("> "))
+        if i == 0:
+            print("关闭背包...")
+            return None
+        elif i <= len(self.items):
+            item = self.items[i-1]
+            if type(item) == Equipment:
+                self.items.pop(i-1)
+                return item
+            else:
+                return None
 
     @property
     def total_worth(self):
@@ -46,6 +69,19 @@ class Item():
     @property
     def total_worth(self):
         return self.amount * self.individual_value
+
+    def drop(self):
+        if self.amount == 1:
+            print(f"丢弃了一个 {self.name}.\n当前背包:")
+            self.amount -= 1
+        else:
+            print(f"有 {self.amount} 个, 丢弃多少？")
+            amount_to_drop = int(input("> "))
+            if amount_to_drop > self.amount:
+                print("物品不够")
+            else:
+                self.amount -= amount_to_drop
+                print(f"丢弃 {self.name}x{amount_to_drop}.\n当前背包:")
 
     def sell(self):
         if self.amount >= 1:
@@ -74,3 +110,9 @@ class Item():
         if not already_in_inventory:
             inventory.items.append(self)
         print(f"{self.name}x{self.amount} 已放入背包!")
+
+class Equipment(Item):
+    def __init__(self, name, description, amount, individual_value, stat_change_list, equipment_type):
+        super().__init__(name, description, amount, individual_value)
+        self.stat_change_list = stat_change_list
+        self.equipment_type = equipment_type

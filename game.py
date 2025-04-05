@@ -3,7 +3,7 @@ import textwrap
 import sys
 import os
 import random
-import combat, enemies, text, inventory
+import combat, enemies, text, inventory, player, items
 from test.clear_screen import clear_screen, enter_clear_screen
 
 def title_screen_selection():
@@ -24,19 +24,21 @@ def inventory_selections(player):
     option = input("> ")
     while option.lower() != "q":
         if option.lower() == "s":
-            pass
+            player.money += player.inventory.sell_item()
         elif option.lower() == "d":
             player.inventory.drop_item()
+        elif option.lower() == "e":
+            player.equip_item(player.inventory.equip_item())
         else:
             pass
         option = input("> ")
 
 def play():
-    my_player = combat.Player("Test Player")
+    my_player = player.Player("Test Player")
     potions = inventory.Item("生命药水", "a", 4, 10)
-    knife = inventory.Item("小刀", "a", 1, 10)
     potions.add_to_inventory(my_player.inventory)
-    knife.add_to_inventory(my_player.inventory)
+    items.debug_sword.add_to_inventory(my_player.inventory)
+    items.dagger.add_to_inventory(my_player.inventory)
 
     while my_player.alive:
         text.play_menu()
@@ -56,7 +58,7 @@ def play():
                 enter_clear_screen()
             case 3:
                 clear_screen()
-                combat.assign_aptitude_points(my_player)
+                my_player.assign_aptitude_points()
                 enter_clear_screen()
             case 4:
                 clear_screen()
