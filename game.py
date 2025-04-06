@@ -49,7 +49,7 @@ def play():
             case 1:
                 random_chosen_enemy = random.randint(1, 2)
                 if random_chosen_enemy == 1:
-                    enemy = enemies.Imp()
+                    enemy = enemies.Giant_slime()
                 elif random_chosen_enemy == 2:
                     enemy = enemies.Golem()
                 combat.combat(my_player, enemy)

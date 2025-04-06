@@ -39,24 +39,29 @@ class Player(combat.Battler):
         }
         self.money = 0
         self.combos = []
-        self.spells = [skills.fire_ball]
+        self.spells = [skills.fire_ball, skills.divineBlessing, skills.benettFantasticVoyage]
 
     def equip_item(self, equipment):
-        if equipment != None:
-            if type(equipment) == inventory.Equipment:
-                actual_equipment = self.equipment[equipment.equipment_type]
-                if actual_equipment != None:
-                    actual_equipment.add_to_inventory(self.inventory)
-                    for stat in actual_equipment.stat_change_list:
-                        self.stats[stat] -= actual_equipment.stat_change_list[stat]
-                self.equipment[equipment.equipment_type] = equipment
-                print(f"装备了 {equipment.name}")
-                stat_change_list = equipment.stat_change_list
-                for stat in stat_change_list:
-                    self.stats[stat] += stat_change_list[stat]
-                    print(f"{stat} +{stat_change_list[stat]}")
-            else:
-                print(f"{equipment.name} 无法装备")
+        if equipment is None:
+            print("无法装备: 无效物品")
+            return
+        if not isinstance(equipment, inventory.Equipment):
+            print(f"{equipment.name} 无法装备")
+            return
+        equip_type = equipment.equipment_type
+        current_equipment = self.equipment.get(equip_type)
+        # 卸下旧装备
+        if current_equipment:
+            current_equipment.add_to_inventory(self.inventory)
+            for stat, value in current_equipment.stat_change_list.items():
+                self.stats[stat] -= value
+                print(f"{stat} -{value}")
+        # 装备新装备
+        self.equipment[equip_type] = equipment
+        print(f"装备了 {equipment.name}")
+        for stat, value in equipment.stat_change_list.items():
+            self.stats[stat] += value
+            print(f"{stat} +{value}")
         text.inventory_menu()
         self.inventory.show_inventory()
 
