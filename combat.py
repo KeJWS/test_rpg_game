@@ -62,11 +62,7 @@ def combat(player, enemy):
                         normal_attack(enemy, player)
             case "s":
                 text.spell_menu(player)
-                if player.auto_mode:
-                    option = random.randint(1, len(player.spells))
-                    print(f"自动施放技能: {player.spells[option - 1].name}")
-                else:
-                    option = int(input("> "))
+                option = int(input("> "))
                 if option != 0:
                     skill_effect(player.spells[option - 1], player, enemy)
                     if enemy.alive:
@@ -94,14 +90,8 @@ def get_player_decision(player):
     """获取行动指令（含自动模式 AI 决策）"""
     if player.auto_mode:
         decision_weights = []
-
-        has_spells = hasattr(player, "spells") and len(player.spells) > 0
-        can_use_spells = has_spells and any(s.mp_cost <= player.stats["mp"] for s in player.spells)
-
         decision_weights.append("a")
         decision_weights.append("d")
-        if can_use_spells:
-            decision_weights.append("s")
         if player.stats["hp"] < player.stats["max_hp"] * 0.3:
             decision_weights.append("q")
 
