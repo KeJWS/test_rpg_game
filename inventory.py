@@ -1,7 +1,6 @@
 import combat
 
 class Inventory():
-
     def __init__(self) -> None:
         self.items = []
 
@@ -81,7 +80,6 @@ class Inventory():
         return total_worth
 
 class Item():
-
     def __init__(self, name, description, amount, individual_value, object_type) -> None:
         self.name = name
         self.description = description
@@ -136,7 +134,6 @@ class Item():
         return f"[x{self.amount}] {self.name} ({self.object_type})"
 
 class Equipment(Item):
-
     def __init__(self, name, description, amount, individual_value, object_type, stat_change_list):
         super().__init__(name, description, amount, individual_value, object_type)
         self.stat_change_list = stat_change_list

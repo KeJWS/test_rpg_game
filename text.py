@@ -81,18 +81,16 @@ def inventory_menu():
     )
     print(display_inventory)
 
-def combat_menu(player, enemy):
-    display_combat = (
-        "---------------------------------------\n"
-        f"{player.name} - \033[31mHP: {player.stats['hp']}/{player.stats['max_hp']}\033[0m - MP: {player.stats['mp']}/{player.stats['max_mp']}\n"
-        f"{enemy.name} - \033[32mHP: {enemy.stats['hp']}/{enemy.stats['max_hp']}\033[0m\n"
-        "---------------------------------------\n"
-        "       A - Attack  C - Combos          \n"
-        "       S - Spells  D - Defense\n"
-        "       E - Escape\n"
-        "---------------------------------------\n"
-    )
-    print(display_combat)
+def combat_menu(player, enemies):
+    print("---------------------------------------")
+    print(f"{player.name} - \033[31mHP: {player.stats['hp']}/{player.stats['max_hp']}\033[0m - MP: {player.stats['mp']}/{player.stats['max_mp']}")
+    for enemy in enemies:
+        print(f"{enemy.name} - \033[32mHP: {enemy.stats['hp']}/{enemy.stats['max_hp']}\033[0m")
+    print("---------------------------------------")
+    print("       A - Attack  C - Combos          ")
+    print("       S - Spells  D - Defense")
+    print("       E - Escape")
+    print("---------------------------------------")
 
 def spell_menu(player):
     print("---------------------------------------")
@@ -100,3 +98,11 @@ def spell_menu(player):
     print("---------------------------------------")
     for index, spell in enumerate(player.spells, start=1):
         print(str(f"{index} - {spell.name}"))
+
+def select_objective(target):
+    print("-------------------------------------")
+    print("         Select an objective:")
+    print("-------------------------------------")
+    for index, t in enumerate(target, start=1):
+        print(f"{index} - {t.name} - HP: \033[32m{t.stats['hp']}/{t.stats['max_hp']}\033[0m")
+    print("-------------------------------------")

@@ -54,12 +54,10 @@ def play():
         option = int(input("> "))
         match option:
             case 1:
-                random_chosen_enemy = random.randint(1, 2)
-                if random_chosen_enemy == 1:
-                    enemy = enemies.Imp()
-                elif random_chosen_enemy == 2:
-                    enemy = enemies.Golem()
-                combat.combat(my_player, enemy)
+                enemy1 = enemies.Imp()
+                enemy2 = enemies.Imp()
+                battle_enemies = [enemy1, enemy2]
+                combat.combat(my_player, battle_enemies)
                 enter_clear_screen()
             case 2:
                 clear_screen()

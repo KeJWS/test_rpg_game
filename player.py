@@ -2,7 +2,6 @@ import  text, combat, inventory, skills
 from test.constants import EXPERIENCE_RATE
 
 class Player(combat.Battler):
-
     def __init__(self, name) -> None:
         stats = {
             "max_hp": 500,
@@ -40,6 +39,7 @@ class Player(combat.Battler):
         self.money = 0
         self.combos = []
         self.spells = [skills.fire_ball, skills.divineBlessing, skills.benettFantasticVoyage]
+        self.is_ally = True
 
     def equip_item(self, equipment):
         if equipment is None:

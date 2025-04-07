@@ -1,3 +1,4 @@
+import math
 import random
 import text, skills
 
@@ -7,6 +8,7 @@ class Battler():
         self.stats = stats
         self.alive = True
         self.buffs_and_debuffs = []
+        self.is_ally = False
 
 class Enemy(Battler):
     def __init__(self, name, stats, xp_reward) -> None:
@@ -34,7 +36,8 @@ def normal_attack(attacker, defender, defender_is_defending=False):
         dmg = round(base_dmg * random.uniform(0.8, 1.2)) # 伤害浮动：±20%
     if defender_is_defending:
         dmg = round(dmg * 0.5)
-    take_dmg(attacker, defender, dmg)
+    if not check_miss(attacker, defender):
+        take_dmg(attacker, defender, dmg)
 
 def take_dmg(attacker, defender, dmg):
     """伤害结算与死亡检测"""
@@ -45,37 +48,47 @@ def take_dmg(attacker, defender, dmg):
         print(f"\033[31m{defender.name} 被杀死了\033[0m")
         defender.alive = False
 
-def combat(player, enemy):
+def combat(player, enemies):
     """主战斗流程控制"""
+    battlers = enemies.copy()
+    battlers.append(player)
+    battlers.sort(key=lambda b: b.stats["agi"], reverse=True)
     print("---------------------------------------")
-    print(f"野生的 {enemy.name} 出现了!")
-    while player.alive and enemy.alive:
-        text.combat_menu(player, enemy)
-        decision = get_player_decision(player)
-        while decision not in ["a", "d", "c", "s", "e"]:
-            decision = get_player_decision(player)
-
-        match decision:
-            case "a":
-                normal_attack(player, enemy)
-                if enemy.alive:
-                        normal_attack(enemy, player)
-            case "s":
-                text.spell_menu(player)
-                option = int(input("> "))
-                if option != 0:
-                    skill_effect(player.spells[option - 1], player, enemy)
-                    if enemy.alive:
-                        normal_attack(enemy, player)
-            case "d":
-                print(f"{player.name} 选择防御, 本回合受到的伤害将减少50%!")
-                normal_attack(enemy, player, defender_is_defending=True)
-            case "e":
-                if try_escape(player): # 逃跑成功，结束战斗
-                    return
-                else:
-                    if enemy.alive:
-                        normal_attack(enemy, player)
+    for enemy in enemies:
+        print(f"野生的 {enemy.name} 出现了!")
+    while player.alive and len(enemies) > 0:
+        for battler in battlers:
+            if battler.is_ally:
+                text.combat_menu(player, enemies)
+                decision = input("> ").lower()
+                while decision not in ["a", "d", "c", "s", "e"]:
+                    decision = input("> ").lower()
+                match decision:
+                    case "a":
+                        target_enemy = select_target(enemies)
+                        normal_attack(player, target_enemy)
+                        if target_enemy.alive == False:
+                            battlers.remove(enemy)
+                            enemies.remove(enemy)
+                    case "s":
+                        text.spell_menu(player)
+                        option = int(input("> "))
+                        if option != 0:
+                            target_enemy = select_target(battlers)
+                            skill_effect(player.spells[option - 1], player, target_enemy)
+                            if target_enemy.alive == False:
+                                battlers.remove(enemy)
+                                enemies.remove(enemy)
+                    case "d":
+                        print(f"{player.name} 选择防御, 本回合受到的伤害将减少50%!")
+                        if target_enemy.alive == False:
+                            battlers.remove(enemy)
+                            enemies.remove(enemy)
+                    case "e":
+                        if try_escape(player): # 逃跑成功，结束战斗
+                            return
+            else:
+                normal_attack(battler, player)
 
         for bd in player.buffs_and_debuffs:
             bd.check_turns()
@@ -83,10 +96,24 @@ def combat(player, enemy):
             bd.check_turns()
 
     if player.alive:
-            for bd in player.buffs_and_debuffs:
-                bd.deactivate()
-            player.add_exp(enemy.xp_reward)
-            take_a_rest(player)
+        for bd in player.buffs_and_debuffs:
+            bd.deactivate()
+        player.add_exp(enemy.xp_reward)
+        take_a_rest(player)
+
+def select_target(targets):
+    text.select_objective(targets)
+    i = int(input("> "))
+    if i <= len(targets):
+        target = targets[i-1]
+        return target
+
+def check_miss(attacker, defender):
+    chance = math.floor(math.sqrt(max(0, (5 * defender.stats["agi"] - attacker.stats["agi"] * 2))))
+    if chance > random.randint(0, 100):
+        print(f"\033[31m{attacker.name} 攻击失败\033[0m")
+        return True
+    return False
 
 def get_player_decision(player):
     """获取行动指令（含自动模式 AI 决策）"""
