@@ -1,6 +1,10 @@
 import math
 import random
+import time
 import text, skills
+from test.fx import dot_loading, typewriter
+
+import test.fx
 
 class Battler():
     def __init__(self, name, stats) -> None:
@@ -18,7 +22,10 @@ class Enemy(Battler):
 
 def normal_attack(attacker, defender, defender_is_defending=False):
     """普通攻击逻辑（含暴击机制、防御判定）"""
-    print(f"{attacker.name} 发动攻击!")
+    from test.fx import critical, cyan
+    test.fx.battle_log(f"{attacker.name} 发动攻击!", "info")
+    dot_loading()
+
     crit_chance = min(75, attacker.stats["crit"])
     if random.randint(1, 100) <= crit_chance:
         crit_base = attacker.stats["atk"] * 4 + attacker.stats["luk"]
@@ -29,7 +36,7 @@ def normal_attack(attacker, defender, defender_is_defending=False):
             3.0: 5
             }
         rate = random.choices(list(critical_rates.keys()), weights=critical_rates.values())[0]
-        print(f'\033[1;33m暴击！x{rate}\033[0m')
+        print(critical(f"暴击! x{rate}"))
         dmg = round(crit_base * random.uniform(1.0, 1.2) * rate)
     else:
         base_dmg = attacker.stats["atk"]*4 - defender.stats["def"]*2 + attacker.stats["luk"] - defender.stats["luk"]
@@ -37,16 +44,19 @@ def normal_attack(attacker, defender, defender_is_defending=False):
         dmg = round(base_dmg * random.uniform(0.8, 1.2)) # 伤害浮动：±20%
     if defender_is_defending:
         dmg = round(dmg * 0.5)
+        typewriter(cyan(f"{defender.name} 正在防御，伤害减半!"))
     if not check_miss(attacker, defender):
         take_dmg(attacker, defender, dmg)
 
 def take_dmg(attacker, defender, dmg):
+    from test.fx import red, bold, yellow
     """伤害结算与死亡检测"""
     if dmg < 0: dmg = 0
     defender.stats["hp"] -= dmg
-    print(f"{attacker.name} 攻击 {defender.name} 造成伤害 \033[33m{dmg}\033[0m")
+    test.fx.battle_log(f"{attacker.name} 攻击 {defender.name} 造成伤害 {yellow(dmg)}", "dmg")
+    time.sleep(0.3)
     if defender.stats["hp"] <= 0:
-        print(f"\033[31m{defender.name} 被杀死了\033[0m")
+        print(bold(red(f"{defender.name} 被杀死了")))
         defender.alive = False
 
 def combat(player, enemies):
@@ -82,7 +92,7 @@ def combat(player, enemies):
                                 enemies.remove(target_enemy)
                     case "d":
                         player.is_defending = True
-                        print(f"{player.name} 选择防御, 本回合受到的伤害将减少50%!")
+                        typewriter(f"{player.name} 选择防御, 本回合受到的伤害将减少50%!")
                     case "e":
                         if try_escape(player): # 逃跑成功，结束战斗
                             return
@@ -112,7 +122,7 @@ def select_target(targets):
 def check_miss(attacker, defender):
     chance = math.floor(math.sqrt(max(0, (5 * defender.stats["agi"] - attacker.stats["agi"] * 2))))
     if chance > random.randint(0, 100):
-        print(f"\033[31m{attacker.name} 攻击失败\033[0m")
+        print(test.fx.red(f"{attacker.name} 攻击失败"))
         return True
     return False
 
@@ -120,10 +130,10 @@ def try_escape(player):
     """逃跑逻辑"""
     escape_chance = min(90, 30 + (player.stats["agi"] * 0.4 + player.stats["luk"] * 0.1))
     if random.randint(1, 100) <= escape_chance:
-        print("\033[32m逃跑成功!\033[0m")
+        print(test.fx.green("逃跑成功!"))
         return True
     else:
-        print("\033[31m逃跑失败!\033[0m")
+        print(test.fx.bold_red("逃跑失败!"))
         return False
 
 def recover_mp(target, amount):
