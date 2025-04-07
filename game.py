@@ -20,23 +20,27 @@ def title_screen_selection():
         print("请输入有效字符")
         option = int(input("> "))
 
+##### 库存菜单 #####
 def inventory_selections(player):
     option = input("> ")
     while option.lower() != "q":
-        if option.lower() == "u":
-            player.use_item(player.inventory.use_item())
-        elif option.lower() == "s":
-            player.money += player.inventory.sell_item()
-        elif option.lower() == "d":
-            player.inventory.drop_item()
-        elif option.lower() == "e":
-            player.equip_item(player.inventory.equip_item())
-        else:
-            pass
+        match option.lower():
+            case "u":
+                player.use_item(player.inventory.use_item())
+            case "s":
+                player.money += player.inventory.sell_item()
+            case "d":
+                player.inventory.drop_item()
+            case "e":
+                player.equip_item(player.inventory.equip_item())
+            case _:
+                pass
         enter_clear_screen()
         text.inventory_menu()
         option = input("> ")
+    enter_clear_screen()
 
+##### 初始化函数#####
 def play():
     my_player = player.Player("Test Player")
 
@@ -55,7 +59,7 @@ def play():
         match option:
             case 1:
                 enemy1 = enemies.Imp()
-                enemy2 = enemies.Imp()
+                enemy2 = enemies.Golem()
                 battle_enemies = [enemy1, enemy2]
                 combat.combat(my_player, battle_enemies)
                 enter_clear_screen()

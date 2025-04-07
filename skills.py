@@ -1,5 +1,8 @@
 import random
 
+"""
+技能是法术(mat)和连击(atk)的父类
+"""
 class Skill():
     def __init__(self, name, description, power, mp_cost) -> None:
         self.name = name
@@ -15,6 +18,8 @@ class Skill():
             print(f"{caster.name} 释放了 {self.name}!")
             caster.stats["mp"] -= self.mp_cost
             return True
+
+##### 咒语 #####
 
 class Simple_offensive_spell(Skill):
     def __init__(self, name, description, power, mp_cost) -> None:
@@ -55,6 +60,8 @@ class Buff_debuff_spell(Skill):
                 return True
         return False
 
+##### 杂项 #####
+
 class Buff_debuff():
     def __init__(self, name, target, start_to_change, amount_to_change, turns) -> None:
         self.name = name
@@ -82,6 +89,8 @@ class Buff_debuff():
         print(f"\033[31m{self.name}\033[0m 的效果已结束")
         self.target.buffs_and_debuffs.remove(self)
         self.target.stats[self.start_to_change] -= self.difference
+
+##### 咒语实例 #####
 
 fire_ball = Simple_offensive_spell("火球术", "", 75, 30)
 divineBlessing = Simple_heal_spell("神圣祝福", "", 50, 50)

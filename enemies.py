@@ -29,7 +29,7 @@ class Golem(combat.Enemy):
             "def": 20,
             "mat": 10,
             "mdf": 10,
-            "agi": 10,
+            "agi": 4,
             "luk": 10,
             "crit": 0
         }

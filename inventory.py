@@ -1,10 +1,13 @@
 import combat
 
+"""
+管理玩家的库存和物品。可以修改为具有一定容量。
+"""
 class Inventory():
     def __init__(self) -> None:
         self.items = []
 
-    def show_inventory(self):
+    def show_inventory(self): # 显示库存中的所有物品
         if not self.items:
             print("背包是空的。")
         print(f"总价值: {self.total_worth}")
@@ -12,7 +15,7 @@ class Inventory():
             print(f"{index} - {item.show_info()}")
 
     def drop_item(self):
-        print("\n丢掉什么? ['0' 退出]")
+        print("\n丢掉什么? ['0' 退出]") # 从库存中丢弃一个物品
         self.show_inventory()
         i = int(input("> "))
         if i == 0:
@@ -26,7 +29,7 @@ class Inventory():
             self.show_inventory()
 
     def sell_item(self):
-        print("\n出售什么? ['0' 退出]")
+        print("\n出售什么? ['0' 退出]") # 出售库存中的特定物品
         self.show_inventory()
         i = int(input("> "))
         if i == 0:
@@ -41,7 +44,7 @@ class Inventory():
         return 0
 
     def equip_item(self):
-        print("\n装备什么? ['0' 退出]")
+        print("\n装备什么? ['0' 退出]") # 从库存中装备某件物品（必须是“装备”类型）
         self.show_inventory()
         i = int(input("> "))
         if i == 0:
@@ -57,7 +60,7 @@ class Inventory():
                 return None
 
     def use_item(self):
-        print("\n使用什么? ['0' 退出]")
+        print("\n使用什么? ['0' 退出]") # 使用特定类型的“消耗品”物品
         self.show_inventory()
         i = int(input("> "))
         if i == 0:
@@ -86,10 +89,6 @@ class Item():
         self.amount = amount
         self.individual_value = individual_value
         self.object_type = object_type
-
-    @property
-    def total_worth(self):
-        return self.amount * self.individual_value
 
     def drop(self):
         if self.amount == 1:

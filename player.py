@@ -21,7 +21,7 @@ class Player(combat.Battler):
 
         self.level = 1
         self.xp = 0
-        self.xp_to_next_level = 50
+        self.xp_to_next_level = 50 # 达到下一等级所需的经验值每级乘以 1.5
         self.aptitudes = {
             "str": 5,
             "dex": 5,
@@ -29,18 +29,26 @@ class Player(combat.Battler):
             "wis": 5,
             "const": 5
         }
-        self.aptitude_points = 0
+        self.aptitude_points = 0 # 升级能力的点数
+        '''
+        当能力提升时, 某些属性也会增加:
+        STR -> ATK + 3
+        DEX -> AGI + 3, CRIT + 1
+        INT -> MAT + 3
+        WIS -> MAXMP + 10
+        CONST -> MAXHP + 10
+        '''
         self.inventory = inventory.Inventory()
-        self.equipment = {
+        self.equipment = {      #玩家的装备，可以进一步扩展
             "weapon": None,
             "armor": None
         }
         self.money = 0
-        self.combos = []
+        self.combos = [] # 玩家选择的组合（攻击）
         self.spells = [skills.fire_ball, skills.divineBlessing, skills.benettFantasticVoyage]
         self.is_ally = True
 
-    def equip_item(self, equipment):
+    def equip_item(self, equipment): # 装备一件物品（必须是“装备”类型）
         if equipment is None:
             print("无法装备: 无效物品")
             return
@@ -56,6 +64,8 @@ class Player(combat.Battler):
                 self.stats[stat] -= value
                 print(f"{stat} -{value}")
         # 装备新装备
+        for stat in equipment.stat_change_list:
+            self.stats[stat] += equipment.stat_change_list[stat]
         self.equipment[equip_type] = equipment
         print(f"装备了 {equipment.name}")
         print(equipment.show_stats())
@@ -69,7 +79,7 @@ class Player(combat.Battler):
         text.inventory_menu()
         self.inventory.show_inventory()
 
-    def add_exp(self, exp):
+    def add_exp(self, exp): # 给玩家增加一定数量的经验
         exp_value = (exp + self.stats["luk"]) * EXPERIENCE_RATE
         self.xp += exp_value
         print(f"获得了 {exp_value}xp")
@@ -83,7 +93,7 @@ class Player(combat.Battler):
             combat.fully_heal(self)
             print(f"\033[33m升级! 现在的等级是: {self.level}\033[0m, 有 {self.aptitude_points} 个能力点")
 
-    def assign_aptitude_points(self):
+    def assign_aptitude_points(self): # 使用能力点数升级能力的循环
         text.show_aptitudes(self)
         option = int(input("> "))
         options_dictionary = {
@@ -107,7 +117,7 @@ class Player(combat.Battler):
                 print("不是有效字符！")
             option = int(input("> "))
 
-    def update_stats_to_aptitudes(self, aptitude):
+    def update_stats_to_aptitudes(self, aptitude): # 当能力提升时更新统计数据
         aptitude_mapping = {
             "str": {"atk": 3},
             "dex": {"agi": 3, "crit": 1},

@@ -6,6 +6,10 @@ from test.fx import dot_loading, typewriter
 
 import test.fx
 
+"""
+所有可以进入战斗的实例的父类。
+战斗者永远是敌人、玩家的盟友或玩家自己
+"""
 class Battler():
     def __init__(self, name, stats) -> None:
         self.name = name
@@ -20,6 +24,7 @@ class Enemy(Battler):
         super().__init__(name, stats)
         self.xp_reward = xp_reward
 
+# 所有战斗者都有普通攻击
 def normal_attack(attacker, defender, defender_is_defending=False):
     """普通攻击逻辑（含暴击机制、防御判定）"""
     from test.fx import critical, cyan
@@ -46,24 +51,30 @@ def normal_attack(attacker, defender, defender_is_defending=False):
         dmg = round(dmg * 0.5)
         typewriter(cyan(f"{defender.name} 正在防御，伤害减半!"))
     if not check_miss(attacker, defender):
-        take_dmg(attacker, defender, dmg)
+        take_dmg(defender, dmg)
 
-def take_dmg(attacker, defender, dmg):
+# 受到来自特定来源的伤害
+def take_dmg(defender, dmg):
     from test.fx import red, bold, yellow
     """伤害结算与死亡检测"""
     if dmg < 0: dmg = 0
     defender.stats["hp"] -= dmg
-    test.fx.battle_log(f"{attacker.name} 攻击 {defender.name} 造成伤害 {yellow(dmg)}", "dmg")
+    test.fx.battle_log(f"{defender.name} 受到伤害 {yellow(dmg)}", "dmg")
     time.sleep(0.3)
     if defender.stats["hp"] <= 0:
         print(bold(red(f"{defender.name} 被杀死了")))
         defender.alive = False
 
+"""
+主战斗循环
+"""
 def combat(player, enemies):
     """主战斗流程控制"""
+    # 所有战斗者都被插入到战斗者列表中，并按速度（回合顺序）排序
     battlers = enemies.copy()
     battlers.append(player)
     battlers.sort(key=lambda b: b.stats["agi"], reverse=True)
+
     print("---------------------------------------")
     for enemy in enemies:
         print(f"野生的 {enemy.name} 出现了!")
@@ -101,17 +112,22 @@ def combat(player, enemies):
 
         player.is_defending = False
 
+        # 一轮已过
+        # 检查增益和减益效果的回合
         for bd in player.buffs_and_debuffs:
             bd.check_turns()
         for bd in enemy.buffs_and_debuffs:
             bd.check_turns()
 
     if player.alive:
+        # 停用所有现有的增益效果和减益效果
         for bd in player.buffs_and_debuffs:
             bd.deactivate()
+        # 为玩家添加经验
         player.add_exp(enemy.xp_reward)
         take_a_rest(player)
 
+# 从战场上选择某个目标
 def select_target(targets):
     text.select_objective(targets)
     i = int(input("> "))
@@ -136,24 +152,28 @@ def try_escape(player):
         print(test.fx.bold_red("逃跑失败!"))
         return False
 
+# 目标恢复一定量的 mp
 def recover_mp(target, amount):
     target.stats["mp"] = min(target.stats["hp"] + amount, target.stats["max_mp"])
     print(f"{target.name} 恢复了 {amount}HP")
 
+# 目标恢复一定量的生命值
 def heal(target, amount):
     target.stats["hp"] = min(target.stats["hp"] + amount, target.stats["max_hp"])
     print(f"{target.name} 治愈了 {amount}HP")
 
+# 激活特定技能的效果
 def skill_effect(skill, caster, target):
     if isinstance(skill, skills.Simple_offensive_spell):
         amount = skill.effect(caster, target)
-        take_dmg(caster, target, amount)
+        take_dmg(target, amount)
     elif isinstance(skill, skills.Simple_heal_spell):
         amount = skill.effect(caster, target)
         heal(caster, amount)
     elif isinstance(skill, skills.Buff_debuff_spell):
         skill.effect(caster, caster)
 
+# 完全治愈目标（调试）
 def fully_heal(target):
     """恢复相关函数"""
     target.stats["hp"] = target.stats["max_hp"]
