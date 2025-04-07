@@ -21,7 +21,7 @@ def play_menu():
         "   2 - See stats\n"
         "   3 - Assign aptitude points   \n"
         "   4 - Inventory\n"
-        "   5 - Auto mode\n"
+        "   5 - Full heal\n"
         "--------------------------------\n"
     )
     print(display_content)

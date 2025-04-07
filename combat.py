@@ -9,6 +9,7 @@ class Battler():
         self.alive = True
         self.buffs_and_debuffs = []
         self.is_ally = False
+        self.is_defending = False
 
 class Enemy(Battler):
     def __init__(self, name, stats, xp_reward) -> None:
@@ -68,8 +69,8 @@ def combat(player, enemies):
                         target_enemy = select_target(enemies)
                         normal_attack(player, target_enemy)
                         if target_enemy.alive == False:
-                            battlers.remove(enemy)
-                            enemies.remove(enemy)
+                            battlers.remove(target_enemy)
+                            enemies.remove(target_enemy)
                     case "s":
                         text.spell_menu(player)
                         option = int(input("> "))
@@ -77,18 +78,18 @@ def combat(player, enemies):
                             target_enemy = select_target(battlers)
                             skill_effect(player.spells[option - 1], player, target_enemy)
                             if target_enemy.alive == False:
-                                battlers.remove(enemy)
-                                enemies.remove(enemy)
+                                battlers.remove(target_enemy)
+                                enemies.remove(target_enemy)
                     case "d":
+                        player.is_defending = True
                         print(f"{player.name} 选择防御, 本回合受到的伤害将减少50%!")
-                        if target_enemy.alive == False:
-                            battlers.remove(enemy)
-                            enemies.remove(enemy)
                     case "e":
                         if try_escape(player): # 逃跑成功，结束战斗
                             return
             else:
-                normal_attack(battler, player)
+                normal_attack(battler, player, defender_is_defending=player.is_defending)
+
+        player.is_defending = False
 
         for bd in player.buffs_and_debuffs:
             bd.check_turns()
@@ -114,20 +115,6 @@ def check_miss(attacker, defender):
         print(f"\033[31m{attacker.name} 攻击失败\033[0m")
         return True
     return False
-
-def get_player_decision(player):
-    """获取行动指令（含自动模式 AI 决策）"""
-    if player.auto_mode:
-        decision_weights = []
-        decision_weights.append("a")
-        decision_weights.append("d")
-        if player.stats["hp"] < player.stats["max_hp"] * 0.3:
-            decision_weights.append("q")
-
-        decision = random.choice(decision_weights)
-        print(f"自动决策: \033[32m{decision}\033[0m")
-        return decision
-    return input("选择行动 (a. 攻击 s. 技能 d. 防御 q. 逃跑) ").lower()
 
 def try_escape(player):
     """逃跑逻辑"""

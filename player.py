@@ -30,7 +30,6 @@ class Player(combat.Battler):
             "const": 5
         }
         self.aptitude_points = 0
-        self.auto_mode = False
         self.inventory = inventory.Inventory()
         self.equipment = {
             "weapon": None,
