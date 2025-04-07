@@ -62,18 +62,26 @@ class Buff_debuff():
         self.start_to_change = start_to_change
         self.amount_to_change = amount_to_change
         self.turns = turns
+        self.difference = 0
 
     def activate(self):
         self.target.buffs_and_debuffs.append(self)
         if self.amount_to_change < 0:
             print(f"{self.target.name} 的 {self.start_to_change} 受到 {self.amount_to_change} 的削弱，持续 {self.turns} 回合")
         else:
-            print(f"{self.target.name} 的 {self.start_to_change} 增益为 {self.amount_to_change}% 持续 {self.turns} 回合")
-        difference = int(self.target.stats[self.start_to_change] * self.amount_to_change)
-        self.target.stats[self.start_to_change] += difference
-        if self.turns == 0:
-            self.target.buffs_and_debuffs.remove(self)
-            self.target.stats[self.start_to_change] -= difference
+            print(f"{self.target.name} 的 {self.start_to_change} 增益为 {self.amount_to_change} 持续 {self.turns} 回合")
+        self.difference = int(self.target.stats[self.start_to_change] * self.amount_to_change)
+        self.target.stats[self.start_to_change] += self.difference
+
+    def check_turns(self):
+        self.turns -= 1
+        if self.turns <= 0:
+            self.deactivate()
+
+    def deactivate(self):
+        print(f"\033[31m{self.name}\033[0m 的效果已结束")
+        self.target.buffs_and_debuffs.remove(self)
+        self.target.stats[self.start_to_change] -= self.difference
 
 fire_ball = Simple_offensive_spell("火球术", "", 75, 30)
 divineBlessing = Simple_heal_spell("神圣祝福", "", 50, 50)

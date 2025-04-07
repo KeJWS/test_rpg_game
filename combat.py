@@ -52,7 +52,7 @@ def combat(player, enemy):
     while player.alive and enemy.alive:
         text.combat_menu(player, enemy)
         decision = get_player_decision(player)
-        while decision not in ["a", "d", "c", "s", "q"]:
+        while decision not in ["a", "d", "c", "s", "e"]:
             decision = get_player_decision(player)
 
         match decision:
@@ -70,19 +70,21 @@ def combat(player, enemy):
             case "d":
                 print(f"{player.name} 选择防御, 本回合受到的伤害将减少50%!")
                 normal_attack(enemy, player, defender_is_defending=True)
-            case "q":
+            case "e":
                 if try_escape(player): # 逃跑成功，结束战斗
                     return
                 else:
                     if enemy.alive:
                         normal_attack(enemy, player)
 
-        player.buffs_and_debuffs = [b for b in player.buffs_and_debuffs if b.turns > 0]
-        enemy.buffs_and_debuffs = [b for b in enemy.buffs_and_debuffs if b.turns > 0]
+        for bd in player.buffs_and_debuffs:
+            bd.check_turns()
+        for bd in enemy.buffs_and_debuffs:
+            bd.check_turns()
 
     if player.alive:
-            player.buffs_and_debuffs.clear()
-            enemy.buffs_and_debuffs.clear()
+            for bd in player.buffs_and_debuffs:
+                bd.deactivate()
             player.add_exp(enemy.xp_reward)
             take_a_rest(player)
 
@@ -109,6 +111,10 @@ def try_escape(player):
     else:
         print("\033[31m逃跑失败!\033[0m")
         return False
+
+def recover_mp(target, amount):
+    target.stats["mp"] = min(target.stats["hp"] + amount, target.stats["max_mp"])
+    print(f"{target.name} 恢复了 {amount}HP")
 
 def heal(target, amount):
     target.stats["hp"] = min(target.stats["hp"] + amount, target.stats["max_hp"])

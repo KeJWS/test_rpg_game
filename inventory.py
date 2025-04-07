@@ -1,3 +1,4 @@
+import combat
 
 class Inventory():
 
@@ -9,7 +10,7 @@ class Inventory():
             print("背包是空的。")
         print(f"总价值: {self.total_worth}")
         for index, item in enumerate(self.items, start=1):
-            print(f"{index} - {item.name} x{item.amount}")
+            print(f"{index} - {item.show_info()}")
 
     def drop_item(self):
         print("\n丢掉什么? ['0' 退出]")
@@ -56,6 +57,24 @@ class Inventory():
                 print("选择一个可装备的物品")
                 return None
 
+    def use_item(self):
+        print("\n使用什么? ['0' 退出]")
+        self.show_inventory()
+        i = int(input("> "))
+        if i == 0:
+            print("关闭背包...")
+            return None
+        elif i <= len(self.items):
+            item = self.items[i-1]
+            if item.object_type == "consumable":
+                item.amount -= 1
+                if item.amount <= 0:
+                    self.items.pop(i-1)
+                return item
+            else:
+                print("选择一个消耗品")
+                return None
+
     @property
     def total_worth(self):
         total_worth = sum(item.amount * item.individual_value for item in self.items)
@@ -63,11 +82,12 @@ class Inventory():
 
 class Item():
 
-    def __init__(self, name, description, amount, individual_value) -> None:
+    def __init__(self, name, description, amount, individual_value, object_type) -> None:
         self.name = name
         self.description = description
         self.amount = amount
         self.individual_value = individual_value
+        self.object_type = object_type
 
     @property
     def total_worth(self):
@@ -112,9 +132,37 @@ class Item():
             inventory.items.append(self)
             print(f"{self.name}x{self.amount} 已放入背包!")
 
+    def show_info(self):
+        return f"[x{self.amount}] {self.name} ({self.object_type})"
+
 class Equipment(Item):
 
-    def __init__(self, name, description, amount, individual_value, stat_change_list, equipment_type):
-        super().__init__(name, description, amount, individual_value)
+    def __init__(self, name, description, amount, individual_value, object_type, stat_change_list):
+        super().__init__(name, description, amount, individual_value, object_type)
         self.stat_change_list = stat_change_list
-        self.equipment_type = equipment_type
+
+    def show_info(self):
+        return f"[x{self.amount}] {self.name} ({self.object_type}) {self.show_stats()}"
+
+    def show_stats(self):
+        stats_string = "[ "
+        for stat in self.stat_change_list:
+            sign = "+"
+            if self.stat_change_list[stat] < 0:
+                sign = ""
+            stats_string += f"{stat} {sign}{self.stat_change_list[stat]} "
+        stats_string += "]"
+        return stats_string
+
+class Potion(Item):
+    def __init__(self, name, description, amount, individual_value, object_type, stat, amount_to_change) -> None:
+        super().__init__(name, description, amount, individual_value, object_type)
+        self.stat = stat
+        self.amount_to_change = amount_to_change
+
+    def activate(self, caster):
+        print(f"{caster.name} 使用了一个 {self.name}")
+        if self.stat == "hp":
+            combat.heal(caster, self.amount_to_change)
+        elif self.stat == "mp":
+            combat.recover_mp(caster, self.amount_to_change)

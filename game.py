@@ -23,7 +23,9 @@ def title_screen_selection():
 def inventory_selections(player):
     option = input("> ")
     while option.lower() != "q":
-        if option.lower() == "s":
+        if option.lower() == "u":
+            player.use_item(player.inventory.use_item())
+        elif option.lower() == "s":
             player.money += player.inventory.sell_item()
         elif option.lower() == "d":
             player.inventory.drop_item()
@@ -37,10 +39,15 @@ def inventory_selections(player):
 
 def play():
     my_player = player.Player("Test Player")
-    potions = inventory.Item("生命药水", "a", 10, 10)
-    potions.add_to_inventory(my_player.inventory)
-    items.debug_sword.add_to_inventory(my_player.inventory)
+
+    items.hp_potions.add_to_inventory(my_player.inventory)
+    items.mp_potions.add_to_inventory(my_player.inventory)
+    items.long_sword.add_to_inventory(my_player.inventory)
     items.dagger.add_to_inventory(my_player.inventory)
+    items.staff.add_to_inventory(my_player.inventory)
+    items.cloth_armor.add_to_inventory(my_player.inventory)
+    items.war_hammer.add_to_inventory(my_player.inventory)
+    items.iron_armor.add_to_inventory(my_player.inventory)
 
     while my_player.alive:
         text.play_menu()
@@ -49,7 +56,7 @@ def play():
             case 1:
                 random_chosen_enemy = random.randint(1, 2)
                 if random_chosen_enemy == 1:
-                    enemy = enemies.Giant_slime()
+                    enemy = enemies.Imp()
                 elif random_chosen_enemy == 2:
                     enemy = enemies.Golem()
                 combat.combat(my_player, enemy)

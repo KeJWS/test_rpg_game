@@ -30,12 +30,12 @@ class Player(combat.Battler):
             "wis": 5,
             "const": 5
         }
-        self.aptitude_points = 5
+        self.aptitude_points = 0
         self.auto_mode = False
         self.inventory = inventory.Inventory()
         self.equipment = {
             "weapon": None,
-            "Armor": None
+            "armor": None
         }
         self.money = 0
         self.combos = []
@@ -48,7 +48,7 @@ class Player(combat.Battler):
         if not isinstance(equipment, inventory.Equipment):
             print(f"{equipment.name} 无法装备")
             return
-        equip_type = equipment.equipment_type
+        equip_type = equipment.object_type
         current_equipment = self.equipment.get(equip_type)
         # 卸下旧装备
         if current_equipment:
@@ -59,9 +59,14 @@ class Player(combat.Battler):
         # 装备新装备
         self.equipment[equip_type] = equipment
         print(f"装备了 {equipment.name}")
-        for stat, value in equipment.stat_change_list.items():
-            self.stats[stat] += value
-            print(f"{stat} +{value}")
+        print(equipment.show_stats())
+        text.inventory_menu()
+        self.inventory.show_inventory()
+
+    def use_item(self, item):
+        if item != None:
+            if isinstance(item, inventory.Potion):
+                item.activate(self)
         text.inventory_menu()
         self.inventory.show_inventory()
 
@@ -77,7 +82,7 @@ class Player(combat.Battler):
                 self.stats[stat] += 1
             self.aptitude_points +=1
             combat.fully_heal(self)
-            print(f"\033[33m升级！您现在的等级是: {self.level}\033[0m")
+            print(f"\033[33m升级! 现在的等级是: {self.level}\033[0m, 有 {self.aptitude_points} 个能力点")
 
     def assign_aptitude_points(self):
         text.show_aptitudes(self)
