@@ -106,3 +106,31 @@ def select_objective(target):
     for index, t in enumerate(target, start=1):
         print(f"{index} - {t.name} - HP: \033[32m{t.stats['hp']}/{t.stats['max_hp']}\033[0m")
     print("-------------------------------------")
+
+
+# 添加到 text.py
+def save_load_menu():
+    """显示存档/读档菜单"""
+    display_content = (
+        "--------------------------------\n"
+        "   1 - 保存游戏\n"
+        "   2 - 加载游戏\n"
+        "   3 - 删除存档\n"
+        "   0 - 返回\n"
+        "--------------------------------\n"
+    )
+    print(display_content)
+
+def display_save_list(saves):
+    """显示存档列表"""
+    if not saves:
+        print("没有找到存档")
+        return
+    
+    print("--------------------------------")
+    print("  存档列表")
+    print("--------------------------------")
+    for i, save in enumerate(saves, 1):
+        print(f"  {i}. {save['player_name']} (等级 {save['level']}) - {save['date']}")
+    print("  0. 取消")
+    print("--------------------------------")

@@ -6,6 +6,8 @@ import random
 import combat, enemies, text, inventory, player, items
 from test.clear_screen import clear_screen, enter_clear_screen
 
+from save_system import save_game, get_save_list, delete_save, load_game
+
 def title_screen_selection():
     text.title_screen()
     option = int(input("> "))
@@ -71,13 +73,33 @@ def play():
                 clear_screen()
                 my_player.assign_aptitude_points()
                 enter_clear_screen()
-            case 4:
+            case 6:  # 新增存档/读档选项
                 clear_screen()
-                text.inventory_menu()
-                my_player.inventory.show_inventory()
-                inventory_selections(my_player)
-            case 5:
-                combat.fully_heal(my_player)
+                text.save_load_menu()
+                save_option = int(input("> "))
+                if save_option == 1:  # 保存游戏
+                    save_name = input("输入存档名 (留空使用默认名称): ")
+                    if not save_name.strip():
+                        save_name = None
+                    save_metadata = save_game(my_player, save_name)
+                    print(f"游戏已保存: {save_metadata['name']}")
+                elif save_option == 2:  # 加载游戏
+                    saves = get_save_list()
+                    text.display_save_list(saves)
+                    save_index = int(input("> "))
+                    if save_index > 0 and save_index <= len(saves):
+                        loaded_player = load_game(saves[save_index-1]['name'])
+                        if loaded_player:
+                            my_player = loaded_player
+                            print(f"游戏已加载: {loaded_player.name} (等级 {loaded_player.level})")
+                elif save_option == 3:  # 删除存档
+                    saves = get_save_list()
+                    text.display_save_list(saves)
+                    save_index = int(input("> "))
+                    if save_index > 0 and save_index <= len(saves):
+                        if delete_save(saves[save_index-1]['name']):
+                            print("存档已删除")
+                enter_clear_screen()
             case _:
                 pass
 
