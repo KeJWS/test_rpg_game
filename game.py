@@ -6,7 +6,7 @@ import random
 import combat, enemies, text, inventory, player, items
 from test.clear_screen import clear_screen, enter_clear_screen
 
-from save_system import save_game, get_save_list, delete_save, load_game
+from save_system_json import save_game, get_save_list, delete_save, load_game
 
 def title_screen_selection():
     text.title_screen()

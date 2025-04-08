@@ -22,6 +22,7 @@ def play_menu():
         "   3 - Assign aptitude points   \n"
         "   4 - Inventory\n"
         "   5 - Full heal\n"
+        "   6 - Save system\n"
         "--------------------------------\n"
     )
     print(display_content)
