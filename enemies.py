@@ -14,7 +14,7 @@ class Imp(combat.Enemy):
             "mdf": 10,
             "agi":12,
             "luk": 10,
-            "crit": 5
+            "crit": 3
         }
         super().__init__("小鬼", stats, xp_reward=40, gold_reward=randint(10, 60))
 
@@ -51,3 +51,9 @@ class Giant_slime(combat.Enemy):
             "crit": 0
         }
         super().__init__("巨型史莱姆", stats, xp_reward=150, gold_reward=randint(30, 170))
+
+possible_enemies = {
+    Imp: (1, 3),
+    Golem: (2, 4),
+    Giant_slime: (3, 6)
+}

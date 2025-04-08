@@ -90,6 +90,8 @@ class Player(combat.Battler):
             self.xp_to_next_level = round(self.xp_to_next_level * 1.5)
             for stat in self.stats:
                 self.stats[stat] += 1
+            self.stats["max_hp"] += 4
+            self.stats["max_mp"] += 2
             self.aptitude_points +=1
             combat.fully_heal(self)
             combat.fully_recover_mp(self)

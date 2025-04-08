@@ -103,9 +103,7 @@ def play():
             print("无效命令")
         match option:
             case 1:
-                enemy1 = enemies.Imp()
-                enemy2 = enemies.Golem()
-                battle_enemies = [enemy1, enemy2]
+                battle_enemies = combat.create_enemy_group(my_player.level)
                 combat.combat(my_player, battle_enemies)
                 enter_clear_screen()
             case 2:

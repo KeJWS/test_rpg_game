@@ -88,9 +88,13 @@ class Enemy(Battler):
 """
 def combat(player, enemies):
     """主战斗流程控制"""
+    enemy_exp = 0
+    enemy_money = 0
     print("---------------------------------------")
     for enemy in enemies:
         print(f"野生的 {enemy.name} 出现了!")
+        enemy_exp += enemy.xp_reward
+        enemy_money += enemy.gold_reward
 
     # 只要玩家还活着，并且还有敌人需要击败，战斗就会继续
     # 战士应该根据速度变化进行更新（增益/减益）
@@ -116,7 +120,10 @@ def combat(player, enemies):
     if player.alive:
         # 停用所有现有的增益效果和减益效果
         # 为玩家添加经验
-        end_battle(player, enemies)
+        check_turns_buffs_and_debuffs(player, True)
+        player.add_exp(enemy_exp)
+        player.add_money(enemy_money)
+        take_a_rest(player)
 
 def handle_player_turn(player, enemies, battlers):
     text.combat_menu(player, enemies)
@@ -195,12 +202,6 @@ def check_if_dead(target, enemies, battlers):
             battlers.remove(target)
             enemies.remove(target)
 
-def end_battle(player, enemies):
-    check_turns_buffs_and_debuffs(player, True)
-    for enemy in enemies:
-        player.add_exp(enemy.xp_reward)
-    take_a_rest(player)
-
 # 完全治愈目标
 def fully_heal(target):
     """HP 恢复相关函数"""
@@ -226,3 +227,33 @@ def get_valid_input(prompt, valid_range, cast_func=str):
         except:
             pass
         print("请输入有效选项")
+
+def create_enemy_group(level):
+    from enemies import possible_enemies
+    enemies_to_appear = []
+    for enemy in possible_enemies:
+        low_level, high_level = possible_enemies[enemy]
+        if low_level <= level <= high_level:
+            enemies_to_appear.append(enemy)
+
+    # 战斗敌人数量的字典。
+    # 如果等级 < 5 -> 最多 2 个敌人
+    # 如果等级 < 10 -> 最多 3 个敌人
+    # ...
+    enemy_quantity_for_level = {
+        5: 2,
+        10: 3,
+        100: 4
+    }
+    max_enemies = 1
+    for max_level in enemy_quantity_for_level:
+        if level < max_level:
+            max_enemies = enemy_quantity_for_level[max_level]
+            break
+
+    enemy_group = []
+    # 选择 x 个敌人，x 是 1 到 max_enemies 之间的随机数
+    for i in range(random.randint(1, max_enemies)):
+        enemy_instance = random.choice(enemies_to_appear)()
+        enemy_group.append(enemy_instance)
+    return enemy_group
