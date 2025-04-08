@@ -52,6 +52,7 @@ class Battler():
             rate = random.choices(list(critical_rates.keys()), weights=critical_rates.values())[0]
             print(critical(f"暴击! x{rate}"))
             dmg = round(crit_base * random.uniform(1.0, 1.2) * rate)
+            test.fx.battle_log(f"{self.name} 对 {defender.name} 造成了 {dmg} 点暴击伤害", "crit")
         else:
             base_dmg = self.stats["atk"]*4 - defender.stats["def"]*2 + self.stats["luk"] - defender.stats["luk"]
             base_dmg = max(base_dmg, 0)
@@ -65,8 +66,8 @@ class Battler():
 
     # 目标恢复一定量的 mp
     def recover_mp(self, amount):
-        self.stats["mp"] = min(self.stats["hp"] + amount, self.stats["max_mp"])
-        print(f"{self.name} 恢复了 {amount}HP")
+        self.stats["mp"] = min(self.stats["mp"] + amount, self.stats["max_mp"])
+        print(f"{self.name} 恢复了 {amount}MP")
 
     # 目标恢复一定量的生命值
     def heal(self, amount):
@@ -123,7 +124,6 @@ def combat(player, enemies):
                     case "d":
                         player.is_defending = True
                         typewriter(f"{player.name} 选择防御, 本回合受到的伤害将减少50%!")
-                        check_if_dead(player, enemies, battlers)
                     case "e":
                         if try_escape(player): # 逃跑成功，结束战斗
                             return
@@ -169,7 +169,7 @@ def select_target(targets):
 def check_miss(attacker, defender):
     chance = math.floor(math.sqrt(max(0, (5 * defender.stats["agi"] - attacker.stats["agi"] * 2))))
     if chance > random.randint(0, 100):
-        print(test.fx.red(f"{attacker.name} 攻击失败"))
+        print(test.fx.red(f"{attacker.name} 的攻击被 {defender.name} 躲开了"))
         return True
     return False
 
