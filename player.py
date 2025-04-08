@@ -30,6 +30,7 @@ class Player(combat.Battler):
             "const": 5
         }
         self.aptitude_points = 0 # 升级能力的点数
+
         '''
         当能力提升时, 某些属性也会增加:
         STR -> ATK + 3
@@ -38,6 +39,7 @@ class Player(combat.Battler):
         WIS -> MAXMP + 10
         CONST -> MAXHP + 10
         '''
+
         self.inventory = inventory.Inventory()
         self.equipment = {      #玩家的装备，可以进一步扩展
             "weapon": None,
@@ -49,9 +51,6 @@ class Player(combat.Battler):
         self.is_ally = True
 
     def equip_item(self, equipment): # 装备一件物品（必须是“装备”类型）
-        if equipment is None:
-            print("无法装备: 无效物品")
-            return
         if not isinstance(equipment, inventory.Equipment):
             print(f"{equipment.name} 无法装备")
             return
@@ -59,6 +58,7 @@ class Player(combat.Battler):
         current_equipment = self.equipment.get(equip_type)
         # 卸下旧装备
         if current_equipment:
+            print(f"{current_equipment.name} 已解除装备")
             current_equipment.add_to_inventory(self.inventory)
             for stat, value in current_equipment.stat_change_list.items():
                 self.stats[stat] -= value
@@ -72,17 +72,18 @@ class Player(combat.Battler):
         text.inventory_menu()
         self.inventory.show_inventory()
 
-    def use_item(self, item):
+    def use_item(self, item): # 使用物品
         if item != None:
             if isinstance(item, inventory.Potion):
                 item.activate(self)
         text.inventory_menu()
         self.inventory.show_inventory()
 
-    def add_exp(self, exp): # 给玩家增加一定数量的经验
+    def add_exp(self, exp): # 为玩家增加一定数量的经验值
         exp_value = (exp + self.stats["luk"]) * EXPERIENCE_RATE
         self.xp += exp_value
         print(f"获得了 {exp_value}xp")
+        # 升级:
         while(self.xp >= self.xp_to_next_level):
             self.xp -= self.xp_to_next_level
             self.level += 1
@@ -91,7 +92,12 @@ class Player(combat.Battler):
                 self.stats[stat] += 1
             self.aptitude_points +=1
             combat.fully_heal(self)
+            combat.fully_recover_mp(self)
             print(f"\033[33m升级! 现在的等级是: {self.level}\033[0m, 有 {self.aptitude_points} 个能力点")
+
+    def add_money(self, money): # 给玩家添加一定数量的金钱
+        self.money += money
+        print(f"获得了 {money} 个硬币")
 
     def assign_aptitude_points(self): # 使用能力点数升级能力的循环
         text.show_aptitudes(self)

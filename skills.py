@@ -4,11 +4,12 @@ import random
 技能是法术(mat)和连击(atk)的父类
 """
 class Skill():
-    def __init__(self, name, description, power, mp_cost) -> None:
+    def __init__(self, name, description, power, mp_cost, is_targeted) -> None:
         self.name = name
         self.description = description
         self.power = power
         self.mp_cost = mp_cost
+        self.is_targeted = is_targeted
 
     def check_mp(self, caster):
         if caster.stats["mp"] < self.mp_cost:
@@ -21,29 +22,28 @@ class Skill():
 
 ##### 咒语 #####
 
-class Simple_offensive_spell(Skill):
-    def __init__(self, name, description, power, mp_cost) -> None:
-        super().__init__(name, description, power, mp_cost)
+class Damage_spell(Skill):
+    def __init__(self, name, description, power, mp_cost, is_targeted) -> None:
+        super().__init__(name, description, power, mp_cost, is_targeted)
 
     def effect(self, caster, target):
         if self.check_mp(caster):
             base_dmg = self.power + (caster.stats["mat"]*2 - target.stats["mdf"] + caster.stats["luk"])
             dmg = round(base_dmg * random.uniform(1.0, 1.2))
-            return dmg
+        target.take_dmg(dmg)
 
-class Simple_heal_spell(Skill):
-    def __init__(self, name, description, power, mp_cost) -> None:
-        super().__init__(name, description, power, mp_cost)
+class Healing_spell(Skill):
+    def __init__(self, name, description, power, mp_cost, is_targeted) -> None:
+        super().__init__(name, description, power, mp_cost, is_targeted)
 
     def effect(self, caster, target):
         if self.check_mp(caster):
             amount_to_heal = self.power + round(caster.stats["mat"]*2 + caster.stats["luk"])
-            return amount_to_heal
-        return 0
+        target.heal(amount_to_heal)
 
 class Buff_debuff_spell(Skill):
-    def __init__(self, name, description, power, mp_cost, start_to_change, amount_to_change, turns) -> None:
-        super().__init__(name, description, power, mp_cost)
+    def __init__(self, name, description, power, mp_cost, is_targeted, start_to_change, amount_to_change, turns) -> None:
+        super().__init__(name, description, power, mp_cost, is_targeted)
         self.start_to_change = start_to_change
         self.amount_to_change = amount_to_change
         self.turns = turns
@@ -92,6 +92,6 @@ class Buff_debuff():
 
 ##### 咒语实例 #####
 
-fire_ball = Simple_offensive_spell("火球术", "", 75, 30)
-divineBlessing = Simple_heal_spell("神圣祝福", "", 50, 50)
-benettFantasticVoyage = Buff_debuff_spell("班尼特的奇妙旅程", "", 0, 25, "atk", 0.5, 3)
+fire_ball = Damage_spell("火球术", "", 75, 30, True)
+divineBlessing = Healing_spell("神圣祝福", "", 50, 50, True)
+benettFantasticVoyage = Buff_debuff_spell("班尼特的奇妙旅程", "", 0, 25, False, "atk", 0.5, 3)

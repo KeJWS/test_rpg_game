@@ -11,6 +11,7 @@ import test.fx
 战斗者永远是敌人、玩家的盟友或玩家自己
 """
 class Battler():
+
     def __init__(self, name, stats) -> None:
         self.name = name
         self.stats = stats
@@ -19,51 +20,64 @@ class Battler():
         self.is_ally = False
         self.is_defending = False
 
+    # 受到来自特定来源的伤害
+    def take_dmg(self, dmg):
+        from test.fx import red, bold, yellow
+        """伤害结算与死亡检测"""
+        if dmg < 0: dmg = 0
+        self.stats["hp"] -= dmg
+        test.fx.battle_log(f"{self.name} 受到伤害 {yellow(dmg)}", "dmg")
+        time.sleep(0.3)
+        if self.stats["hp"] <= 0:
+            print(bold(red(f"{self.name} 被杀死了")))
+            self.alive = False
+
+    # 所有战斗者都有普通攻击
+    def normal_attack(self, defender, defender_is_defending=False):
+        """普通攻击逻辑（含暴击机制、防御判定）"""
+        from test.fx import critical, cyan
+        test.fx.battle_log(f"{self.name} 发动攻击!", "info")
+        dot_loading()
+
+        crit_chance = min(75, self.stats["crit"])
+        # 检查暴击
+        if random.randint(1, 100) <= crit_chance:
+            crit_base = self.stats["atk"] * 4 + self.stats["luk"]
+            critical_rates = { # 暴击倍率 : 概率
+                1.5: 50,
+                2.0: 30,
+                2.5: 15,
+                3.0: 5
+                }
+            rate = random.choices(list(critical_rates.keys()), weights=critical_rates.values())[0]
+            print(critical(f"暴击! x{rate}"))
+            dmg = round(crit_base * random.uniform(1.0, 1.2) * rate)
+        else:
+            base_dmg = self.stats["atk"]*4 - defender.stats["def"]*2 + self.stats["luk"] - defender.stats["luk"]
+            base_dmg = max(base_dmg, 0)
+            dmg = round(base_dmg * random.uniform(0.8, 1.2)) # 伤害浮动：±20%
+        if defender_is_defending:
+            dmg = round(dmg * 0.5)
+            typewriter(cyan(f"{defender.name} 正在防御，伤害减半!"))
+        # 检查攻击失败
+        if not check_miss(self, defender):
+            defender.take_dmg(dmg)
+
+    # 目标恢复一定量的 mp
+    def recover_mp(self, amount):
+        self.stats["mp"] = min(self.stats["hp"] + amount, self.stats["max_mp"])
+        print(f"{self.name} 恢复了 {amount}HP")
+
+    # 目标恢复一定量的生命值
+    def heal(self, amount):
+        self.stats["hp"] = min(self.stats["hp"] + amount, self.stats["max_hp"])
+        print(f"{self.name} 治愈了 {amount}HP")
+
 class Enemy(Battler):
-    def __init__(self, name, stats, xp_reward) -> None:
+    def __init__(self, name, stats, xp_reward, gold_reward) -> None:
         super().__init__(name, stats)
         self.xp_reward = xp_reward
-
-# 所有战斗者都有普通攻击
-def normal_attack(attacker, defender, defender_is_defending=False):
-    """普通攻击逻辑（含暴击机制、防御判定）"""
-    from test.fx import critical, cyan
-    test.fx.battle_log(f"{attacker.name} 发动攻击!", "info")
-    dot_loading()
-
-    crit_chance = min(75, attacker.stats["crit"])
-    if random.randint(1, 100) <= crit_chance:
-        crit_base = attacker.stats["atk"] * 4 + attacker.stats["luk"]
-        critical_rates = { # 暴击倍率 : 概率
-            1.5: 50,
-            2.0: 30,
-            2.5: 15,
-            3.0: 5
-            }
-        rate = random.choices(list(critical_rates.keys()), weights=critical_rates.values())[0]
-        print(critical(f"暴击! x{rate}"))
-        dmg = round(crit_base * random.uniform(1.0, 1.2) * rate)
-    else:
-        base_dmg = attacker.stats["atk"]*4 - defender.stats["def"]*2 + attacker.stats["luk"] - defender.stats["luk"]
-        base_dmg = max(base_dmg, 0)
-        dmg = round(base_dmg * random.uniform(0.8, 1.2)) # 伤害浮动：±20%
-    if defender_is_defending:
-        dmg = round(dmg * 0.5)
-        typewriter(cyan(f"{defender.name} 正在防御，伤害减半!"))
-    if not check_miss(attacker, defender):
-        take_dmg(defender, dmg)
-
-# 受到来自特定来源的伤害
-def take_dmg(defender, dmg):
-    from test.fx import red, bold, yellow
-    """伤害结算与死亡检测"""
-    if dmg < 0: dmg = 0
-    defender.stats["hp"] -= dmg
-    test.fx.battle_log(f"{defender.name} 受到伤害 {yellow(dmg)}", "dmg")
-    time.sleep(0.3)
-    if defender.stats["hp"] <= 0:
-        print(bold(red(f"{defender.name} 被杀死了")))
-        defender.alive = False
+        self.gold_reward = gold_reward
 
 """
 主战斗循环
@@ -71,15 +85,17 @@ def take_dmg(defender, dmg):
 def combat(player, enemies):
     """主战斗流程控制"""
     # 所有战斗者都被插入到战斗者列表中，并按速度（回合顺序）排序
-    battlers = enemies.copy()
-    battlers.append(player)
-    battlers.sort(key=lambda b: b.stats["agi"], reverse=True)
+    battlers = define_battlers(player, enemies)
 
     print("---------------------------------------")
     for enemy in enemies:
         print(f"野生的 {enemy.name} 出现了!")
+    # 只要玩家还活着，并且还有敌人需要击败，战斗就会继续
     while player.alive and len(enemies) > 0:
+        # 战士应该根据速度变化进行更新（增益/减益）
+        battlers = define_battlers(player, enemies)
         for battler in battlers:
+            # 如果战斗者是盟友，则用户可以控制其行动
             if battler.is_ally:
                 text.combat_menu(player, enemies)
                 decision = input("> ").lower()
@@ -88,53 +104,68 @@ def combat(player, enemies):
                 match decision:
                     case "a":
                         target_enemy = select_target(enemies)
-                        normal_attack(player, target_enemy)
-                        if target_enemy.alive == False:
-                            battlers.remove(target_enemy)
-                            enemies.remove(target_enemy)
+                        battler.normal_attack(target_enemy)
+                        check_if_dead(target_enemy, enemies, battlers)
                     case "s":
                         text.spell_menu(player)
                         option = int(input("> "))
+                        while option not in range(len(player.spells)+1):
+                            print("请输入有效的数字")
+                            option = int(input("> "))
                         if option != 0:
-                            target_enemy = select_target(battlers)
-                            skill_effect(player.spells[option - 1], player, target_enemy)
-                            if target_enemy.alive == False:
-                                battlers.remove(target_enemy)
-                                enemies.remove(target_enemy)
+                            spell_chosen = player.spells[option - 1]
+                            if spell_chosen.is_targeted:
+                                target = select_target(battlers)
+                                spell_chosen.effect(player, target)
+                                check_if_dead(target, enemies, battlers)
+                            else:
+                                spell_chosen.effect(player, player)
                     case "d":
                         player.is_defending = True
                         typewriter(f"{player.name} 选择防御, 本回合受到的伤害将减少50%!")
+                        check_if_dead(player, enemies, battlers)
                     case "e":
                         if try_escape(player): # 逃跑成功，结束战斗
                             return
+                        check_if_dead(player, enemies, battlers)
             else:
-                normal_attack(battler, player, defender_is_defending=player.is_defending)
+                # 目前，敌人将对玩家进行正常攻击。
+                # 这可以扩展为功能性 AI
+                battler.normal_attack(player, defender_is_defending=player.is_defending)
 
         player.is_defending = False
 
         # 一轮已过
         # 检查增益和减益效果的回合
-        for bd in player.buffs_and_debuffs:
-            bd.check_turns()
-        for bd in enemy.buffs_and_debuffs:
-            bd.check_turns()
+        for battler in battlers:
+            check_turns_buffs_and_debuffs(battler, False)
 
     if player.alive:
         # 停用所有现有的增益效果和减益效果
-        for bd in player.buffs_and_debuffs:
-            bd.deactivate()
+        check_turns_buffs_and_debuffs(player, True)
         # 为玩家添加经验
         player.add_exp(enemy.xp_reward)
         take_a_rest(player)
+
+# 返回按速度（回合顺序）排序的战斗者列表
+# 当从“玩家”更改为“盟友”时，应将其更改为
+def define_battlers(player, enemies):
+    battlers = enemies.copy()
+    battlers.append(player)
+    battlers.sort(key=lambda b: b.stats["agi"], reverse=True)
+    return battlers
 
 # 从战场上选择某个目标
 def select_target(targets):
     text.select_objective(targets)
     i = int(input("> "))
-    if i <= len(targets):
-        target = targets[i-1]
-        return target
+    while i not in range(len(targets)+1):
+        print()
+        i = int(input("> "))
+    target = targets[i-1]
+    return target
 
+# 如果攻击失败则返回 True，否则返回 False
 def check_miss(attacker, defender):
     chance = math.floor(math.sqrt(max(0, (5 * defender.stats["agi"] - attacker.stats["agi"] * 2))))
     if chance > random.randint(0, 100):
@@ -152,33 +183,36 @@ def try_escape(player):
         print(test.fx.bold_red("逃跑失败!"))
         return False
 
-# 目标恢复一定量的 mp
-def recover_mp(target, amount):
-    target.stats["mp"] = min(target.stats["hp"] + amount, target.stats["max_mp"])
-    print(f"{target.name} 恢复了 {amount}HP")
+# 检查增益和减益效果是否仍应处于活动状态
+# 如果 deactivate = True，它们将立即停用
+def check_turns_buffs_and_debuffs(target, deactivate):
+    if deactivate:
+        for bd in target.buffs_and_debuffs:
+            bd.deactivate()
+    else:
+        for bd in target.buffs_and_debuffs:
+            bd.check_turns()
 
-# 目标恢复一定量的生命值
-def heal(target, amount):
-    target.stats["hp"] = min(target.stats["hp"] + amount, target.stats["max_hp"])
-    print(f"{target.name} 治愈了 {amount}HP")
+# 检查战斗者是否死亡并将其从适当的列表中删除
+def check_if_dead(target, enemies, battlers):
+    if target.is_ally:
+        # 这里应该将其从“盟友”列表中删除
+        # 玩家暂时不使用此功能
+        pass
+    else:
+        if target.alive == False:
+            battlers.remove(target)
+            enemies.remove(target)
 
-# 激活特定技能的效果
-def skill_effect(skill, caster, target):
-    if isinstance(skill, skills.Simple_offensive_spell):
-        amount = skill.effect(caster, target)
-        take_dmg(target, amount)
-    elif isinstance(skill, skills.Simple_heal_spell):
-        amount = skill.effect(caster, target)
-        heal(caster, amount)
-    elif isinstance(skill, skills.Buff_debuff_spell):
-        skill.effect(caster, caster)
-
-# 完全治愈目标（调试）
+# 完全治愈目标
 def fully_heal(target):
-    """恢复相关函数"""
+    """HP 恢复相关函数"""
     target.stats["hp"] = target.stats["max_hp"]
+    print(f"{target.name} 的生命完全恢复了!")
+
+def fully_recover_mp(target):
     target.stats["mp"] = target.stats["max_mp"]
-    print(f"{target.name} 完全恢复了!")
+    print(f"{target.name} 的魔法完全恢复了!")
 
 def take_a_rest(player):
     """战斗后休息恢复"""

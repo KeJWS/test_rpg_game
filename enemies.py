@@ -1,3 +1,4 @@
+from random import randint
 import combat
 
 class Imp(combat.Enemy):
@@ -15,8 +16,7 @@ class Imp(combat.Enemy):
             "luk": 10,
             "crit": 5
         }
-        xp_reward = 40
-        super().__init__("小鬼", stats, xp_reward)
+        super().__init__("小鬼", stats, xp_reward=40, gold_reward=randint(10, 60))
 
 class Golem(combat.Enemy):
     def __init__(self) -> None:
@@ -33,8 +33,7 @@ class Golem(combat.Enemy):
             "luk": 10,
             "crit": 0
         }
-        xp_reward = 100
-        super().__init__("魔像", stats, xp_reward)
+        super().__init__("魔像", stats, xp_reward=120, gold_reward=randint(25, 150))
 
 class Giant_slime(combat.Enemy):
     def __init__(self) -> None:
@@ -51,4 +50,4 @@ class Giant_slime(combat.Enemy):
             "luk": 10,
             "crit": 0
         }
-        super().__init__("巨型史莱姆", stats, 20)
+        super().__init__("巨型史莱姆", stats, xp_reward=150, gold_reward=randint(30, 170))
