@@ -1,0 +1,22 @@
+{
+    "combat": {
+        "base_hit_chance": 90,
+        "crit_rates": {
+            "1.5": 50,
+            "2.0": 30,
+            "2.5": 15,
+            "3.0": 5
+        },
+        "damage_variation": 0.2,
+        "defense_reduction": 0.5
+    },
+    "progression": {
+        "exp_rate": 1.0,
+        "level_up_exp_multiplier": 1.5,
+        "stat_increase_per_level": 1
+    },
+    "economy": {
+        "money_multiplier": 1.0,
+        "shop_sell_ratio": 0.7
+    }
+}
