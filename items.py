@@ -29,13 +29,30 @@ staff = equipment_data["staff"]
 
 # -> 基础护甲
 cloth_armor = inventory.Equipment('布甲', '', 1, 20, 'armor', {'max_hp' : 2, 'def' : 2})
-wooden_shield = inventory.Equipment('木盾', '', 1, 50, 'shield', {'def' : 3, 'agi': -1})
+
+# -> 基础护盾
+wooden_shield = equipment_data["wooden_shield"]
+
+# -> 基础头盔
+straw_hat = equipment_data["straw_hat"]
+
+# -> 基础护手
+gloves_wraps = equipment_data["gloves_wraps"]
+
+# -> 基础护足
+footrags = equipment_data["footrags"]
 
 # 高级物品
-# -> 先进武器
+# -> 高级武器
 war_hammer = inventory.Equipment('战锤', '', 1, 62, 'weapon', {'atk' : 13, 'agi' : -2})
-# -> 先进装甲
+# -> 高级装甲
 iron_armor = inventory.Equipment('铁甲', '', 1, 102, 'armor', {'max_hp' : 8, 'def' : 10})
+
+# -> 高级头盔
+
+# -> 高级护手
+
+# -> 高级护足
 
 # 消耗品
 hp_potions = inventory.Potion('生命药水', 'a', 4, 10, 'consumable', 'hp', 15)

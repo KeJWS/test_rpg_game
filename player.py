@@ -1,5 +1,5 @@
 import  text, combat, inventory, skills
-from test.constants import EXPERIENCE_RATE
+from data.constants import EXPERIENCE_RATE, MONEY_MULTIPLIER
 
 class Player(combat.Battler):
     def __init__(self, name) -> None:
@@ -43,8 +43,11 @@ class Player(combat.Battler):
         self.inventory = inventory.Inventory()
         self.equipment = {      #玩家的装备，可以进一步扩展
             "weapon": None,
+            "shield": None,
+            "head": None,
             "armor": None,
-            "shield": None
+            "hand": None,
+            "foot": None
         }
         self.money = 0
         self.combos = [skills.slash_combo1, skills.armor_breaker1, skills.vampire_stab1] # 玩家选择的组合（攻击）
@@ -99,7 +102,7 @@ class Player(combat.Battler):
             print(f"\033[33m升级! 现在的等级是: {self.level}\033[0m, 有 {self.aptitude_points} 个能力点")
 
     def add_money(self, money): # 给玩家添加一定数量的金钱
-        self.money += money
+        self.money += money * MONEY_MULTIPLIER
         print(f"获得了 {money} 个硬币")
 
     def assign_aptitude_points(self): # 使用能力点数升级能力的循环

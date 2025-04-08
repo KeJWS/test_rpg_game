@@ -68,6 +68,7 @@ class Healing_spell(Spell):
         amount_to_heal = 0
         if self.check_mp(caster):
             amount_to_heal = self.power + round(caster.stats["mat"]*2 + caster.stats["luk"])
+            amount_to_heal = round(amount_to_heal * random.uniform(1.0, 1.2))
         target.heal(amount_to_heal)
 
 class Buff_debuff_spell(Spell):

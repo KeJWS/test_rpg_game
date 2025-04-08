@@ -116,6 +116,10 @@ def play():
                 clear_screen()
                 my_player.add_exp(99999)
                 enter_clear_screen()
+            case "8":
+                clear_screen()
+                text.show_equipment_info(my_player)
+                enter_clear_screen()
             case _:
                 clear_screen()
                 print("请输入有效命令")
@@ -131,6 +135,9 @@ def debug_add_test_items(my_player):
     items.war_hammer.add_to_inventory(my_player.inventory)
     items.iron_armor.add_to_inventory(my_player.inventory)
     items.wooden_shield.add_to_inventory(my_player.inventory)
+    items.straw_hat.add_to_inventory(my_player.inventory)
+    items.gloves_wraps.add_to_inventory(my_player.inventory)
+    items.footrags.add_to_inventory(my_player.inventory)
 
 if __name__ == "__main__":
     title_screen_selection()

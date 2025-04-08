@@ -1,6 +1,10 @@
 
 import time, sys
 
+RED = "\033[31m"
+BLUE = "\033[34m"
+END = "\033[0m"
+
 def color(text, code):
     return f"\033[{code}m{text}\033[0m"
 

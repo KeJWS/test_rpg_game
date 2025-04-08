@@ -1,8 +1,22 @@
 id,name,name_zh,description,amount,individual_value,object_type,stat_change_list
+,-> 基本武器,,,1,0,,{}
 1,long_sword,长剑,标准制式的长剑,1,20,weapon,{'atk': 6}
 2,dagger,匕首,轻便锋利的匕首,1,15,weapon,"{'atk': 3, 'crit': 10, 'agi': 3}"
 3,staff,棍棒,简易的木制棍棒,1,18,weapon,"{'mat': 3, 'max_mp': 2}"
+,-> 基础护甲,,,1,0,,{}
 4,cloth_armor,布甲,简单的布制护甲,1,20,armor,"{'max_hp': 2, 'def': 2}"
+,-> 基础护盾,,,1,0,,{}
 5,wooden_shield,木盾,粗制简易的木盾,1,50,shield,"{'def': 3, 'agi': -1}"
+,-> 基础头盔,,,1,0,,{}
+,straw_hat,草帽,一顶由麦秸或其他坚韧植物编织而成的帽子,1,25,head,"{'max_hp': 3, 'def': 1}"
+,-> 基础护手,,,1,0,,{}
+,gloves_wraps,绑手带,一条长长的绑在手部、提供稍许防护与其他用途的棉布条,1,15,hand,{'def': 1}
+,-> 基础护足,,,1,0,,{}
+,footrags,裹脚,裹在脚上的布条,1,10,foot,{'def': 1}
+,-> 高级武器,,,1,0,,{}
 6,war_hammer,战锤,沉重且威力强大的战锤,1,62,weapon,"{'atk': 13, 'agi': -2}"
+,-> 高级装甲,,,1,0,,{}
 7,iron_armor,铁甲,坚固的铁制护甲,1,102,armor,"{'max_hp': 8, 'def': 10}"
+,-> 高级头盔,,,1,0,,{}
+,-> 高级护手,,,1,0,,{}
+,-> 高级护足,,,1,0,,{}

@@ -1,3 +1,4 @@
+import test.fx as fx
 
 def title_screen():
     display_content = (
@@ -32,8 +33,8 @@ def show_stats(player):
         f"----------------------------------\n"
         f"  STATS               💰: {player.money}\n"
         f"----------------------------------\n"
-        f"      LV: {player.level}        EXP: {player.xp}/{player.xp_to_next_level}\n"
-        f"      \033[31mHP: {player.stats['hp']}/{player.stats['max_hp']}\033[0m    \033[34mMP: {player.stats['mp']}/{player.stats['max_mp']}\033[0m\n"
+        f"      LV: {player.level}          EXP: {player.xp}/{player.xp_to_next_level}\n"
+        f"      {fx.RED}HP: {player.stats['hp']}/{player.stats['max_hp']}{fx.END}    {fx.BLUE}MP: {player.stats['mp']}/{player.stats['max_mp']}{fx.END}\n"
         f"      ATK: {player.stats['atk']}        DEF: {player.stats['def']}\n"
         f"      MAT: {player.stats['mat']}        MDF: {player.stats['mdf']}\n"
         f"      AGI: {player.stats['agi']}        CRT: {player.stats['crit']}\n"
@@ -48,9 +49,25 @@ def show_stats(player):
         f"----------------------------------"
     )
     print(stats_template)
+    eq = player.equipment
+    slots = [
+        ("weapon", "shield"),
+        ("head", "armor"),
+        ("hand", "foot")
+    ]
+    for left, right in slots:
+        left_eq = eq[left].name if eq[left] else None
+        right_eq = eq[right].name if eq[right] else None
+        print(f"    {left}: {left_eq}   {right}: {right_eq}")
+
+def show_equipment_info(player):
+    print("----------------------------------")
+    print("  EQUIPMENT")
+    print("----------------------------------")
+
     for equipment in player.equipment:
         if player.equipment[equipment] is not None:
-            print(f"    {equipment}: {player.equipment[equipment].name}")
+            print(f"    {equipment}: {player.equipment[equipment].show_info()}")
         else:
             print(f"    {equipment}:")
 
