@@ -4,8 +4,8 @@ from test.constants import EXPERIENCE_RATE
 class Player(combat.Battler):
     def __init__(self, name) -> None:
         stats = {
-            "max_hp": 500,
-            "hp": 500,
+            "max_hp": 600,
+            "hp": 600,
             "max_mp": 120,
             "mp": 120,
             "atk": 20,

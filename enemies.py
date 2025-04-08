@@ -12,7 +12,7 @@ class Imp(combat.Enemy):
             "def": 10,
             "mat": 10,
             "mdf": 10,
-            "agi": 9,
+            "agi":12,
             "luk": 10,
             "crit": 5
         }
