@@ -68,18 +68,20 @@ def take_dmg(defender, dmg):
 """
 主战斗循环
 """
+# 修改 combat.py 中的 combat 函数
 def combat(player, enemies):
     """主战斗流程控制"""
-    # 所有战斗者都被插入到战斗者列表中，并按速度（回合顺序）排序
     battlers = enemies.copy()
     battlers.append(player)
     battlers.sort(key=lambda b: b.stats["agi"], reverse=True)
-
     print("---------------------------------------")
     for enemy in enemies:
         print(f"野生的 {enemy.name} 出现了!")
     while player.alive and len(enemies) > 0:
         for battler in battlers:
+            if not battler.alive:
+                continue
+                
             if battler.is_ally:
                 text.combat_menu(player, enemies)
                 decision = input("> ").lower()
@@ -108,24 +110,41 @@ def combat(player, enemies):
                         if try_escape(player): # 逃跑成功，结束战斗
                             return
             else:
-                normal_attack(battler, player, defender_is_defending=player.is_defending)
+                # 使用敌人AI
+                action = battler.choose_action(player, enemies)
+                
+                match action["action"]:
+                    case "attack":
+                        normal_attack(battler, action["target"], defender_is_defending=player.is_defending)
+                    case "ability":
+                        skill_effect(action["ability"], battler, action["target"])
+                    case "defend":
+                        battler.is_defending = True
+                        typewriter(f"{battler.name} 进入防御状态!")
+                
+                if not player.alive:
+                    break
 
+        # 重置防御状态
         player.is_defending = False
+        for enemy in enemies:
+            enemy.is_defending = False
 
-        # 一轮已过
-        # 检查增益和减益效果的回合
-        for bd in player.buffs_and_debuffs:
-            bd.check_turns()
-        for bd in enemy.buffs_and_debuffs:
-            bd.check_turns()
+        # 处理buff效果
+        for battler in battlers:
+            for bd in battler.buffs_and_debuffs:
+                bd.check_turns()
 
     if player.alive:
-        # 停用所有现有的增益效果和减益效果
         for bd in player.buffs_and_debuffs:
             bd.deactivate()
-        # 为玩家添加经验
-        player.add_exp(enemy.xp_reward)
+        
+        # 计算总经验值
+        total_xp = sum(enemy.xp_reward for enemy in enemies if not enemy.alive)
+        player.add_exp(total_xp)
         take_a_rest(player)
+    else:
+        print("\n你被打败了...")
 
 # 从战场上选择某个目标
 def select_target(targets):
