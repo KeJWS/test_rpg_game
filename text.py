@@ -22,6 +22,7 @@ def play_menu():
         "   3 - Assign aptitude points   \n"
         "   4 - Inventory\n"
         "   5 - Full heal\n"
+        "   6 - Save system\n"
         "--------------------------------\n"
     )
     print(display_content)
@@ -109,7 +110,7 @@ def select_objective(target):
 
 def save_load_menu():
     """显示存档/读档菜单"""
-    display_contant = (
+    display_content = (
         "-----------------------------------\n"
         "           1 - Save game           \n"
         "           2 - Load game\n"
@@ -117,9 +118,9 @@ def save_load_menu():
         "           0 - Return\n"
         "-----------------------------------\n"
     )
-    print(display_contant)
+    print(display_content)
 
-def dispaly_save_list(saves):
+def display_save_list(saves):
     """显示存档列表"""
     if not saves:
         print("没有找到存档")
