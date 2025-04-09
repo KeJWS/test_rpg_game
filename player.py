@@ -43,7 +43,8 @@ class Player(combat.Battler):
         self.inventory = inventory.Inventory()
         self.equipment = {      #玩家的装备，可以进一步扩展
             "weapon": None,
-            "armor": None
+            "armor": None,
+            "shield": None
         }
         self.money = 0
         self.combos = [] # 玩家选择的组合（攻击）

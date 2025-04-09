@@ -130,8 +130,8 @@ def combat(player, enemies):
         # 停用所有现有的增益效果和减益效果
         # 为玩家添加经验
         check_turns_buffs_and_debuffs(player, True)
-        player.add_exp(enemy_exp)
         player.add_money(enemy_money)
+        player.add_exp(enemy_exp)
         take_a_rest(player)
     elif escaped:
         typewriter(f"{player.name} 成功逃离了战斗")

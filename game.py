@@ -130,6 +130,7 @@ def debug_add_test_items(my_player):
     items.cloth_armor.add_to_inventory(my_player.inventory)
     items.war_hammer.add_to_inventory(my_player.inventory)
     items.iron_armor.add_to_inventory(my_player.inventory)
+    items.wooden_shield.add_to_inventory(my_player.inventory)
 
 if __name__ == "__main__":
     title_screen_selection()

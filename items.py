@@ -7,7 +7,8 @@ dagger = inventory.Equipment('匕首', '', 1, 15, 'weapon', {'atk' : 3, 'crit' :
 staff = inventory.Equipment('棍棒', '', 1, 18, 'weapon', {'mat' : 3, 'max_mp' : 2})
 
 # -> 基础护甲
-cloth_armor = inventory.Equipment('布甲', '', 1, 10, 'armor', {'max_hp' : 2, 'def' : 2})
+cloth_armor = inventory.Equipment('布甲', '', 1, 20, 'armor', {'max_hp' : 2, 'def' : 2})
+wooden_shield = inventory.Equipment('木盾', '', 1, 50, 'shield', {'def' : 3, 'agi': -1})
 
 # 高级物品
 # -> 先进武器
