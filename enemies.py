@@ -23,13 +23,13 @@ def load_enemies_from_csv(filepath):
             xp = int(row["xp_reward"])
             gold = randint(int(row["gold_min"]), int(row["gold_max"]))
             enemy = combat.Enemy(row["name"], stats, xp_reward=xp, gold_reward=gold)
-            enemies[row["id"]] = enemy
+            enemies[row["name"]] = enemy
     return enemies
 
 enemy_data = load_enemies_from_csv("data/enemies.csv")
 
 possible_enemies = {
-    "imp": (1, 3),
-    "golem": (2, 4),
-    "giant_slime": (3, 100)
+    "小鬼": (1, 3),
+    "魔像": (2, 4),
+    "巨型史莱姆": (3, 100)
 }
