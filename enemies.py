@@ -55,5 +55,5 @@ class Giant_slime(combat.Enemy):
 possible_enemies = {
     Imp: (1, 3),
     Golem: (2, 4),
-    Giant_slime: (3, 6)
+    Giant_slime: (3, 100)
 }

@@ -65,7 +65,7 @@ def show_aptitudes(player):
         f"      3 - INT (Current: {player.aptitudes['int']})\n"
         f"      4 - WIS (Current: {player.aptitudes['wis']})\n"
         f"      5 - CONST (Current: {player.aptitudes['const']})\n"
-        f"      0 - Quit menu\n"
+        f"      Q - Quit menu\n"
         f"----------------------------------\n"
     )
     print(display_aptitudes)

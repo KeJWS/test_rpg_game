@@ -12,20 +12,17 @@ from test.save_system import save_game, get_save_list, delete_save, load_game
 #### 标题屏幕 #####
 def title_screen_selection():
     text.title_screen()
-    try:
-        option = int(input("> "))
-    except:
-        print("请输入数字")
-    if option == 1:
+    option = input("> ")
+    while option not in ["1", "2", "3"]:
+        print("请输入有效命令")
+        option = input("> ")
+    if option == "1":
         clear_screen()
         play()
-    elif option == 2:
+    elif option == "2":
         text.help_menu()
-    elif option == 3:
+    elif option == "3":
         sys.exit()
-    while option not in [1,2,3]:
-        print("请输入有效数字")
-        option = int(input("> "))
 
 ##### 库存菜单 #####
 def inventory_selections(player):
@@ -85,6 +82,42 @@ def play():
     # 玩家实例
     my_player = player.Player("Test Player")
 
+    debug_add_test_items(my_player)
+
+    while my_player.alive:
+        text.play_menu()
+        option = input("> ")
+        match option:
+            case "1":
+                battle_enemies = combat.create_enemy_group(my_player.level)
+                combat.combat(my_player, battle_enemies)
+                enter_clear_screen()
+            case "2":
+                clear_screen()
+                text.show_stats(my_player)
+                enter_clear_screen()
+            case "3":
+                clear_screen()
+                my_player.assign_aptitude_points()
+                enter_clear_screen()
+            case "4":
+                clear_screen()
+                text.inventory_menu()
+                my_player.inventory.show_inventory()
+                inventory_selections(my_player)
+            case "5":
+                combat.fully_heal(my_player)
+            case "6":
+                clear_screen()
+                text.save_load_menu()
+                handle_save_menu(my_player)
+                enter_clear_screen()
+            case "7":
+                my_player.add_exp(99999)
+            case _:
+                print("请输入有效命令")
+
+def debug_add_test_items(my_player):
     # 添加一些测试项目
     items.hp_potions.add_to_inventory(my_player.inventory)
     items.mp_potions.add_to_inventory(my_player.inventory)
@@ -94,40 +127,6 @@ def play():
     items.cloth_armor.add_to_inventory(my_player.inventory)
     items.war_hammer.add_to_inventory(my_player.inventory)
     items.iron_armor.add_to_inventory(my_player.inventory)
-
-    while my_player.alive:
-        text.play_menu()
-        try:
-            option = int(input("> "))
-        except:
-            print("无效命令")
-        match option:
-            case 1:
-                battle_enemies = combat.create_enemy_group(my_player.level)
-                combat.combat(my_player, battle_enemies)
-                enter_clear_screen()
-            case 2:
-                clear_screen()
-                text.show_stats(my_player)
-                enter_clear_screen()
-            case 3:
-                clear_screen()
-                my_player.assign_aptitude_points()
-                enter_clear_screen()
-            case 4:
-                clear_screen()
-                text.inventory_menu()
-                my_player.inventory.show_inventory()
-                inventory_selections(my_player)
-            case 5:
-                combat.fully_heal(my_player)
-            case 6:
-                clear_screen()
-                text.save_load_menu()
-                handle_save_menu(my_player)
-                enter_clear_screen()
-            case _:
-                option = int(input("> "))
 
 if __name__ == "__main__":
     title_screen_selection()

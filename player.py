@@ -102,17 +102,17 @@ class Player(combat.Battler):
         print(f"获得了 {money} 个硬币")
 
     def assign_aptitude_points(self): # 使用能力点数升级能力的循环
-        text.show_aptitudes(self)
-        option = int(input("> "))
         options_dictionary = {
-            1: "str",
-            2: "dex",
-            3: "int",
-            4: "wis",
-            5: "const"
+            "1": "str",
+            "2": "dex",
+            "3": "int",
+            "4": "wis",
+            "5": "const"
         }
-        while option != 0:
-            if option in range(1, 6):
+        text.show_aptitudes(self)
+        option = input("> ")
+        while option.lower() != "q":
+            try:
                 if self.aptitude_points >= 1:
                     aptitude_to_assign = options_dictionary[option]
                     self.aptitudes[aptitude_to_assign] += 1
@@ -121,9 +121,9 @@ class Player(combat.Battler):
                     self.aptitude_points -= 1
                 else:
                     print("没有足够的能力点!")
-            else:
-                print("不是有效字符！")
-            option = int(input("> "))
+            except:
+                print("请输入有效的数字")
+            option = input("> ")
 
     def update_stats_to_aptitudes(self, aptitude): # 当能力提升时更新统计数据
         aptitude_mapping = {
