@@ -24,6 +24,8 @@ def bold_yellow(text): return color(text, "1;33")
 def bold_red(text): return color(text, "1;31")
 def bold_green(text): return color(text, "1;32")
 
+def bright_cyan(text): return color(text, "46")
+
 def log(msg):
     print(f"{log_title('[LOG]')} {msg}")
 

@@ -16,14 +16,14 @@ def help_menu():
 
 def play_menu():
     display_content = (
-        "--------------------------------\n"
+        "----------------------------------\n"
         "   1 - Battle\n"
         "   2 - See stats\n"
-        "   3 - Assign aptitude points   \n"
+        "   3 - Assign aptitude points      \n"
         "   4 - Inventory\n"
         "   5 - Full heal\n"
         "   6 - Save system\n"
-        "--------------------------------\n"
+        "----------------------------------\n"
     )
     print(display_content)
 
@@ -72,13 +72,13 @@ def show_aptitudes(player):
 
 def inventory_menu():
     display_inventory = (
-        "-------------------------------\n"
+        "----------------------------------\n"
         "       U - Use an item\n"
         "       S - Sell an item\n"
         "       D - Drop an item\n"
-        "       E - Equip an item\n"
+        "       E - Equip an item           \n"
         "           Q - Quit\n"
-        "-------------------------------"
+        "----------------------------------"
     )
     print(display_inventory)
 
@@ -118,12 +118,12 @@ def select_objective(target):
 def save_load_menu():
     """显示存档/读档菜单"""
     display_content = (
-        "-----------------------------------\n"
+        "----------------------------------\n"
         "           1 - Save game           \n"
         "           2 - Load game\n"
         "           3 - Delete save\n"
         "           0 - Return\n"
-        "-----------------------------------\n"
+        "----------------------------------\n"
     )
     print(display_content)
 
@@ -132,10 +132,10 @@ def display_save_list(saves):
     if not saves:
         print("没有找到存档")
         return
-    print("-----------------------------------")
+    print("----------------------------------")
     print(" 存档列表")
-    print("-----------------------------------")
+    print("----------------------------------")
     for i, save in enumerate(saves, 1):
         print(f" {i}. {save['player_name']} (等级 {save['level']}) - {save['date']}")
     print(" 0. 取消")
-    print("-----------------------------------")
+    print("----------------------------------")

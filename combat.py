@@ -98,6 +98,7 @@ def combat(player, enemies):
     """主战斗流程控制"""
     enemy_exp = 0
     enemy_money = 0
+    original_enemies = enemies.copy()
     print("--------------------------------")
     for enemy in enemies:
         print(f"野生的 {enemy.name} 出现了!")
@@ -132,6 +133,7 @@ def combat(player, enemies):
         # 检查增益和减益效果的回合
         for b in battlers:
             check_turns_buffs_and_debuffs(b, False)
+        display_status_effects([player] + enemies)
 
     if player.alive and not escaped:
         # 停用所有现有的增益效果和减益效果
@@ -142,9 +144,13 @@ def combat(player, enemies):
         take_a_rest(player)
         # 重新开始连击点数
         player.combo_points = 0
+        log_battle_result("胜利", player, original_enemies)
     elif escaped:
+        check_turns_buffs_and_debuffs(player, True)
         typewriter(f"{player.name} 成功逃离了战斗")
         take_a_rest(player)
+        player.combo_points = 0
+        log_battle_result("逃跑", player, original_enemies)
 
 def handle_player_turn(player, battler, enemies, battlers):
     decision = get_valid_input("> ", ["a", "d", "c", "s", "e"])
@@ -295,3 +301,35 @@ def create_enemy_group(level):
         enemy_instance = deepcopy(enemy_data[enemy_id])
         enemy_group.append(enemy_instance)
     return enemy_group
+
+def display_status_effects(battlers):
+    print(fx.bright_cyan("=== 状态效果提示 ==="))
+    for battler in battlers:
+        if battler.buffs_and_debuffs:
+            print(fx.cyan(f"{battler.name} 的状态: "))
+            for effect in battler.buffs_and_debuffs:
+                turns = effect.turns
+                warn = "(即将结束)" if turns == 1 else ""
+                print(f" - {effect.name}(剩余 {turns} 回合){warn}")
+        else:
+            print(f"{battler.name} 没有任何状态效果")
+
+def log_battle_result(result: str, player, enemies):
+    from datetime import datetime
+    with open("data/battle_log.txt", "a", encoding="utf-8") as f:
+        timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        f.write(f"=== 战斗记录: {timestamp} ===\n")
+        f.write(f"结果: {result}\n")
+        f.write(f"玩家: {player.name} 等级{player.level} HP {player.stats['hp']}/{player.stats['max_hp']}\n")
+        f.write("敌人:\n")
+        for enemy in enemies:
+            f.write(f"- {enemy.name} 经验 {enemy.xp_reward}, 金币 {enemy.gold_reward}\n")
+        f.write("\n")
+
+# TODO 可以加上战斗日志记录战斗结果
+# TODO 未来拓展技能 AI, 比如根据 HP% 或回合数使用技能
+# TODO 回合结束后可加入状态效果持续提示, 提示玩家有哪些buff/debuff正在生效或结束
+# TODO combo 和 spell 系统进一步封装, 让技能拥有 cooldown、条件触发等机制
+# TODO 战斗后恢复比例（25%）可以与“露营”机制、技能、药水等组合使用
+# TODO 敌人可以有“稀有出现率”字段, 例如 5% 出现某种稀有怪物
+# TODO 战斗前可以加入开场事件描述, 例如“黑暗森林传来诡异的咆哮...”
