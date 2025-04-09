@@ -47,8 +47,8 @@ class Player(combat.Battler):
             "shield": None
         }
         self.money = 0
-        self.combos = [] # 玩家选择的组合（攻击）
-        self.spells = [skills.fire_ball, skills.divineBlessing, skills.benettFantasticVoyage]
+        self.combos = [skills.slash_combo1, skills.armor_breaker1, skills.vampire_stab1] # 玩家选择的组合（攻击）
+        self.spells = [skills.fire_ball, skills.divineBlessing, skills.benettFantasticVoyage] # 玩家选择的法术（matk）
         self.is_ally = True
 
     def equip_item(self, equipment): # 装备一件物品（必须是“装备”类型）

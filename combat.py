@@ -21,6 +21,7 @@ class Battler():
         self.buffs_and_debuffs = []
         self.is_ally = False
         self.is_defending = False
+        self.combo_points = 0
 
     # 受到来自特定来源的伤害
     def take_dmg(self, dmg):
@@ -51,6 +52,7 @@ class Battler():
 
         if not check_miss(self, defender): # 检查攻击失败
             defender.take_dmg(dmg)
+        return dmg
 
     # 检查暴击
     def _is_critical(self):
@@ -79,6 +81,10 @@ class Battler():
         self.stats["hp"] = min(self.stats["hp"] + amount, self.stats["max_hp"])
         print(f"{self.name} 治愈了 {amount}HP")
 
+    # 添加一定数量的连击点数
+    def add_combo_points(self, points):
+        self.combo_points += points
+
 class Enemy(Battler):
     def __init__(self, name, stats, xp_reward, gold_reward) -> None:
         super().__init__(name, stats)
@@ -92,7 +98,7 @@ def combat(player, enemies):
     """主战斗流程控制"""
     enemy_exp = 0
     enemy_money = 0
-    print("---------------------------------------")
+    print("--------------------------------")
     for enemy in enemies:
         print(f"野生的 {enemy.name} 出现了!")
         enemy_exp += enemy.xp_reward
@@ -108,7 +114,8 @@ def combat(player, enemies):
         for battler in battlers:
             # 如果战斗者是盟友，则用户可以控制其行动
             if battler.is_ally:
-                escaped = handle_player_turn(player, enemies, battlers)
+                text.combat_menu(player, enemies)
+                escaped = handle_player_turn(player, battler, enemies, battlers)
                 if escaped:
                     break
             else:
@@ -133,20 +140,26 @@ def combat(player, enemies):
         player.add_money(enemy_money)
         player.add_exp(enemy_exp)
         take_a_rest(player)
+        # 重新开始连击点数
+        player.combo_points = 0
     elif escaped:
         typewriter(f"{player.name} 成功逃离了战斗")
         take_a_rest(player)
 
-def handle_player_turn(player, enemies, battlers):
-    text.combat_menu(player, enemies)
+def handle_player_turn(player, battler, enemies, battlers):
     decision = get_valid_input("> ", ["a", "d", "c", "s", "e"])
     match decision:
         case "a":
-            target = select_target(enemies)
-            player.normal_attack(target)
-            check_if_dead(target, enemies, battlers)
+            targeted_enemy = select_target(enemies)
+            battler.normal_attack(targeted_enemy)
+            battler.add_combo_points(1)
+            check_if_dead(targeted_enemy, enemies, battlers)
         case "s":
+            text.spell_menu(battler)
             cast_spell(player, enemies, battlers)
+        case "c":
+            text.combo_menu(battler)
+            cast_combo(player, enemies, battlers)
         case "d":
             player.is_defending = True
             typewriter(f"{player.name} 选择防御, 本回合受到的伤害将减少50%!")
@@ -156,7 +169,6 @@ def handle_player_turn(player, enemies, battlers):
             check_if_dead(player, enemies, battlers)
 
 def cast_spell(player, enemies, battlers):
-    text.spell_menu(player)
     option = get_valid_input("> ", range(len(player.spells)+1), int)
     if option == 0:
         return
@@ -167,6 +179,18 @@ def cast_spell(player, enemies, battlers):
         check_if_dead(target, enemies, battlers)
     else:
         spell.effect(player, player)
+
+def cast_combo(player, enemies, battlers):
+    option = get_valid_input("> ", range(len(player.combos)+1), int)
+    if option == 0:
+        return
+    combo = player.combos[option - 1]
+    if combo.is_targeted:
+        target = select_target(battlers)
+        combo.effect(player, target)
+        check_if_dead(target, enemies, battlers)
+    else:
+        combo.effect(player, player)
 
 # 返回按速度（回合顺序）排序的战斗者列表
 # 当从“玩家”更改为“盟友”时，应将其更改为

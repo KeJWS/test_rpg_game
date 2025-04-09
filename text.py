@@ -83,30 +83,37 @@ def inventory_menu():
     print(display_inventory)
 
 def combat_menu(player, enemies):
-    print("---------------------------------------")
-    print(f"{player.name} - \033[31mHP: {player.stats['hp']}/{player.stats['max_hp']}\033[0m - MP: {player.stats['mp']}/{player.stats['max_mp']}")
+    print("-------------------------------------------------")
+    print(f"{player.name} - \033[31mHP: {player.stats['hp']}/{player.stats['max_hp']}\033[0m - MP: {player.stats['mp']}/{player.stats['max_mp']} - CP: {player.combo_points}")
     for enemy in enemies:
         print(f"{enemy.name} - \033[32mHP: {enemy.stats['hp']}/{enemy.stats['max_hp']}\033[0m")
-    print("---------------------------------------")
-    print("       A - Attack  C - Combos          ")
-    print("       S - Spells  D - Defense")
-    print("       E - Escape")
-    print("---------------------------------------")
+    print("-------------------------------------------------")
+    print("             A - Attack  C - Combos")
+    print("             S - Spells  D - Defense             ")
+    print("             E - Escape")
+    print("-------------------------------------------------")
 
 def spell_menu(player):
-    print("---------------------------------------")
-    print("         SPELLS ['0' to Quit]")
-    print("---------------------------------------")
+    print("-------------------------------------------------")
+    print("             SPELLS ['0' to Quit]")
+    print("-------------------------------------------------")
     for index, spell in enumerate(player.spells, start=1):
         print(str(f"{index} - {spell.name}"))
 
+def combo_menu(player):
+    print("-------------------------------------------------")
+    print("             COMBOS ['0' to Quit]")
+    print("-------------------------------------------------")
+    for index, c in enumerate(player.combos, start=1):
+        print(str(f"{index} - {c.name}"))
+
 def select_objective(target):
-    print("-------------------------------------")
-    print("         Select an objective:")
-    print("-------------------------------------")
+    print("-------------------------------------------------")
+    print("             Select an objective:")
+    print("-------------------------------------------------")
     for index, t in enumerate(target, start=1):
         print(f"{index} - {t.name} - HP: \033[32m{t.stats['hp']}/{t.stats['max_hp']}\033[0m")
-    print("-------------------------------------")
+    print("-------------------------------------------------")
 
 def save_load_menu():
     """显示存档/读档菜单"""
