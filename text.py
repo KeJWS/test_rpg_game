@@ -139,3 +139,29 @@ def display_save_list(saves):
         print(f" {i}. {save['player_name']} (等级 {save['level']}) - {save['date']}")
     print(" 0. 取消")
     print("----------------------------------")
+
+def display_status_effects(battlers):
+    import test.fx as fx
+    print(fx.bright_cyan("=== 状态效果 ==="))
+    for battler in battlers:
+        if battler.buffs_and_debuffs:
+            print(fx.cyan(f"{battler.name} 的状态: "))
+            for effect in battler.buffs_and_debuffs:
+                turns = effect.turns
+                warn = "(即将结束)" if turns == 1 else ""
+                print(f" - {effect.name}(剩余 {turns} 回合){warn}")
+        else:
+            print(f"{battler.name} 没有任何状态效果")
+    print(fx.bright_cyan("=== 状态效果 ==="))
+
+def log_battle_result(result: str, player, enemies):
+    from datetime import datetime
+    with open("data/battle_log.txt", "a", encoding="utf-8") as f:
+        timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        f.write(f"=== 战斗记录: {timestamp} ===\n")
+        f.write(f"结果: {result}\n")
+        f.write(f"玩家: {player.name} 等级{player.level} HP {player.stats['hp']}/{player.stats['max_hp']}\n")
+        f.write("敌人:\n")
+        for enemy in enemies:
+            f.write(f"- {enemy.name} 经验 {enemy.xp_reward}, 金币 {enemy.gold_reward}\n")
+        f.write("\n")
