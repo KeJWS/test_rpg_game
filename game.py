@@ -113,8 +113,11 @@ def play():
                 handle_save_menu(my_player)
                 enter_clear_screen()
             case "7":
+                clear_screen()
                 my_player.add_exp(99999)
+                enter_clear_screen()
             case _:
+                clear_screen()
                 print("请输入有效命令")
 
 def debug_add_test_items(my_player):

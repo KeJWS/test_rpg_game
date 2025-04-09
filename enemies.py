@@ -1,59 +1,35 @@
+import csv
 from random import randint
 import combat
 
-class Imp(combat.Enemy):
-    def __init__(self) -> None:
-        stats = {
-            "max_hp": 500,
-            "hp": 500,
-            "max_mp": 10,
-            "mp": 10,
-            "atk": 15,
-            "def": 10,
-            "mat": 10,
-            "mdf": 10,
-            "agi":12,
-            "luk": 10,
-            "crit": 3
-        }
-        super().__init__("小鬼", stats, xp_reward=40, gold_reward=randint(10, 60))
+def load_enemies_from_csv(filepath):
+    enemies = {}
+    with open(filepath, newline='', encoding="utf-8") as csvfile:
+        reader = csv.DictReader(csvfile)
+        for row in reader:
+            stats = {
+                "max_hp": int(row["max_hp"]),
+                "hp": int(row["max_hp"]),
+                "max_mp": int(row["max_mp"]),
+                "mp": int(row["max_mp"]),
+                "atk": int(row["atk"]),
+                "def": int(row["def"]),
+                "mat": int(row["mat"]),
+                "mdf": int(row["mdf"]),
+                "agi": int(row["agi"]),
+                "luk": int(row["luk"]),
+                "crit": int(row["crit"])
+            }
+            xp = int(row["xp_reward"])
+            gold = randint(int(row["gold_min"]), int(row["gold_max"]))
+            enemy = combat.Enemy(row["name"], stats, xp_reward=xp, gold_reward=gold)
+            enemies[row["id"]] = enemy
+    return enemies
 
-class Golem(combat.Enemy):
-    def __init__(self) -> None:
-        stats = {
-            "max_hp": 1000,
-            "hp": 1000,
-            "max_mp": 10,
-            "mp": 10,
-            "atk": 20,
-            "def": 20,
-            "mat": 10,
-            "mdf": 10,
-            "agi": 4,
-            "luk": 10,
-            "crit": 0
-        }
-        super().__init__("魔像", stats, xp_reward=120, gold_reward=randint(25, 150))
-
-class Giant_slime(combat.Enemy):
-    def __init__(self) -> None:
-        stats = {
-            "max_hp": 2000,
-            "hp": 2000,
-            "max_mp": 10,
-            "mp": 10,
-            "atk": 15,
-            "def": 15,
-            "mat": 10,
-            "mdf": 10,
-            "agi": 10,
-            "luk": 10,
-            "crit": 0
-        }
-        super().__init__("巨型史莱姆", stats, xp_reward=150, gold_reward=randint(30, 170))
+enemy_data = load_enemies_from_csv("data/enemies.csv")
 
 possible_enemies = {
-    Imp: (1, 3),
-    Golem: (2, 4),
-    Giant_slime: (3, 100)
+    "imp": (1, 3),
+    "golem": (2, 4),
+    "giant_slime": (3, 100)
 }

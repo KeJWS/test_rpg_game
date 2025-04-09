@@ -4,6 +4,8 @@ import time
 import text, skills
 from test.fx import dot_loading, typewriter, battle_log
 
+from copy import deepcopy
+
 import test.fx as fx
 
 """
@@ -96,6 +98,8 @@ def combat(player, enemies):
         enemy_exp += enemy.xp_reward
         enemy_money += enemy.gold_reward
 
+    escaped = False
+
     # 只要玩家还活着，并且还有敌人需要击败，战斗就会继续
     # 战士应该根据速度变化进行更新（增益/减益）
     while player.alive and enemies:
@@ -104,7 +108,9 @@ def combat(player, enemies):
         for battler in battlers:
             # 如果战斗者是盟友，则用户可以控制其行动
             if battler.is_ally:
-                handle_player_turn(player, enemies, battlers)
+                escaped = handle_player_turn(player, enemies, battlers)
+                if escaped:
+                    break
             else:
                 # 目前，敌人将对玩家进行正常攻击。
                 # 这可以扩展为功能性 AI
@@ -112,17 +118,23 @@ def combat(player, enemies):
 
         player.is_defending = False
 
+        if escaped:
+            break
+
         # 一轮已过
         # 检查增益和减益效果的回合
         for b in battlers:
             check_turns_buffs_and_debuffs(b, False)
 
-    if player.alive:
+    if player.alive and not escaped:
         # 停用所有现有的增益效果和减益效果
         # 为玩家添加经验
         check_turns_buffs_and_debuffs(player, True)
         player.add_exp(enemy_exp)
         player.add_money(enemy_money)
+        take_a_rest(player)
+    elif escaped:
+        typewriter(f"{player.name} 成功逃离了战斗")
         take_a_rest(player)
 
 def handle_player_turn(player, enemies, battlers):
@@ -140,7 +152,7 @@ def handle_player_turn(player, enemies, battlers):
             typewriter(f"{player.name} 选择防御, 本回合受到的伤害将减少50%!")
         case "e":
             if try_escape(player):
-                return
+                return True
             check_if_dead(player, enemies, battlers)
 
 def cast_spell(player, enemies, battlers):
@@ -229,7 +241,8 @@ def get_valid_input(prompt, valid_range, cast_func=str):
         print("请输入有效选项")
 
 def create_enemy_group(level):
-    from enemies import possible_enemies
+    from enemies import possible_enemies, enemy_data
+
     enemies_to_appear = []
     for enemy in possible_enemies:
         low_level, high_level = possible_enemies[enemy]
@@ -253,7 +266,8 @@ def create_enemy_group(level):
 
     enemy_group = []
     # 选择 x 个敌人，x 是 1 到 max_enemies 之间的随机数
-    for i in range(random.randint(1, max_enemies)):
-        enemy_instance = random.choice(enemies_to_appear)()
+    for _ in range(random.randint(1, max_enemies)):
+        enemy_id = random.choice(enemies_to_appear)
+        enemy_instance = deepcopy(enemy_data[enemy_id])
         enemy_group.append(enemy_instance)
     return enemy_group
