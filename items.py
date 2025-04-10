@@ -49,10 +49,13 @@ war_hammer = inventory.Equipment('战锤', '', 1, 62, 'weapon', {'atk' : 13, 'ag
 iron_armor = inventory.Equipment('铁甲', '', 1, 102, 'armor', {'max_hp' : 8, 'def' : 10})
 
 # -> 高级头盔
+helmet_bronze = equipment_data["helmet_bronze"]
 
 # -> 高级护手
+gauntlets_larmor = equipment_data["gauntlets_larmor"]
 
 # -> 高级护足
+boots_plate = equipment_data["boots_plate"]
 
 # 消耗品
 hp_potions = inventory.Potion('生命药水', 'a', 4, 10, 'consumable', 'hp', 15)

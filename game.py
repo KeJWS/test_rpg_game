@@ -138,6 +138,9 @@ def debug_add_test_items(my_player):
     items.straw_hat.add_to_inventory(my_player.inventory)
     items.gloves_wraps.add_to_inventory(my_player.inventory)
     items.footrags.add_to_inventory(my_player.inventory)
+    items.helmet_bronze.add_to_inventory(my_player.inventory)
+    items.gauntlets_larmor.add_to_inventory(my_player.inventory)
+    items.boots_plate.add_to_inventory(my_player.inventory)
 
 if __name__ == "__main__":
     title_screen_selection()
