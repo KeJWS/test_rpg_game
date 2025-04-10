@@ -120,7 +120,7 @@ def combat(player, enemies):
                 if escaped:
                     break
             else:
-                # 目前，敌人将对玩家进行正常攻击。
+                # 目前，敌人只会对玩家进行正常攻击。
                 # 这可以扩展为功能性 AI
                 battler.normal_attack(player, defender_is_defending=player.is_defending)
 
@@ -156,14 +156,17 @@ def handle_player_turn(player, battler, enemies, battlers):
     decision = get_valid_input("> ", ["a", "d", "c", "s", "e"])
     match decision:
         case "a":
+            # 进行普通攻击
             targeted_enemy = select_target(enemies)
             battler.normal_attack(targeted_enemy)
             battler.add_combo_points(1)
             check_if_dead(targeted_enemy, enemies, battlers)
         case "s":
+            # 施展咒语
             text.spell_menu(battler)
             cast_spell(player, enemies, battlers)
         case "c":
+            # 使用组合技能
             text.combo_menu(battler)
             cast_combo(player, enemies, battlers)
         case "d":
@@ -200,7 +203,7 @@ def cast_combo(player, enemies, battlers):
         combo.effect(player, player)
 
 # 返回按速度（回合顺序）排序的战斗者列表
-# 当从“玩家”更改为“盟友”时，应将其更改为
+# 当“玩家”变为“盟友”时，应该更新此内容。
 def define_battlers(player, enemies):
     return sorted(enemies.copy() + [player], key=lambda b: b.stats["agi"], reverse=True)
 

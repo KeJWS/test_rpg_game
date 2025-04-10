@@ -1,8 +1,5 @@
 import random
 
-from os import times
-from typing import cast
-
 """
 技能是法术(mat)和连击(atk)的父类
 """
@@ -21,6 +18,11 @@ class Skill():
                 return True
         return False
 
+"""
+法术会消耗魔法值(mp), 魔法值会通过升级、使用物品、
+事件等方式恢复。提升智慧(WIS)资质或装备特定物品时, 魔法值也会增加。法术会根据魔法攻击力(matk)和自身力量来计算造成的伤害。
+"""
+
 class Spell(Skill):
     def __init__(self, name, description, power, cost, is_target) -> None:
         super().__init__(name, description, cost, is_target)
@@ -34,6 +36,10 @@ class Spell(Skill):
             print(f"{caster.name} 释放了 {self.name}!")
             caster.stats["mp"] -= self.cost
             return True
+
+"""
+连击会消耗cp(连击点数), 战斗开始时cp默认为0, 战斗者进行普通攻击时cp会增加。使用特定技能也会增加cp。连击通常具有特殊效果, 并包含普通攻击。
+"""
 
 class Combo(Skill):
     def __init__(self, name, description, cost, is_targeted) -> None:
@@ -161,4 +167,4 @@ benettFantasticVoyage = Buff_debuff_spell("班尼特的奇妙旅程", "", 0, 25,
 
 slash_combo1 = Slash_combo("斩击连击 I", "", 3, True, 3)
 armor_breaker1 = Armor_breaking_combo("破甲 I", "", 2, True, -0.3)
-vampire_stab1 = Vampirism_combo("吸血之刺", "", 2, True, 0.5)
+vampire_stab1 = Vampirism_combo("吸血之刺 I", "", 2, True, 0.5)

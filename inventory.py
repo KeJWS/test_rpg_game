@@ -1,4 +1,3 @@
-import combat
 import test.fx as fx
 
 """

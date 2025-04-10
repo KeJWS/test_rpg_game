@@ -1,10 +1,7 @@
-import cmd
-import textwrap
 import sys
-import os
 import random
 
-import combat, enemies, text, inventory, player, items
+import combat, enemies, text, inventory, player, items, events
 
 from test.clear_screen import clear_screen, enter_clear_screen
 from test.save_system import save_game, get_save_list, delete_save, load_game
@@ -89,8 +86,8 @@ def play():
         option = input("> ")
         match option:
             case "1":
-                battle_enemies = combat.create_enemy_group(my_player.level)
-                combat.combat(my_player, battle_enemies)
+                clear_screen()
+                generate_event(my_player)
                 enter_clear_screen()
             case "2":
                 clear_screen()
@@ -106,19 +103,18 @@ def play():
                 my_player.inventory.show_inventory()
                 inventory_selections(my_player)
             case "5":
-                combat.fully_heal(my_player)
-            case "6":
                 clear_screen()
                 text.save_load_menu()
                 handle_save_menu(my_player)
                 enter_clear_screen()
-            case "7":
-                clear_screen()
-                my_player.add_exp(99999)
-                enter_clear_screen()
-            case "8":
+            case "6":
                 clear_screen()
                 text.show_equipment_info(my_player)
+                enter_clear_screen()
+            case "7":
+                clear_screen()
+                battle_enemies = combat.create_enemy_group(my_player.level)
+                combat.combat(my_player, battle_enemies)
                 enter_clear_screen()
             case _:
                 clear_screen()
@@ -144,6 +140,16 @@ def debug_add_test_items(my_player):
     items.copper_ring.add_to_inventory(my_player.inventory)
     items.ring_of_power.add_to_inventory(my_player.inventory)
     items.ring_of_magic.add_to_inventory(my_player.inventory)
+
+def generate_event(my_player):
+    # 事件概率（%）
+    combat_chance = 60
+    shop_chance = 10
+    heal_chance = 30
+
+    event_list = random.choices(events.event_type_list, weights=(combat_chance, shop_chance, heal_chance))
+    # random.choices 返回一个列表，所以我们需要使用 event_list[0]
+    random.choice(event_list[0]).effect(my_player)
 
 if __name__ == "__main__":
     title_screen_selection()

@@ -28,6 +28,7 @@ def load_enemies_from_csv(filepath):
 
 enemy_data = load_enemies_from_csv("data/enemies.csv")
 
+# 可能的敌人：（出现的最低玩家等级，出现的最高玩家等级）
 possible_enemies = {
     "imp": (1, 3),
     "golem": (2, 4),

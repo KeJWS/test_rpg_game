@@ -19,8 +19,8 @@ class Player(combat.Battler):
 
         super().__init__(name, stats)
 
-        self.level = 1
-        self.xp = 0
+        self.level = 1 # 玩家等级
+        self.xp = 0 # 当前经验值
         self.xp_to_next_level = 50 # 达到下一等级所需的经验值每级乘以 1.5
         self.aptitudes = {
             "str": 5,
@@ -40,7 +40,7 @@ class Player(combat.Battler):
         CONST -> MAXHP + 10
         '''
 
-        self.inventory = inventory.Inventory()
+        self.inventory = inventory.Inventory() # 玩家的库存
         self.equipment = {      #玩家的装备，可以进一步扩展
             "weapon": None,
             "shield": None,
@@ -50,10 +50,10 @@ class Player(combat.Battler):
             "foot": None,
             "accessory": None
         }
-        self.money = 0
-        self.combos = [skills.slash_combo1, skills.armor_breaker1, skills.vampire_stab1] # 玩家选择的组合（攻击）
-        self.spells = [skills.fire_ball, skills.divineBlessing, skills.benettFantasticVoyage] # 玩家选择的法术（matk）
-        self.is_ally = True
+        self.money = 0 # 当前资金
+        self.combos = [skills.slash_combo1, skills.armor_breaker1, skills.vampire_stab1] # 玩家选择的组合（atk, cp）
+        self.spells = [skills.fire_ball, skills.divineBlessing, skills.benettFantasticVoyage] # 玩家选择的法术（matk, mp）
+        self.is_ally = True # 检查战斗者是否是盟友
 
     def equip_item(self, equipment): # 装备一件物品（必须是“装备”类型）
         if not isinstance(equipment, inventory.Equipment):
