@@ -1,4 +1,3 @@
-# fx.py
 
 import time, sys
 

@@ -41,8 +41,7 @@
 
 3. 运行主程序：
    ```bash
-   python main.py
-   ```
+   python game.py
 
 4. 根据提示选择操作，体验回合制战斗。
 

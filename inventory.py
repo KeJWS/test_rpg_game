@@ -1,4 +1,5 @@
 import combat
+import test.fx as fx
 
 """
 管理玩家的库存和物品。可以修改为具有一定容量。
@@ -138,7 +139,7 @@ class Equipment(Item):
         self.stat_change_list = stat_change_list
 
     def show_info(self):
-        return f"[x{self.amount}] {self.name} ({self.object_type}) {self.show_stats()}"
+        return f"[x{self.amount}] {self.name}({self.object_type}): {self.description} {self.show_stats()}"
 
     def show_stats(self):
         stats_string = "[ "
@@ -148,7 +149,7 @@ class Equipment(Item):
                 sign = ""
             stats_string += f"{stat} {sign}{self.stat_change_list[stat]} "
         stats_string += "]"
-        return stats_string
+        return fx.green(stats_string)
 
 class Potion(Item):
     def __init__(self, name, description, amount, individual_value, object_type, stat, amount_to_change) -> None:

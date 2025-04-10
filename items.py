@@ -8,13 +8,14 @@ def load_equipment_from_csv(filepath="data/equipments.csv"):
         reader = csv.DictReader(csvfile)
         for row in reader:
             name = row["name"]
+            name_zh = row["name_zh"]
             description = row["description"]
             amount = int(row["amount"])
             individual_value = int(row["individual_value"])
             object_type = row["object_type"]
             # 用 ast.literal_eval 安全地解析字典字符串
             stat_change_list = ast.literal_eval(row["stat_change_list"])
-            eq = inventory.Equipment(name, description, amount, individual_value, object_type, stat_change_list)
+            eq = inventory.Equipment(name_zh, description, amount, individual_value, object_type, stat_change_list)
             equipment_dict[name] = eq
         return equipment_dict
 
@@ -22,9 +23,9 @@ equipment_data = load_equipment_from_csv()
 
 # 基本物品
 # -> 基本武器
-long_sword = equipment_data["长剑"]
-dagger = inventory.Equipment('匕首', '', 1, 15, 'weapon', {'atk' : 3, 'crit' : 10, 'agi': 3})
-staff = inventory.Equipment('棍棒', '', 1, 18, 'weapon', {'mat' : 3, 'max_mp' : 2})
+long_sword = equipment_data["long_sword"]
+dagger = equipment_data["dagger"]
+staff = equipment_data["staff"]
 
 # -> 基础护甲
 cloth_armor = inventory.Equipment('布甲', '', 1, 20, 'armor', {'max_hp' : 2, 'def' : 2})

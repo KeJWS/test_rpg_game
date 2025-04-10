@@ -1,4 +1,4 @@
-id,name,max_hp,max_mp,atk,def,mat,mdf,agi,luk,crit,xp_reward,gold_min,gold_max
-1,小鬼,500,30,15,10,10,10,12,10,3,40,10,60
-2,魔像,1000,60,20,20,10,10,4,10,0,120,25,150
-3,巨型史莱姆,2000,30,15,15,10,10,10,10,0,150,30,170
+id,name,name_zh,max_hp,max_mp,atk,def,mat,mdf,agi,luk,crit,xp_reward,gold_min,gold_max
+1,imp,小鬼,500,30,15,10,10,10,12,10,3,40,10,60
+2,golem,魔像,1000,60,20,20,10,10,4,10,0,120,25,150
+3,giant_slime,巨型史莱姆,2000,30,15,15,10,10,10,10,0,150,30,170

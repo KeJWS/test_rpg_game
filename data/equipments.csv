@@ -1,8 +1,8 @@
-id,name,description,amount,individual_value,object_type,stat_change_list
-1,长剑,,1,20,weapon,"{'atk': 6}"
-2,匕首,,1,15,weapon,"{'atk': 3, 'crit': 10, 'agi': 3}"
-3,棍棒,,1,18,weapon,"{'mat': 3, 'max_mp': 2}"
-4,布甲,,1,20,armor,"{'max_hp': 2, 'def': 2}"
-5,木盾,,1,50,shield,"{'def': 3, 'agi': -1}"
-6,战锤,,1,62,weapon,"{'atk': 13, 'agi': -2}"
-7,铁甲,,1,102,armor,"{'max_hp': 8, 'def': 10}"
+id,name,name_zh,description,amount,individual_value,object_type,stat_change_list
+1,long_sword,长剑,标准制式的长剑,1,20,weapon,{'atk': 6}
+2,dagger,匕首,轻便锋利的匕首,1,15,weapon,"{'atk': 3, 'crit': 10, 'agi': 3}"
+3,staff,棍棒,简易的木制棍棒,1,18,weapon,"{'mat': 3, 'max_mp': 2}"
+4,cloth_armor,布甲,简单的布制护甲,1,20,armor,"{'max_hp': 2, 'def': 2}"
+5,wooden_shield,木盾,粗制简易的木盾,1,50,shield,"{'def': 3, 'agi': -1}"
+6,war_hammer,战锤,沉重且威力强大的战锤,1,62,weapon,"{'atk': 13, 'agi': -2}"
+7,iron_armor,铁甲,坚固的铁制护甲,1,102,armor,"{'max_hp': 8, 'def': 10}"
