@@ -1,28 +1,28 @@
 id,name,name_zh,description,amount,individual_value,object_type,stat_change_list
 1 ,-> 基本武器,,,1,0,weapon,{}
-2 ,long_sword,长剑,标准制式的长剑,1,20,weapon,{'atk': 6}
-3 ,dagger,匕首,轻便锋利的匕首,1,15,weapon,"{'atk': 3, 'crit': 5, 'agi': 3}"
-4 ,staff,棍棒,简易的木制棍棒,1,18,weapon,"{'mat': 3, 'max_mp': 5}"
+2 ,long_sword,长剑,标准制式的长剑,1,25,weapon,{'atk': 7}
+3 ,dagger,匕首,轻便锋利的匕首,1,27,weapon,"{'atk': 3, 'crit': 5, 'agi': 3}"
+4 ,staff,棍棒,简易的木制棍棒,1,22,weapon,"{'atk': 5, 'mat': 3, 'max_mp': 5}"
 5 ,-> 基础护甲,,,1,0,armor,{}
-6 ,cloth_armor,布甲,简单的布制护甲,1,20,armor,"{'max_hp': 10, 'def': 2}"
+6 ,cloth_armor,布甲,简单的布制护甲,1,27,armor,"{'max_hp': 10, 'def': 2}"
 7 ,-> 基础护盾,,,1,0,shield,{}
-8 ,wooden_shield,木盾,粗制简易的木盾,1,50,shield,"{'def': 3, 'agi': -3}"
+8 ,wooden_shield,木盾,粗制简易的木盾,1,50,shield,"{'def': 3, 'agi': -1}"
 9 ,-> 基础头盔,,,1,0,head,{}
 10,straw_hat,草帽,一顶由麦秸或其他坚韧植物编织而成的帽子,1,25,head,{'def': 1}
 11,-> 基础护手,,,1,0,hand,{}
-12,gloves_wraps,绑手带,一条长长的绑在手部、提供稍许防护与其他用途的棉布条,1,15,hand,"{'atk': 6, 'def': 1}"
+12,gloves_wraps,绑手带,一条长长的绑在手部、提供稍许防护与其他用途的棉布条,1,15,hand,"{'atk': 1, 'def': 1}"
 13,-> 基础护足,,,1,0,foot,{}
-14,footrags,裹脚,裹在脚上的布条,1,10,foot,"{'def': 1, 'agi': 1}"
+14,footrags,裹脚,裹在脚上的布条,1,19,foot,"{'def': 1, 'agi': 1}"
 15,-> 基础饰品,,,1,0,accessory,{}
-16,copper_ring,铜戒指,普通的铜制戒指，提供些许幸运属性,1,12,accessory,{'luk': 2}
+16,copper_ring,铜戒指,普通的铜制戒指，提供些许幸运属性,1,24,accessory,{'luk': 2}
 17,-> 高级武器,,,1,0,weapon,{}
-18,war_hammer,战锤,沉重且威力强大的战锤,1,62,weapon,"{'atk': 13, 'agi': -2}"
+18,war_hammer,战锤,沉重且威力强大的战锤,1,72,weapon,"{'atk': 13, 'agi': -2}"
 19,-> 高级装甲,,,1,0,armor,{}
-20,iron_armor,铁甲,坚固的铁制护甲,1,102,armor,"{'max_hp': 25, 'def': 10}"
+20,iron_armor,铁甲,坚固的铁制护甲,1,170,armor,"{'max_hp': 25, 'def': 10}"
 21,-> 高级头盔,,,1,0,head,{}
-22,helmet_bronze,青铜头盔,一顶坚固的整体成型的封闭式青铜头盔，在眼部有个开口,1,350,head,"{'def': 12, 'agi': -3}"
+22,helmet_bronze,青铜头盔,一顶坚固的整体成型的封闭式青铜头盔，在眼部有个开口,1,364,head,"{'def': 13, 'agi': -3}"
 23,-> 高级护手,,,1,0,hand,{}
-24,gauntlets_larmor,皮甲护手,一对沉重的无指皮革手套,1,220,hand,"{'atk': 3, 'def': 5, 'agi': -1}"
+24,gauntlets_larmor,皮甲护手,一对沉重的无指皮革手套,1,170,hand,"{'atk': 3, 'def': 5, 'agi': -1}"
 25,-> 高级护足,,,1,0,foot,{}
 26,boots_plate,护甲靴,一双十分沉重的重型金属靴,1,300,foot,"{'def': 12, 'agi': -4}"
 27,-> 高级饰品,,,1,0,accessory,{}

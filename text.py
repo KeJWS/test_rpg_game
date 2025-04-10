@@ -148,6 +148,15 @@ def shop_menu(player):
     )
     print(display_shop_menu_text)
 
+def shop_buy(player):
+    display_shop_buy = (
+        "----------------------------------\n"
+        f"          SHOP - 💰: {player.money}\n"
+        "           ['0' to Quit]\n"
+        "----------------------------------\n"
+    )
+    print(display_shop_buy)
+
 def enter_shop(name):
     if name == "里克的盔甲店":
         print(rik_armor_shop_encounter)

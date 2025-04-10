@@ -65,5 +65,22 @@ ring_of_power = equipment_data["ring_of_power"]
 ring_of_magic = equipment_data["ring_of_magic"]
 
 # 消耗品
-hp_potions = inventory.Potion('生命药水', 'a', 4, 10, 'consumable', 'hp', 15)
-mp_potions = inventory.Potion('法力药水', 'a', 4, 10, 'consumable', 'mp', 15)
+hp_potion = inventory.Potion('生命药水', 'a', 1, 10, 'consumable', 'hp', 30)
+mp_potion = inventory.Potion('法力药水', 'a', 1, 10, 'consumable', 'mp', 15)
+
+# 商店物品套装
+
+rik_armor_shop_item_set = [
+    long_sword,
+    dagger,
+    war_hammer,
+    iron_armor
+]
+
+itz_magic_item_set = [
+    staff,
+    cloth_armor,
+    hp_potion,
+    mp_potion,
+    mp_potion
+]

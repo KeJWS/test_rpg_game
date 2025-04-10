@@ -79,7 +79,7 @@ def play():
     # 玩家实例
     my_player = player.Player("Test Player")
 
-    debug_add_test_items(my_player)
+    # debug_add_test_items(my_player)
 
     while my_player.alive:
         text.play_menu()
@@ -122,30 +122,30 @@ def play():
 
 def debug_add_test_items(my_player):
     # 添加一些测试项目
-    items.hp_potions.add_to_inventory(my_player.inventory)
-    items.mp_potions.add_to_inventory(my_player.inventory)
-    items.long_sword.add_to_inventory(my_player.inventory)
-    items.dagger.add_to_inventory(my_player.inventory)
-    items.staff.add_to_inventory(my_player.inventory)
-    items.cloth_armor.add_to_inventory(my_player.inventory)
-    items.war_hammer.add_to_inventory(my_player.inventory)
-    items.iron_armor.add_to_inventory(my_player.inventory)
-    items.wooden_shield.add_to_inventory(my_player.inventory)
-    items.straw_hat.add_to_inventory(my_player.inventory)
-    items.gloves_wraps.add_to_inventory(my_player.inventory)
-    items.footrags.add_to_inventory(my_player.inventory)
-    items.helmet_bronze.add_to_inventory(my_player.inventory)
-    items.gauntlets_larmor.add_to_inventory(my_player.inventory)
-    items.boots_plate.add_to_inventory(my_player.inventory)
-    items.copper_ring.add_to_inventory(my_player.inventory)
-    items.ring_of_power.add_to_inventory(my_player.inventory)
-    items.ring_of_magic.add_to_inventory(my_player.inventory)
+    items.hp_potion.add_to_inventory(my_player.inventory)
+    items.mp_potion.add_to_inventory(my_player.inventory)
+    items.long_sword.add_to_inventory_player(my_player.inventory)
+    items.dagger.add_to_inventory_player(my_player.inventory)
+    items.staff.add_to_inventory_player(my_player.inventory)
+    items.cloth_armor.add_to_inventory_player(my_player.inventory)
+    items.war_hammer.add_to_inventory_player(my_player.inventory)
+    items.iron_armor.add_to_inventory_player(my_player.inventory)
+    items.wooden_shield.add_to_inventory_player(my_player.inventory)
+    items.straw_hat.add_to_inventory_player(my_player.inventory)
+    items.gloves_wraps.add_to_inventory_player(my_player.inventory)
+    items.footrags.add_to_inventory_player(my_player.inventory)
+    items.helmet_bronze.add_to_inventory_player(my_player.inventory)
+    items.gauntlets_larmor.add_to_inventory_player(my_player.inventory)
+    items.boots_plate.add_to_inventory_player(my_player.inventory)
+    items.copper_ring.add_to_inventory_player(my_player.inventory)
+    items.ring_of_power.add_to_inventory_player(my_player.inventory)
+    items.ring_of_magic.add_to_inventory_player(my_player.inventory)
 
 def generate_event(my_player):
     # 事件概率（%）
-    combat_chance = 60
-    shop_chance = 10
-    heal_chance = 30
+    combat_chance = 0
+    shop_chance = 100
+    heal_chance = 0
 
     event_list = random.choices(events.event_type_list, weights=(combat_chance, shop_chance, heal_chance))
     # random.choices 返回一个列表，所以我们需要使用 event_list[0]

@@ -41,16 +41,16 @@ class Player(combat.Battler):
         '''
 
         self.inventory = inventory.Inventory() # 玩家的库存
-        self.equipment = {      #玩家的装备，可以进一步扩展
+        self.equipment = {      # 玩家的装备，可以进一步扩展
             "weapon": None,
-            "shield": None,
-            "head": None,
-            "armor": None,
-            "hand": None,
-            "foot": None,
+            "shield": None, # 防御
+            "head": None, # 防御
+            "armor": None, # 防御和生命
+            "hand": None, # 防御和攻击力
+            "foot": None, # 防御和敏捷
             "accessory": None
         }
-        self.money = 0 # 当前资金
+        self.money = 999 # 当前资金
         self.combos = [skills.slash_combo1, skills.armor_breaker1, skills.vampire_stab1] # 玩家选择的组合（atk, cp）
         self.spells = [skills.fire_ball, skills.divineBlessing, skills.benettFantasticVoyage] # 玩家选择的法术（matk, mp）
         self.is_ally = True # 检查战斗者是否是盟友
@@ -141,3 +141,15 @@ class Player(combat.Battler):
         updates = aptitude_mapping.get(aptitude, {})
         for stat, value in updates.items():
             self.stats[stat] += value
+
+    def buy_from_vendor(self, vendor):
+        text.shop_buy(self)
+        vendor.inventory.show_inventory()
+        i = int(input("> "))
+        while i != 0:
+            if i <= len(vendor.inventory.items) and i > 0:
+                vendor.inventory.items[i-1].buy(self)
+                if vendor.inventory.items[i-1].amount <= 0:
+                    vendor.inventory.items.pop(i-1)
+                vendor.inventory.show_inventory()
+                i = int(input("> "))

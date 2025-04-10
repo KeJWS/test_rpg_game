@@ -112,7 +112,8 @@ class Item():
             print(f"有 {self.amount} 个 {self.name}, 出售多少?")
             amount_to_sell = int(input("> "))
             if 0 < amount_to_sell <= self.amount:
-                money_to_receive = self.individual_value * amount_to_sell
+                # 物品售价为其价值的 50%
+                money_to_receive = self.individual_value * 0.5 * amount_to_sell
                 self.amount -= amount_to_sell
                 print(f"售出 {self.name}x{amount_to_sell}, 得 {money_to_receive}")
                 return money_to_receive
@@ -120,17 +121,41 @@ class Item():
                 print("数量无效!")
         return 0
 
-    def add_to_inventory(self, inventory):
+    def buy(self, player):
+        if self.amount > 1:
+            print("买多少?")
+            amount_to_bug = int(input("> "))
+            price = self.individual_value * amount_to_bug
+            if amount_to_bug > self.amount:
+                print(f"供应商没有那么多 {self.name}")
+            elif price > player.money:
+                print("没有足够的钱")
+            else:
+                item_for_player = Item(self.name, self.description, amount_to_bug, self.individual_value, self.object_type)
+                self.amount -= amount_to_bug
+                item_for_player.add_to_inventory_player(player.inventory)
+        elif self.amount == 1 and self.individual_value <= player.money:
+            item_for_player = Item(self.name, self.description, 1, self.individual_value, self.object_type)
+            item_for_player.add_to_inventory_player(player.inventory)
+            self.amount = 0
+
+    def add_to_inventory_player(self, inventory):
+        amount_added = self.amount
+        self.add_to_inventory(inventory, amount_added)
+        print(f"{amount_added} {self.name} 已添加到库存")
+
+    def add_to_inventory(self, inventory, amount):
+        already_in_inventory = False
         for item in inventory.items:
             if self.name == item.name:
-                item.amount += self.amount
-                break
-        else:
+                item.amount += amount
+                already_in_inventory = True
+        if not already_in_inventory:
+            self.amount = amount
             inventory.items.append(self)
-            print(f"{self.name}x{self.amount} 已放入背包!")
 
     def show_info(self):
-        return f"[x{self.amount}] {self.name} ({self.object_type})"
+        return f"[x{self.amount}] {self.name} ({self.object_type}) - {self.individual_value}"
 
 class Equipment(Item):
     def __init__(self, name, description, amount, individual_value, object_type, stat_change_list):
@@ -138,7 +163,7 @@ class Equipment(Item):
         self.stat_change_list = stat_change_list
 
     def show_info(self):
-        return f"[x{self.amount}] {self.name}({self.object_type}): {self.description} {self.show_stats()}"
+        return f"[x{self.amount}] {self.name}({self.object_type}): {self.description} {self.show_stats()} - {self.individual_value}G"
 
     def show_stats(self):
         stats_string = "[ "
