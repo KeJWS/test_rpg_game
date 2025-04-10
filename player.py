@@ -47,7 +47,8 @@ class Player(combat.Battler):
             "head": None,
             "armor": None,
             "hand": None,
-            "foot": None
+            "foot": None,
+            "accessory": None
         }
         self.money = 0
         self.combos = [skills.slash_combo1, skills.armor_breaker1, skills.vampire_stab1] # 玩家选择的组合（攻击）

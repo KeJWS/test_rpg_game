@@ -30,14 +30,14 @@ def play_menu():
 
 def show_stats(player):
     stats_template = (
-        f"----------------------------------\n"
+        f"==================================\n"
         f"  STATS               💰: {player.money}\n"
         f"----------------------------------\n"
         f"      LV: {player.level}          EXP: {player.xp}/{player.xp_to_next_level}\n"
         f"      {fx.RED}HP: {player.stats['hp']}/{player.stats['max_hp']}{fx.END}    {fx.BLUE}MP: {player.stats['mp']}/{player.stats['max_mp']}{fx.END}\n"
         f"      ATK: {player.stats['atk']}        DEF: {player.stats['def']}\n"
         f"      MAT: {player.stats['mat']}        MDF: {player.stats['mdf']}\n"
-        f"      AGI: {player.stats['agi']}        CRT: {player.stats['crit']}\n"
+        f"      AGI: {player.stats['agi']}        CRT: {player.stats['crit']}%\n"
         f"----------------------------------\n"
         f"  APTITUDES\n"
         f"----------------------------------\n"
@@ -59,21 +59,23 @@ def show_stats(player):
         left_eq = eq[left].name if eq[left] else None
         right_eq = eq[right].name if eq[right] else None
         print(f"    {left}: {left_eq}   {right}: {right_eq}")
+    print(f"    accessory: {eq["accessory"].name if eq["accessory"] else None}")
+    print("==================================")
 
 def show_equipment_info(player):
-    print("----------------------------------")
+    print("==================================")
     print("  EQUIPMENT")
     print("----------------------------------")
 
     for equipment in player.equipment:
         if player.equipment[equipment] is not None:
-            print(f"    {equipment}: {player.equipment[equipment].show_info()}")
+            print(f"    {player.equipment[equipment].show_info()}")
         else:
-            print(f"    {equipment}:")
+            print(f"    ---None---")
 
 def show_aptitudes(player):
     display_aptitudes = (
-        f"----------------------------------\n"
+        f"==================================\n"
         f"  POINTS: {player.aptitude_points}\n"
         f"  SELECT AN APTITUDE\n"
         f"----------------------------------\n"

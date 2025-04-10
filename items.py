@@ -42,6 +42,9 @@ gloves_wraps = equipment_data["gloves_wraps"]
 # -> 基础护足
 footrags = equipment_data["footrags"]
 
+# -> 基础饰品
+copper_ring = equipment_data["copper_ring"]
+
 # 高级物品
 # -> 高级武器
 war_hammer = inventory.Equipment('战锤', '', 1, 62, 'weapon', {'atk' : 13, 'agi' : -2})
@@ -56,6 +59,10 @@ gauntlets_larmor = equipment_data["gauntlets_larmor"]
 
 # -> 高级护足
 boots_plate = equipment_data["boots_plate"]
+
+# -> 高级饰品
+ring_of_power = equipment_data["ring_of_power"]
+ring_of_magic = equipment_data["ring_of_magic"]
 
 # 消耗品
 hp_potions = inventory.Potion('生命药水', 'a', 4, 10, 'consumable', 'hp', 15)
