@@ -1,4 +1,4 @@
-import  text, combat, inventory, skills
+import  text, combat, inventory
 from data.constants import EXPERIENCE_RATE, MONEY_MULTIPLIER
 
 class Player(combat.Battler):
@@ -50,7 +50,7 @@ class Player(combat.Battler):
             "accessory": None
         }
         self.money = 20 # 当前资金
-        self.combos = [skills.slash_combo1, skills.armor_breaker1, skills.vampire_stab1, skills.meditation1] # 玩家选择的组合（atk, cp）
+        self.combos = [] # 玩家选择的组合（atk, cp）
         self.spells = [] # 玩家选择的法术（matk, mp）
 
         self.active_quests = []
@@ -64,11 +64,17 @@ class Player(combat.Battler):
             if actual_equipment != None:
                 print(f"{actual_equipment.name} 已解除装备")
                 actual_equipment.add_to_inventory(self.inventory, 1)
+                if actual_equipment.combo != None:
+                    self.combos.remove(actual_equipment.combo)
+                    print(f"你不能再使用组合: {actual_equipment.combo.name}")
                 for stat in actual_equipment.stat_change_list:
                     self.stats[stat] -= actual_equipment.stat_change_list[stat]
             for stat in equipment.stat_change_list:
                 self.stats[stat] += equipment.stat_change_list[stat]
             self.equipment[equipment.object_type] = equipment.create_item(1)
+            if equipment.combo != None and equipment.combo not in self.combos:
+                self.combos.append(equipment.combo)
+                print(f"您现在可以使用组合: {equipment.combo.name}")
             self.inventory.decrease_item_amount(equipment, 1)
             print(f"装备了 {equipment.name}")
             print(equipment.show_stats())

@@ -1,7 +1,7 @@
 import sys
 import random
 
-import combat, enemies, text, inventory, player, items, events
+import combat, enemies, text, inventory, player, items, events, skills
 
 from test.clear_screen import clear_screen, enter_clear_screen
 from test.save_system import save_game, get_save_list, delete_save, load_game

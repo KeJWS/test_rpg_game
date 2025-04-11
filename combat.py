@@ -112,7 +112,12 @@ def combat(player, enemies):
 
     # 只要玩家还活着，并且还有敌人需要击败，战斗就会继续
     # 战士应该根据速度变化进行更新（增益/减益）
+    player.defend_next_turn = False
     while player.alive and enemies:
+        player.is_defending = player.defend_next_turn
+        player.defend_next_turn = False
+        if player.is_defending:
+            typewriter(f"{player.name} 进入防御状态，将受到的伤害减少!")
         # 所有战斗者都被插入到战斗者列表中，并按速度（回合顺序）排序
         battlers = define_battlers(player, enemies)
         for battler in battlers:
@@ -151,8 +156,6 @@ def combat(player, enemies):
     elif escaped:
         check_turns_buffs_and_debuffs(player, True)
         typewriter(f"{player.name} 成功逃离了战斗")
-        player.add_money(enemy_money)
-        player.add_exp(enemy_exp)
         take_a_rest(player)
         player.combo_points = 0
         text.log_battle_result("逃跑", player, original_enemies)
@@ -165,7 +168,7 @@ def handle_player_turn(player, battler, enemies, battlers):
             targeted_enemy = select_target(enemies)
             battler.normal_attack(targeted_enemy)
             battler.add_combo_points(1)
-            check_if_dead(targeted_enemy, enemies, battlers)
+            check_if_dead(player, enemies, battlers)
         case "s":
             # 施展咒语
             text.spell_menu(battler)
@@ -175,9 +178,11 @@ def handle_player_turn(player, battler, enemies, battlers):
             text.combo_menu(battler)
             cast_combo(player, enemies, battlers)
         case "d":
-            player.is_defending = True
+            player.defend_next_turn = True
             battler.add_combo_points(1)
-            typewriter(f"{player.name} 选择防御, 本回合受到的伤害将减少50%!")
+            typewriter(f"{player.name} 准备防御, 下一回合将受到的伤害减少50%!")
+            skills.enhance_weapon.effect(player, player)
+            print(fx.yellow("你紧握武器, 时刻准备反击!"))
         case "e":
             if try_escape(player):
                 return True
@@ -191,10 +196,13 @@ def cast_spell(player, enemies, battlers):
     if spell_chosen.is_targeted:
         target = select_target(battlers)
         spell_chosen.effect(player, target)
-        check_if_dead(target, enemies, battlers)
+        check_if_dead(player, enemies, battlers)
     else:
         if spell_chosen.default_target == "self":
             spell_chosen.effect(player, player)
+        elif spell_chosen.default_target == "all_enemies":
+            spell_chosen.effect(player, enemies)
+            check_if_dead(player, enemies, battlers)
 
 def cast_combo(player, enemies, battlers):
     option = get_valid_input("> ", range(len(player.combos)+1), int)
@@ -204,10 +212,13 @@ def cast_combo(player, enemies, battlers):
     if combo_chosen.is_targeted:
         target = select_target(battlers)
         combo_chosen.effect(player, target)
-        check_if_dead(target, enemies, battlers)
+        check_if_dead(player, enemies, battlers)
     else:
         if combo_chosen.default_target == "self":
             combo_chosen.effect(player, player)
+        elif combo_chosen.default_target == "all_enemies":
+            combo_chosen.effect(player, enemies)
+            check_if_dead(player, enemies, battlers)
 
 # 返回按速度（回合顺序）排序的战斗者列表
 # 当“玩家”变为“盟友”时，应该更新此内容。
@@ -236,6 +247,9 @@ def try_escape(player):
         return True
     else:
         print(fx.bold_red("逃跑失败!"))
+        if random.random() < 0.5:
+            print(fx.red("你因慌乱防御力下降!"))
+            skills.weakened_defense.effect(player, player)
         return False
 
 # 检查增益和减益效果是否仍应处于活动状态
@@ -245,15 +259,14 @@ def check_turns_buffs_and_debuffs(target, deactivate):
         bd.deactivate() if deactivate else bd.check_turns()
 
 # 检查战斗者是否死亡并将其从适当的列表中删除
-def check_if_dead(target, enemies, battlers):
-    if target.is_ally:
-        # 这里应该将其从“盟友”列表中删除
-        # 玩家暂时不使用此功能
-        pass
-    else:
+def check_if_dead(allies, enemies, battlers):
+    dead_bodies = []
+    for target in enemies:
         if target.alive == False:
-            battlers.remove(target)
-            enemies.remove(target)
+            dead_bodies.append(target)
+    for dead in dead_bodies:
+        battlers.remove(dead)
+        enemies.remove(dead)
 
 # 完全治愈目标
 def fully_heal(target):

@@ -177,12 +177,17 @@ class Item():
 这将使生命值增加 3 点，攻击力增加 2 点，速度减少 2 点。
 """
 class Equipment(Item):
-    def __init__(self, name, description, amount, individual_value, object_type, stat_change_list):
+    def __init__(self, name, description, amount, individual_value, object_type, stat_change_list, combo):
         super().__init__(name, description, amount, individual_value, object_type)
         self.stat_change_list = stat_change_list
+        self.combo = combo
 
     def show_info(self):
-        return f"[x{self.amount}] {self.name}({self.object_type}): {self.description} {self.show_stats()} - {self.individual_value}G"
+        combo_name = fx.yellow(self.combo.name) if self.combo else ""
+        return (
+            f"[x{self.amount}] {self.name} ({self.object_type}): "
+            f"{self.description} {self.show_stats()} - {self.individual_value}G {combo_name}"
+        )
 
     def show_stats(self):
         stats_string = "[ "
@@ -195,7 +200,7 @@ class Equipment(Item):
         return fx.green(stats_string)
 
     def create_item(self, amount):
-        return Equipment(self.name, self.description, amount, self.individual_value, self.object_type, self.stat_change_list)
+        return Equipment(self.name, self.description, amount, self.individual_value, self.object_type, self.stat_change_list, self.combo)
 
 class Potion(Item):
     def __init__(self, name, description, amount, individual_value, object_type, stat, amount_to_change) -> None:

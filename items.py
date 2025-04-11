@@ -15,7 +15,8 @@ def load_equipment_from_csv(filepath="data/equipments.csv"):
             object_type = row["object_type"]
             # 用 ast.literal_eval 安全地解析字典字符串
             stat_change_list = ast.literal_eval(row["stat_change_list"])
-            eq = inventory.Equipment(name_zh, description, amount, individual_value, object_type, stat_change_list)
+            combo_object = getattr(skills, row["combo"], None)
+            eq = inventory.Equipment(name_zh, description, amount, individual_value, object_type, stat_change_list, combo_object)
             equipment_dict[name] = eq
         return equipment_dict
 
@@ -58,7 +59,7 @@ copper_ring = equipment_data["copper_ring"]
 
 # 高级物品
 # -> 高级武器
-war_hammer = inventory.Equipment('战锤', '', 1, 62, 'weapon', {'atk' : 13, 'agi' : -2})
+war_hammer = equipment_data["war_hammer"]
 zweihander = equipment_data["zweihander"]
 sage_staff = equipment_data["sage_staff"]
 sai = equipment_data["sai"]
@@ -86,9 +87,10 @@ hp_potion = inventory.Potion('生命药水', 'a', 1, 20, 'consumable', 'hp', 70)
 mp_potion = inventory.Potion('法力药水', 'a', 1, 20, 'consumable', 'mp', 40)
 
 # 魔法书
-grimoire_fireball = inventory.Grimore("法典：火球术", "", 1, 80, "consumable", skills.fire_ball)
-grimoire_divine_blessing = inventory.Grimore("法典：神圣祝福", "", 1, 120, "consumable", skills.divine_blessing)
-grimoire_enhance_weapon = inventory.Grimore("法典：增强武器", "", 1, 120, "consumable", skills.enhance_weapon)
+grimoire_fireball = inventory.Grimore("法典：火球术", "", 1, 80, "consumable", skills.spell_fire_ball)
+grimoire_divine_blessing = inventory.Grimore("法典：神圣祝福", "", 1, 120, "consumable", skills.spell_divine_blessing)
+grimoire_enhance_weapon = inventory.Grimore("法典：增强武器", "", 1, 120, "consumable", skills.spell_enhance_weapon)
+grimoire_inferno = inventory.Grimore("法典: 地狱火", "", 1, 210, "consumable", skills.spell_inferno)
 
 # 商店物品套装
 
@@ -116,4 +118,5 @@ itz_magic_item_set = [
     grimoire_fireball,
     grimoire_divine_blessing,
     grimoire_enhance_weapon,
+    grimoire_inferno,
 ]

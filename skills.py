@@ -63,9 +63,16 @@ class Damage_spell(Spell):
 
     def effect(self, caster, target):
         if self.check_mp(caster):
-            base_dmg = self.power + (caster.stats["mat"]*2 - target.stats["mdf"] + caster.stats["luk"])
-            dmg = round(base_dmg * random.uniform(1.0, 1.2))
-        target.take_dmg(dmg)
+            if self.is_targeted:
+                base_dmg = self.power + (caster.stats["mat"]*2 - target.stats["mdf"] + caster.stats["luk"])
+                dmg = round(base_dmg * random.uniform(1.0, 1.2))
+                target.take_dmg(dmg)
+            else:
+                if self.default_target == "all_enemies":
+                    for enemy in target:
+                        base_dmg = self.power + (caster.stats["mat"]*1.5 - enemy.stats["mdf"] + caster.stats["luk"])
+                        dmg = round(base_dmg * random.uniform(0.8, 1.2))
+                        enemy.take_dmg(dmg)
 
 class Recovery_spell(Spell):
     def __init__(self, name, description, power, mp_cost, stat, is_targeted, default_target) -> None:
@@ -116,7 +123,7 @@ class Armor_breaking_combo(Combo):
         if self.check_cp(caster):
             print(f"{caster.name} 刺穿了 {target.name} 的盔甲!")
             if not self.check_already_has_buff(target):
-                armor_break = Buff_debuff("Armor Break", target, "def", self.armor_destroyed, 4)
+                armor_break = Buff_debuff("破甲", target, "def", self.armor_destroyed, 4)
                 armor_break.activate()
                 caster.normal_attack(target)
 
@@ -179,11 +186,19 @@ class Buff_debuff():
 
 ##### 法术和连击实例 #####
 
-fire_ball = Damage_spell("火球术", "", 75, 30, True, None)
-divine_blessing = Recovery_spell("神圣祝福", "", 50, 50, "hp", True, None)
-enhance_weapon = Buff_debuff_spell("强化武器", "", 0, 25, False, "self", "atk", 0.5, 3)
+spell_fire_ball = Damage_spell("火球术", "", 75, 30, True, None)
+spell_divine_blessing = Recovery_spell("神圣祝福", "", 60, 50, "hp", True, None)
+spell_enhance_weapon = Buff_debuff_spell("强化武器", "", 0, 30, False, "self", "atk", 0.5, 3)
+spell_inferno = Damage_spell("地狱火", "", 50, 50, False, "all_enemies")
 
-slash_combo1 = Slash_combo("斩击连击 I", "", 3, True, None, 3)
-armor_breaker1 = Armor_breaking_combo("破甲 I", "", 2, True, None, -0.3)
-vampire_stab1 = Vampirism_combo("吸血之刺 I", "", 2, True, None, 0.5)
-meditation1 = Recovery_combo("冥想 I", "", 1, "mp", 30, False, "self")
+combo_slash1 = Slash_combo("斩击连击 I", "", 3, True, None, 3)
+combo_slash2 = Slash_combo("斩击连击 II", "", 3, True, None, 4)
+combo_armor_breaker1 = Armor_breaking_combo("破甲 I", "", 2, True, None, -0.3)
+combo_vampire_stab1 = Vampirism_combo("吸血之刺 I", "", 2, True, None, 0.5)
+combo_vampire_stab2 = Vampirism_combo("吸血之刺 II", "", 2, True, None, 0.75)
+combo_meditation1 = Recovery_combo("冥想 I", "", 1, "mp", 30, False, "self")
+combo_meditation2 = Recovery_combo("冥想 II", "", 2, "mp", 70, False, "self")
+
+
+enhance_weapon = Buff_debuff_spell("蓄力", "", 0, 0, False, "self", "atk", 0.25, 2)
+weakened_defense = Buff_debuff_spell("破防", "", 0, 0, False, "self", "def", -0.5, 2)
