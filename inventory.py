@@ -168,6 +168,14 @@ class Item():
     def show_info(self):
         return f"[x{self.amount}] {self.name} ({self.object_type}) - {self.individual_value}"
 
+"""
+装备应为物品，但需添加一个字典 statChangeList，其中包含待更改的属性，以及一个表示属性更改点数的数字，例如：
+{'hp' : 3
+'atk' : 2
+'speed' : -2
+}
+这将使生命值增加 3 点，攻击力增加 2 点，速度减少 2 点。
+"""
 class Equipment(Item):
     def __init__(self, name, description, amount, individual_value, object_type, stat_change_list):
         super().__init__(name, description, amount, individual_value, object_type)

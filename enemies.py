@@ -30,8 +30,13 @@ enemy_data = load_enemies_from_csv("data/enemies.csv")
 
 # 可能的敌人：（出现的最低玩家等级，出现的最高玩家等级）
 possible_enemies = {
-    "imp": (1, 3),
-    "golem": (2, 4),
+    "slime": (1, 2),
+    "imp": (1, 4),
+    "golem": (2, 7),
+    "skeleton": (2, 10),
     "giant_slime": (3, 100),
-    "skeleton": (2, 5)
+    "bandit": (3, 100)
 }
+
+# 固定战斗敌人
+enemy_list_caesarus_bandit = [enemy_data["caesarus_bandit_leader"], enemy_data["bandit"], enemy_data["bandit"]]

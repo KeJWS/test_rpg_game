@@ -134,8 +134,8 @@ def combat(player, enemies):
 
         # 一轮已过
         # 检查增益和减益效果的回合
-        for b in battlers:
-            check_turns_buffs_and_debuffs(b, False)
+        for battler in battlers:
+            check_turns_buffs_and_debuffs(battler, False)
         text.display_status_effects([player] + enemies)
 
     if player.alive and not escaped:
@@ -293,10 +293,10 @@ def create_enemy_group(level):
     # 如果等级 < 10 -> 最多 3 个敌人
     # ...
     enemy_quantity_for_level = {
-        2: 1,
-        5: 2,
-        10: 3,
-        100: 4
+        2: 2,
+        5: 3,
+        10: 4,
+        100: 5
     }
     max_enemies = 1
     for max_level in enemy_quantity_for_level:

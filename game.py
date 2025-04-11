@@ -7,7 +7,7 @@ from test.clear_screen import clear_screen, enter_clear_screen
 from test.save_system import save_game, get_save_list, delete_save, load_game
 
 #### 标题屏幕 #####
-def title_screen_selection():
+def title_screen_selections():
     text.title_screen()
     option = input("> ")
     while option not in ["1", "2", "3"]:
@@ -114,6 +114,14 @@ def play():
                 battle_enemies = combat.create_enemy_group(my_player.level)
                 combat.combat(my_player, battle_enemies)
                 enter_clear_screen()
+            case "8":
+                clear_screen()
+                my_player.show_quests()
+                enter_clear_screen()
+            case "9":
+                clear_screen()
+                my_player.add_exp(999)
+                enter_clear_screen()
             case _:
                 clear_screen()
                 print("请输入有效命令")
@@ -141,13 +149,16 @@ def debug_add_test_items(my_player):
 
 def generate_event(my_player):
     # 事件概率（%）
-    combat_chance = 80
-    shop_chance = 10
+    combat_chance = 70
+    shop_chance = 20
     heal_chance = 10
 
-    event_list = random.choices(events.event_type_list, weights=(combat_chance, shop_chance, heal_chance))
+    event_list = random.choices(events.event_type_list, weights=(combat_chance, shop_chance, heal_chance), k=1)
     # random.choices 返回一个列表，所以我们需要使用 event_list[0]
-    random.choice(event_list[0]).effect(my_player)
+    event = random.choice(event_list[0])
+    event.effect(my_player)
+    if event.is_unique:
+        events.event_type_list.event_list.remove(event)
 
 if __name__ == "__main__":
-    title_screen_selection()
+    title_screen_selections()

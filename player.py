@@ -29,7 +29,6 @@ class Player(combat.Battler):
             "wis": 5,
             "const": 5
         }
-        self.aptitude_points = 0 # 升级能力的点数
 
         '''
         当能力提升时, 某些属性也会增加:
@@ -39,7 +38,7 @@ class Player(combat.Battler):
         WIS -> MAXMP + 15
         CONST -> MAXHP + 10
         '''
-
+        self.aptitude_points = 0 # 升级能力的点数
         self.inventory = inventory.Inventory() # 玩家的库存
         self.equipment = {      # 玩家的装备，可以进一步扩展
             "weapon": None,
@@ -158,3 +157,11 @@ class Player(combat.Battler):
                     vendor.inventory.items.pop(i-1)
                 vendor.inventory.show_inventory()
                 i = int(input("> "))
+
+    def show_quests(self):
+        print("/// ACTIVE ///")
+        for actq in self.active_quests:
+            actq.show_info()
+        print("/// COMPLETED ///")
+        for cmpq in self.completed_quests:
+            cmpq.show_info()
