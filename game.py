@@ -141,8 +141,8 @@ def debug_add_test_items(my_player):
 
 def generate_event(my_player):
     # 事件概率（%）
-    combat_chance = 8
-    shop_chance = 100
+    combat_chance = 80
+    shop_chance = 10
     heal_chance = 10
 
     event_list = random.choices(events.event_type_list, weights=(combat_chance, shop_chance, heal_chance))

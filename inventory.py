@@ -142,7 +142,10 @@ class Item():
         elif self.amount == 1 and self.individual_value <= player.money:
             item_for_player = self.create_item(1)
             item_for_player.add_to_inventory_player(player.inventory)
+            player.money -= self.individual_value
             self.amount = 0
+        else:
+            print("没有足够的钱")
 
     def create_item(self, amount):
         return Item(self.name, self.description, amount, self.individual_value, self.object_type)
