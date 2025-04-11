@@ -20,11 +20,12 @@ def play_menu():
         "----------------------------------\n"
         "   1 - Walk\n"
         "   2 - See stats\n"
-        "   3 - Assign aptitude points      \n"
+        "   3 - Aptitude\n"
         "   4 - Inventory\n"
         "   5 - Save system\n"
         "   6 - Show equipment info\n"
         "   7 - Battle\n"
+        "   8 - Quests\n"
         "----------------------------------\n"
     )
     print(display_content)

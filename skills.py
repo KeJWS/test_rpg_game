@@ -4,11 +4,12 @@ import random
 技能是法术(mat)和连击(atk)的父类
 """
 class Skill():
-    def __init__(self, name, description, cost, is_targeted) -> None:
+    def __init__(self, name, description, cost, is_targeted, default_target) -> None:
         self.name = name
         self.description = description
         self.cost = cost
         self.is_targeted = is_targeted
+        self.default_target = default_target
 
     def check_already_has_buff(self, target):
         for bd in target.buffs_and_debuffs:
@@ -24,8 +25,8 @@ class Skill():
 """
 
 class Spell(Skill):
-    def __init__(self, name, description, power, cost, is_target) -> None:
-        super().__init__(name, description, cost, is_target)
+    def __init__(self, name, description, power, cost, is_target, default_target) -> None:
+        super().__init__(name, description, cost, is_target, default_target)
         self.power = power
 
     def check_mp(self, caster):
@@ -42,8 +43,8 @@ class Spell(Skill):
 """
 
 class Combo(Skill):
-    def __init__(self, name, description, cost, is_targeted) -> None:
-        super().__init__(name, description, cost, is_targeted)
+    def __init__(self, name, description, cost, is_targeted, default_target) -> None:
+        super().__init__(name, description, cost, is_targeted, default_target)
 
     def check_cp(self, caster):
         if caster.combo_points < self.cost:
@@ -57,8 +58,8 @@ class Combo(Skill):
 ##### 咒语 #####
 
 class Damage_spell(Spell):
-    def __init__(self, name, description, power, mp_cost, is_targeted) -> None:
-        super().__init__(name, description, power, mp_cost, is_targeted)
+    def __init__(self, name, description, power, mp_cost, is_targeted, default_target) -> None:
+        super().__init__(name, description, power, mp_cost, is_targeted, default_target)
 
     def effect(self, caster, target):
         if self.check_mp(caster):
@@ -66,20 +67,24 @@ class Damage_spell(Spell):
             dmg = round(base_dmg * random.uniform(1.0, 1.2))
         target.take_dmg(dmg)
 
-class Healing_spell(Spell):
-    def __init__(self, name, description, power, mp_cost, is_targeted) -> None:
-        super().__init__(name, description, power, mp_cost, is_targeted)
+class Recovery_spell(Spell):
+    def __init__(self, name, description, power, mp_cost, stat, is_targeted, default_target) -> None:
+        super().__init__(name, description, power, mp_cost, is_targeted, default_target)
+        self.stat =stat
 
     def effect(self, caster, target):
-        amount_to_heal = 0
+        amount_to_recover = 0
         if self.check_mp(caster):
-            amount_to_heal = self.power + round(caster.stats["mat"]*2 + caster.stats["luk"])
-            amount_to_heal = round(amount_to_heal * random.uniform(1.0, 1.2))
-        target.heal(amount_to_heal)
+            amount_to_recover = self.power + round(caster.stats["mat"]*2 + caster.stats["luk"])
+            amount_to_recover = round(amount_to_recover * random.uniform(1.0, 1.2))
+        if self.stat == "hp":
+            target.heal(amount_to_recover)
+        elif self.stat == "mp":
+            target.recover_mp(amount_to_recover)
 
 class Buff_debuff_spell(Spell):
-    def __init__(self, name, description, power, mp_cost, is_targeted, start_to_change, amount_to_change, turns) -> None:
-        super().__init__(name, description, power, mp_cost, is_targeted)
+    def __init__(self, name, description, power, mp_cost, is_targeted, default_target, start_to_change, amount_to_change, turns) -> None:
+        super().__init__(name, description, power, mp_cost, is_targeted, default_target)
         self.start_to_change = start_to_change
         self.amount_to_change = amount_to_change
         self.turns = turns
@@ -92,8 +97,8 @@ class Buff_debuff_spell(Spell):
 ##### 连击 #####
 
 class Slash_combo(Combo):
-    def __init__(self, name, description, combo_cost, is_targeted, time_to_hit) -> None:
-        super().__init__(name, description, combo_cost, is_targeted)
+    def __init__(self, name, description, combo_cost, is_targeted, default_target, time_to_hit) -> None:
+        super().__init__(name, description, combo_cost, is_targeted, default_target)
         self.time_to_hit = time_to_hit
 
     def effect(self, caster, target):
@@ -103,8 +108,8 @@ class Slash_combo(Combo):
                 caster.normal_attack(target)
 
 class Armor_breaking_combo(Combo):
-    def __init__(self, name, description, cost, is_targeted, armor_destryed) -> None:
-        super().__init__(name, description, cost, is_targeted)
+    def __init__(self, name, description, cost, is_targeted, default_target, armor_destryed) -> None:
+        super().__init__(name, description, cost, is_targeted, default_target)
         self.armor_destroyed = armor_destryed
 
     def effect(self, caster, target):
@@ -116,14 +121,27 @@ class Armor_breaking_combo(Combo):
                 caster.normal_attack(target)
 
 class Vampirism_combo(Combo):
-    def __init__(self, name, description, cost, is_targeted, percent_heal) -> None:
-        super().__init__(name, description, cost, is_targeted)
+    def __init__(self, name, description, cost, is_targeted, default_target, percent_heal) -> None:
+        super().__init__(name, description, cost, is_targeted, default_target)
         self.percent_heal = percent_heal
 
     def effect(self, caster, target):
         if self.check_cp(caster):
             amount_to_recover = caster.normal_attack(target) * self.percent_heal
             caster.heal(round(amount_to_recover))
+
+class Recovery_combo(Combo):
+    def __init__(self, name, description, cost, stat, amount_to_change, is_targeted, default_target) -> None:
+        super().__init__(name, description, cost, is_targeted, default_target)
+        self.stat = stat
+        self.amount_to_change = amount_to_change
+
+    def effect(self, caster, target):
+        if self.check_cp(caster):
+            if self.stat == "hp":
+                target.heal(self.amount_to_change)
+            elif self.stat == "mp":
+                target.recover_mp(self.amount_to_change)
 
 ##### 杂项 #####
 
@@ -161,10 +179,11 @@ class Buff_debuff():
 
 ##### 法术和连击实例 #####
 
-fire_ball = Damage_spell("火球术", "", 75, 30, True)
-divineBlessing = Healing_spell("神圣祝福", "", 50, 50, True)
-benettFantasticVoyage = Buff_debuff_spell("班尼特的奇妙旅程", "", 0, 25, False, "atk", 0.5, 3)
+fire_ball = Damage_spell("火球术", "", 75, 30, True, None)
+divineBlessing = Recovery_spell("神圣祝福", "", 50, 50, "hp", True, None)
+enhanceWeapon = Buff_debuff_spell("强化武器", "", 0, 25, False, "self", "atk", 0.5, 3)
 
-slash_combo1 = Slash_combo("斩击连击 I", "", 3, True, 3)
-armor_breaker1 = Armor_breaking_combo("破甲 I", "", 2, True, -0.3)
-vampire_stab1 = Vampirism_combo("吸血之刺 I", "", 2, True, 0.5)
+slash_combo1 = Slash_combo("斩击连击 I", "", 3, True, None, 3)
+armor_breaker1 = Armor_breaking_combo("破甲 I", "", 2, True, None, -0.3)
+vampire_stab1 = Vampirism_combo("吸血之刺 I", "", 2, True, None, 0.5)
+meditation1 = Recovery_combo("冥想 I", "", 1, "mp", 30, False, "self")

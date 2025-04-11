@@ -51,8 +51,12 @@ class Player(combat.Battler):
             "accessory": None
         }
         self.money = 20 # 当前资金
-        self.combos = [skills.slash_combo1, skills.armor_breaker1, skills.vampire_stab1] # 玩家选择的组合（atk, cp）
-        self.spells = [skills.fire_ball, skills.divineBlessing, skills.benettFantasticVoyage] # 玩家选择的法术（matk, mp）
+        self.combos = [skills.slash_combo1, skills.armor_breaker1, skills.vampire_stab1, skills.meditation1] # 玩家选择的组合（atk, cp）
+        self.spells = [skills.fire_ball, skills.divineBlessing, skills.enhanceWeapon] # 玩家选择的法术（matk, mp）
+
+        self.active_quests = []
+        self.completed_quests = []
+
         self.is_ally = True # 检查战斗者是否是盟友
 
     def equip_item(self, equipment): # 装备一件物品（必须是“装备”类型）

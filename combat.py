@@ -52,6 +52,8 @@ class Battler():
 
         if not check_miss(self, defender): # 检查攻击失败
             defender.take_dmg(dmg)
+        else:
+            dmg = 0
         return dmg
 
     # 检查暴击
@@ -69,7 +71,7 @@ class Battler():
     def _calc_normal_damage(self, defender):
         base = self.stats["atk"]*4 - defender.stats["def"]*2
         base += self.stats["luk"] - defender.stats["luk"]
-        return round(max(base, 0) * random.uniform(0.8, 1.2)) # 伤害浮动：±20%
+        return round(max(base, self.stats["luk"]) * random.uniform(0.8, 1.2)) # 伤害浮动：±20%
 
     # 目标恢复一定量的 mp
     def recover_mp(self, amount):
@@ -99,9 +101,9 @@ def combat(player, enemies):
     enemy_exp = 0
     enemy_money = 0
     original_enemies = enemies.copy()
-    print("--------------------------------")
+    print("=================================================")
     for enemy in enemies:
-        print(f"野生的 {enemy.name} 出现了!")
+        typewriter(f"野生的 {enemy.name} 出现了!")
         enemy_exp += enemy.xp_reward
         enemy_money += enemy.gold_reward
 
@@ -182,25 +184,27 @@ def cast_spell(player, enemies, battlers):
     option = get_valid_input("> ", range(len(player.spells)+1), int)
     if option == 0:
         return
-    spell = player.spells[option - 1]
-    if spell.is_targeted:
+    spell_chosen = player.spells[option - 1]
+    if spell_chosen.is_targeted:
         target = select_target(battlers)
-        spell.effect(player, target)
+        spell_chosen.effect(player, target)
         check_if_dead(target, enemies, battlers)
     else:
-        spell.effect(player, player)
+        if spell_chosen.default_target == "self":
+            spell_chosen.effect(player, player)
 
 def cast_combo(player, enemies, battlers):
     option = get_valid_input("> ", range(len(player.combos)+1), int)
     if option == 0:
         return
-    combo = player.combos[option - 1]
-    if combo.is_targeted:
+    combo_chosen = player.combos[option - 1]
+    if combo_chosen.is_targeted:
         target = select_target(battlers)
-        combo.effect(player, target)
+        combo_chosen.effect(player, target)
         check_if_dead(target, enemies, battlers)
     else:
-        combo.effect(player, player)
+        if combo_chosen.default_target == "self":
+            combo_chosen.effect(player, player)
 
 # 返回按速度（回合顺序）排序的战斗者列表
 # 当“玩家”变为“盟友”时，应该更新此内容。
