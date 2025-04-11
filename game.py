@@ -1,5 +1,3 @@
-from re import M
-from ssl import MemoryBIO
 import sys
 import random
 
@@ -148,9 +146,9 @@ def give_initial_items(my_player):
 
 def generate_event(my_player):
     # 事件概率（%）
-    combat_chance = 70
-    shop_chance = 20
-    heal_chance = 10
+    combat_chance = 0
+    shop_chance = 100
+    heal_chance = 0
 
     event_list = random.choices(events.event_type_list, weights=(combat_chance, shop_chance, heal_chance), k=1)
     # random.choices 返回一个列表，所以我们需要使用 event_list[0]
