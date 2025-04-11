@@ -21,22 +21,22 @@ class Player(combat.Battler):
 
         self.level = 1 # 玩家等级
         self.xp = 0 # 当前经验值
-        self.xp_to_next_level = 50 # 达到下一等级所需的经验值每级乘以 1.5
+        self.xp_to_next_level = 70 # 达到下一等级所需的经验值每级乘以 1.5
         self.aptitudes = {
-            "str": 3,
-            "dex": 3,
-            "int": 3,
-            "wis": 3,
-            "const": 3
+            "str": 0,
+            "dex": 0,
+            "int": 0,
+            "wis": 0,
+            "const": 0
         }
 
         '''
         当能力提升时, 某些属性也会增加:
-        STR -> ATK + 2
-        DEX -> AGI + 1, CRIT + 1
-        INT -> MAT + 2
+        STR -> ATK + 3
+        DEX -> AGI + 2, CRIT + 1
+        INT -> MAT + 3
         WIS -> MAXMP + 15
-        CONST -> MAXHP + 10
+        CONST -> MAXHP + 30
         '''
         self.aptitude_points = 0 # 升级能力的点数
         self.inventory = inventory.Inventory() # 玩家的库存
@@ -51,7 +51,7 @@ class Player(combat.Battler):
         }
         self.money = 20 # 当前资金
         self.combos = [skills.slash_combo1, skills.armor_breaker1, skills.vampire_stab1, skills.meditation1] # 玩家选择的组合（atk, cp）
-        self.spells = [skills.fire_ball, skills.divineBlessing, skills.enhanceWeapon] # 玩家选择的法术（matk, mp）
+        self.spells = [] # 玩家选择的法术（matk, mp）
 
         self.active_quests = []
         self.completed_quests = []
@@ -59,31 +59,29 @@ class Player(combat.Battler):
         self.is_ally = True # 检查战斗者是否是盟友
 
     def equip_item(self, equipment): # 装备一件物品（必须是“装备”类型）
-        if not isinstance(equipment, inventory.Equipment):
-            print(f"{equipment.name} 无法装备")
-            return
-        equip_type = equipment.object_type
-        current_equipment = self.equipment.get(equip_type)
-        # 卸下旧装备
-        if current_equipment:
-            print(f"{current_equipment.name} 已解除装备")
-            current_equipment.add_to_inventory(self.inventory, 1)
-            for stat, value in current_equipment.stat_change_list.items():
-                self.stats[stat] -= value
-                print(f"{stat} -{value}")
-        # 装备新装备
-        for stat in equipment.stat_change_list:
-            self.stats[stat] += equipment.stat_change_list[stat]
-        self.equipment[equip_type] = equipment.create_item(1)
-        self.inventory.decrease_item_amount(equipment, 1)
-        print(f"装备了 {equipment.name}")
-        print(equipment.show_stats())
+        if isinstance(equipment, inventory.Equipment):
+            actual_equipment = self.equipment[equipment.object_type]
+            if actual_equipment != None:
+                print(f"{actual_equipment.name} 已解除装备")
+                actual_equipment.add_to_inventory(self.inventory, 1)
+                for stat in actual_equipment.stat_change_list:
+                    self.stats[stat] -= actual_equipment.stat_change_list[stat]
+            for stat in equipment.stat_change_list:
+                self.stats[stat] += equipment.stat_change_list[stat]
+            self.equipment[equipment.object_type] = equipment.create_item(1)
+            self.inventory.decrease_item_amount(equipment, 1)
+            print(f"装备了 {equipment.name}")
+            print(equipment.show_stats())
+        else:
+            if equipment != None:
+                print(f"{equipment.name} 无法装备")
         text.inventory_menu()
         self.inventory.show_inventory()
 
     def use_item(self, item): # 使用物品
+        usable_items = [inventory.Potion, inventory.Grimore]
         if item != None:
-            if isinstance(item, inventory.Potion):
+            if type(item) in usable_items:
                 item.activate(self)
         text.inventory_menu()
         self.inventory.show_inventory()
@@ -136,11 +134,11 @@ class Player(combat.Battler):
 
     def update_stats_to_aptitudes(self, aptitude): # 当能力提升时更新统计数据
         aptitude_mapping = {
-            "str": {"atk": 2},
-            "dex": {"agi": 1, "crit": 1},
-            "int": {"mat": 2},
+            "str": {"atk": 3},
+            "dex": {"agi": 2, "crit": 1},
+            "int": {"mat": 3},
             "wis": {"max_mp": 15},
-            "const": {"max_hp": 10}
+            "const": {"max_hp": 30}
         }
         updates = aptitude_mapping.get(aptitude, {})
         for stat, value in updates.items():

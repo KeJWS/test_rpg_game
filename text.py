@@ -118,14 +118,14 @@ def spell_menu(player):
     print("             SPELLS ['0' to Quit]")
     print("-------------------------------------------------")
     for index, spell in enumerate(player.spells, start=1):
-        print(str(f"{index} - {spell.name}"))
+        print(str(f"{index} - {spell.name} - {spell.cost}"))
 
 def combo_menu(player):
     print("-------------------------------------------------")
     print("             COMBOS ['0' to Quit]")
     print("-------------------------------------------------")
-    for index, c in enumerate(player.combos, start=1):
-        print(str(f"{index} - {c.name}"))
+    for index, combo in enumerate(player.combos, start=1):
+        print(str(f"{index} - {combo.name} - {combo.cost}"))
 
 def select_objective(target):
     print("-------------------------------------------------")

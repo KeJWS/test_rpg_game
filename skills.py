@@ -180,8 +180,8 @@ class Buff_debuff():
 ##### 法术和连击实例 #####
 
 fire_ball = Damage_spell("火球术", "", 75, 30, True, None)
-divineBlessing = Recovery_spell("神圣祝福", "", 50, 50, "hp", True, None)
-enhanceWeapon = Buff_debuff_spell("强化武器", "", 0, 25, False, "self", "atk", 0.5, 3)
+divine_blessing = Recovery_spell("神圣祝福", "", 50, 50, "hp", True, None)
+enhance_weapon = Buff_debuff_spell("强化武器", "", 0, 25, False, "self", "atk", 0.5, 3)
 
 slash_combo1 = Slash_combo("斩击连击 I", "", 3, True, None, 3)
 armor_breaker1 = Armor_breaking_combo("破甲 I", "", 2, True, None, -0.3)

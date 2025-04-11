@@ -212,3 +212,20 @@ class Potion(Item):
 
     def create_item(self, amount):
         return Potion(self.name, self.description, amount, self.individual_value, self.object_type, self.stat, self.amount_to_change)
+
+class Grimore(Item):
+    def __init__(self, name, description, amount, individual_value, object_type, skill) -> None:
+        super().__init__(name, description, amount, individual_value, object_type)
+        self.skill = skill
+
+    def activate(self, caster):
+        already_learnt = False
+        for skill in caster.spells:
+            if skill.name == self.skill.name:
+                already_learnt = True
+                break
+        if already_learnt:
+            print("你已经知道这个咒语")
+        else:
+            print(f"阅读 {self.name}, 你学会了释放: {self.skill.name}")
+            caster.spells.append(self.skill)

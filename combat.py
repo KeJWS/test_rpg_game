@@ -151,6 +151,8 @@ def combat(player, enemies):
     elif escaped:
         check_turns_buffs_and_debuffs(player, True)
         typewriter(f"{player.name} 成功逃离了战斗")
+        player.add_money(enemy_money)
+        player.add_exp(enemy_exp)
         take_a_rest(player)
         player.combo_points = 0
         text.log_battle_result("逃跑", player, original_enemies)

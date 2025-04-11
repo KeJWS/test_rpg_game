@@ -1,4 +1,4 @@
-import inventory
+import inventory, skills
 import csv
 import ast
 
@@ -82,8 +82,13 @@ ring_of_power = equipment_data["ring_of_power"]
 ring_of_magic = equipment_data["ring_of_magic"]
 
 # 消耗品
-hp_potion = inventory.Potion('生命药水', 'a', 1, 10, 'consumable', 'hp', 30)
-mp_potion = inventory.Potion('法力药水', 'a', 1, 10, 'consumable', 'mp', 15)
+hp_potion = inventory.Potion('生命药水', 'a', 1, 20, 'consumable', 'hp', 70)
+mp_potion = inventory.Potion('法力药水', 'a', 1, 20, 'consumable', 'mp', 40)
+
+# 魔法书
+grimoire_fireball = inventory.Grimore("法典：火球术", "", 1, 80, "consumable", skills.fire_ball)
+grimoire_divine_blessing = inventory.Grimore("法典：神圣祝福", "", 1, 120, "consumable", skills.divine_blessing)
+grimoire_enhance_weapon = inventory.Grimore("法典：增强武器", "", 1, 120, "consumable", skills.enhance_weapon)
 
 # 商店物品套装
 
@@ -108,4 +113,7 @@ itz_magic_item_set = [
     sage_tunic,
     sage_staff,
     student_robes,
+    grimoire_fireball,
+    grimoire_divine_blessing,
+    grimoire_enhance_weapon,
 ]
