@@ -37,7 +37,7 @@ dagger = equipment_data["dagger"]
 staff = equipment_data["staff"]
 
 # -> 基础护甲
-cloth_armor = inventory.Equipment('布甲', '', 1, 20, 'armor', {'max_hp' : 2, 'def' : 2})
+cloth_armor = equipment_data["cloth_armor"]
 bronze_armor = equipment_data["bronze_armor"]
 student_robes = equipment_data["student_robes"]
 
@@ -64,7 +64,7 @@ sage_staff = equipment_data["sage_staff"]
 sai = equipment_data["sai"]
 
 # -> 高级装甲
-iron_armor = inventory.Equipment('铁甲', '', 1, 102, 'armor', {'max_hp' : 8, 'def' : 10})
+iron_armor = equipment_data["iron_armor"]
 sage_tunic = equipment_data["sage_tunic"]
 thief_armor = equipment_data["thief_armor"]
 
@@ -97,6 +97,7 @@ rik_armor_shop_item_set = [
     bronze_armor,
     sai,
     thief_armor,
+    wooden_shield,
 ]
 
 itz_magic_item_set = [

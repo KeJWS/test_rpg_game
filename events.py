@@ -98,14 +98,14 @@ class Healing_event(Event):
 # 任务
 # -> 凯撒鲁斯
 caesarus_bandit_combat = Fixed_combat_event('凯撒鲁斯与他的强盗', enemies.enemy_list_caesarus_bandit)
-quest_caesarus_bandit = quest.Quest('凯撒鲁斯与他的强盗', text.quest_caesarus_bandit_text, text.shop_quest_caesarus_bandits, 100, 100, None, caesarus_bandit_combat, 7)
+quest_caesarus_bandit = quest.Quest('凯撒鲁斯与他的强盗', text.quest_caesarus_bandit_text, text.shop_quest_caesarus_bandits, 200, 200, None, caesarus_bandit_combat, 5)
 
 # 事件实例
 random_combat = Random_combat_event("随机战斗")
 shop_rik_armor = Shop_event("里克的盔甲店", False, text.rik_armor_shop_encounter, text.rik_armor_shop_enter, text.rik_armor_shop_talk, text.rik_armor_shop_exit, items.rik_armor_shop_item_set, quest_caesarus_bandit)
 shop_itz_magic = Shop_event("伊兹的魔法店", False, text.itz_magic_encounter, text.itz_magic_enter, text.itz_magic_talk, text.itz_magic_exit, items.itz_magic_item_set, None)
 heal_medussa_statue = Healing_event("美杜莎雕像", text.medussa_statue_encounter, text.medussa_statue_success,
-                                    text.medussa_statue_fail, text.medussa_statue_refuse, 70, False, 50)
+                                    text.medussa_statue_fail, text.medussa_statue_refuse, 70, False, 100)
 
 # 分组事件
 combat_event_list = [random_combat]

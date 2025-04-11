@@ -8,13 +8,13 @@ class Player(combat.Battler):
             "hp": 500,
             "max_mp": 100,
             "mp": 100,
-            "atk": 15,
-            "def": 15,
-            "mat": 15,
+            "atk": 12,
+            "def": 10,
+            "mat": 12,
             "mdf": 10,
             "agi": 10,
             "luk": 10, # 幸运影响伤害, 经验获得量, 逃跑概率
-            "crit": 5 # 影响暴击倍率
+            "crit": 3 # 影响暴击倍率
         }
 
         super().__init__(name, stats)
@@ -23,18 +23,18 @@ class Player(combat.Battler):
         self.xp = 0 # 当前经验值
         self.xp_to_next_level = 50 # 达到下一等级所需的经验值每级乘以 1.5
         self.aptitudes = {
-            "str": 5,
-            "dex": 5,
-            "int": 5,
-            "wis": 5,
-            "const": 5
+            "str": 3,
+            "dex": 3,
+            "int": 3,
+            "wis": 3,
+            "const": 3
         }
 
         '''
         当能力提升时, 某些属性也会增加:
-        STR -> ATK + 3
-        DEX -> AGI + 2, CRIT + 1
-        INT -> MAT + 3
+        STR -> ATK + 2
+        DEX -> AGI + 1, CRIT + 1
+        INT -> MAT + 2
         WIS -> MAXMP + 15
         CONST -> MAXHP + 10
         '''
@@ -136,9 +136,9 @@ class Player(combat.Battler):
 
     def update_stats_to_aptitudes(self, aptitude): # 当能力提升时更新统计数据
         aptitude_mapping = {
-            "str": {"atk": 3},
-            "dex": {"agi": 2, "crit": 1},
-            "int": {"mat": 3},
+            "str": {"atk": 2},
+            "dex": {"agi": 1, "crit": 1},
+            "int": {"mat": 2},
             "wis": {"max_mp": 15},
             "const": {"max_hp": 10}
         }
