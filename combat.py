@@ -61,16 +61,16 @@ class Battler():
         return random.randint(1, 100) <= min(75, self.stats["crit"])
 
     def _calc_critical_damage(self, defender):
-        crit_base = self.stats["atk"]*4 + self.stats["luk"]*1.2
-        rate = random.choices([1.5, 2.0, 2.5, 3.0], weights=[50, 30, 15, 5])[0] # 暴击倍率 : 概率
-        rate += self.stats["crit"]/100
+        crit_base = self.stats["atk"]*3.5 + self.stats["luk"]*1.2
+        rate = random.choices([1.5, 2.0, 2.5, 3.0], weights=[50, 30, 17, 3])[0] # 暴击倍率 : 概率
+        rate += round(self.stats["crit"]/100, 2)
         print(fx.critical(f"暴击! x{rate}"))
         dmg = round(crit_base * random.uniform(1.0, 1.2) * rate)
         battle_log(f"{self.name} 对 {defender.name} 造成了 {dmg} 点暴击伤害", "crit")
         return dmg
 
     def _calc_normal_damage(self, defender):
-        base = self.stats["atk"]*4 - defender.stats["def"]*2
+        base = self.stats["atk"]*4 - defender.stats["def"]*2.5
         base += self.stats["luk"] - defender.stats["luk"]
         return round(max(base, self.stats["luk"]) * random.uniform(0.8, 1.2)) # 伤害浮动：±20%
 
@@ -293,9 +293,10 @@ def create_enemy_group(level):
     # 如果等级 < 10 -> 最多 3 个敌人
     # ...
     enemy_quantity_for_level = {
-        2: 2,
-        5: 3,
-        10: 4,
+        2: 1,
+        4: 2,
+        7: 3,
+        12: 4,
         100: 5
     }
     max_enemies = 1

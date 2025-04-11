@@ -1,30 +1,44 @@
 id,name,name_zh,description,amount,individual_value,object_type,stat_change_list
-1 ,-> 基本武器,,,1,0,weapon,{}
-2 ,long_sword,长剑,标准制式的长剑,1,25,weapon,{'atk': 7}
-3 ,dagger,匕首,轻便锋利的匕首,1,27,weapon,"{'atk': 3, 'crit': 5, 'agi': 3}"
-4 ,staff,棍棒,简易的木制棍棒,1,22,weapon,"{'atk': 5, 'mat': 3, 'max_mp': 5}"
-5 ,-> 基础护甲,,,1,0,armor,{}
-6 ,cloth_armor,布甲,简单的布制护甲,1,27,armor,"{'max_hp': 10, 'def': 2}"
-7 ,-> 基础护盾,,,1,0,shield,{}
-8 ,wooden_shield,木盾,粗制简易的木盾,1,50,shield,"{'def': 3, 'agi': -1}"
-9 ,-> 基础头盔,,,1,0,head,{}
-10,straw_hat,草帽,一顶由麦秸或其他坚韧植物编织而成的帽子,1,25,head,{'def': 1}
-11,-> 基础护手,,,1,0,hand,{}
-12,gloves_wraps,绑手带,一条长长的绑在手部、提供稍许防护与其他用途的棉布条,1,15,hand,"{'atk': 1, 'def': 1}"
-13,-> 基础护足,,,1,0,foot,{}
-14,footrags,裹脚,裹在脚上的布条,1,19,foot,"{'def': 1, 'agi': 1}"
-15,-> 基础饰品,,,1,0,accessory,{}
-16,copper_ring,铜戒指,普通的铜制戒指，提供些许幸运属性,1,24,accessory,{'luk': 2}
-17,-> 高级武器,,,1,0,weapon,{}
-18,war_hammer,战锤,沉重且威力强大的战锤,1,72,weapon,"{'atk': 13, 'agi': -2}"
-19,-> 高级装甲,,,1,0,armor,{}
-20,iron_armor,铁甲,坚固的铁制护甲,1,170,armor,"{'max_hp': 25, 'def': 10}"
-21,-> 高级头盔,,,1,0,head,{}
-22,helmet_bronze,青铜头盔,一顶坚固的整体成型的封闭式青铜头盔，在眼部有个开口,1,364,head,"{'def': 13, 'agi': -3}"
-23,-> 高级护手,,,1,0,hand,{}
-24,gauntlets_larmor,皮甲护手,一对沉重的无指皮革手套,1,170,hand,"{'atk': 3, 'def': 5, 'agi': -1}"
-25,-> 高级护足,,,1,0,foot,{}
-26,boots_plate,护甲靴,一双十分沉重的重型金属靴,1,300,foot,"{'def': 12, 'agi': -4}"
-27,-> 高级饰品,,,1,0,accessory,{}
-28,ring_of_power,力量之戒,增强佩戴者力量的魔法戒指,1,265,accessory,{'atk': 15}
-29,ring_of_magic,魔力之戒,增强佩戴者魔法力的魔法戒指,1,275,accessory,"{'mat': 12, 'max_mp': 15}"
+1 ,-> 初始武器,,,1,0,weapon,{}
+2 ,rusty_sword,生锈的剑,,1,7,weapon,{'atk': 2}
+3 ,broken_dagger,破损的匕首,,1,9,weapon,"{'atk': 1, 'crit': 3, 'agi': 1}"
+4 ,old_staff,旧法杖,,1,7,weapon,"{'mat': 1, 'max_mp': 3}"
+5 ,-> 初始护甲,,,1,0,armor,{}
+6 ,novice_armor,新手盔甲,,1,10,armor,"{'def': 2, 'agi': 1}"
+7 ,old_robes,旧长袍,,1,12,armor,"{'def': 1, 'mdf': 2, 'max_mp': 3}"
+8 ,-> 基本武器,,,1,0,weapon,{}
+9 ,long_sword,长剑,标准制式的长剑,1,25,weapon,{'atk': 7}
+10,dagger,匕首,轻便锋利的匕首,1,27,weapon,"{'atk': 3, 'crit': 5, 'agi': 3}"
+11,staff,法杖,简易的木制法杖,1,22,weapon,"{'mat': 3, 'max_mp': 5}"
+12,-> 基础护甲,,,1,0,armor,{}
+13,cloth_armor,布甲,简单的布制护甲,1,55,armor,"{'max_hp': 10, 'def': 2, 'agi': 1}"
+14,bronze_armor,青铜盔甲,,1,150,armor,"{'max_hp': 10, 'def': 8, 'agi': -2}"
+15,student_robes,学者长袍,,1,100,armor,"{'max_mp': 10, 'def': 3, 'mdf': 5}"
+16,-> 基础护盾,,,1,0,shield,{}
+17,wooden_shield,木盾,粗制简易的木盾,1,50,shield,"{'def': 3, 'agi': -1}"
+18,-> 基础头盔,,,1,0,head,{}
+19,straw_hat,草帽,一顶由麦秸或其他坚韧植物编织而成的帽子,1,25,head,{'def': 1}
+20,-> 基础护手,,,1,0,hand,{}
+21,gloves_wraps,绑手带,一条长长的绑在手部、提供稍许防护与其他用途的棉布条,1,15,hand,"{'atk': 1, 'def': 1}"
+22,-> 基础护足,,,1,0,foot,{}
+23,footrags,裹脚,裹在脚上的布条,1,19,foot,"{'def': 1, 'agi': 1}"
+24,-> 基础饰品,,,1,0,accessory,{}
+25,copper_ring,铜戒指,普通的铜制戒指，提供些许幸运属性,1,24,accessory,{'luk': 2}
+26,-> 高级武器,,,1,0,weapon,{}
+27,war_hammer,战锤,沉重且威力强大的战锤,1,72,weapon,"{'atk': 13, 'agi': -2}"
+28,zweihander,双手剑,,1,90,weapon,{'atk': 12}
+29,sage_staff,智者法杖,,1,85,weapon,"{'max_mp': 15, 'mat': 12}"
+30,sai,三叉戟,,1,117,weapon,"{'atk': 7, 'crit': 10, 'agi': 5}"
+31,-> 高级装甲,,,1,0,armor,{}
+32,iron_armor,铁甲,坚固的铁制护甲,1,170,armor,"{'max_hp': 25, 'def': 10}"
+33,sage_tunic,智者上衣,,1,220,armor,"{'max_mp': 20, 'def': 5, 'mdf': 7}"
+34,thief_armor,盗贼盔甲,,1,210,armor,"{'def': 7, 'agi': 5, 'luk': 5}"
+35,-> 高级头盔,,,1,0,head,{}
+36,helmet_bronze,青铜头盔,一顶坚固的整体成型的封闭式青铜头盔，在眼部有个开口,1,345,head,"{'def': 12, 'agi': -2}"
+37,-> 高级护手,,,1,0,hand,{}
+38,gauntlets_larmor,皮甲护手,一对沉重的无指皮革手套,1,170,hand,"{'atk': 3, 'def': 5, 'agi': -1}"
+39,-> 高级护足,,,1,0,foot,{}
+40,boots_plate,护甲靴,一双十分沉重的重型金属靴,1,275,foot,"{'def': 8, 'agi': -2}"
+41,-> 高级饰品,,,1,0,accessory,{}
+42,ring_of_power,力量之戒,增强佩戴者力量的魔法戒指,1,265,accessory,{'atk': 15}
+43,ring_of_magic,魔力之戒,增强佩戴者魔法力的魔法戒指,1,275,accessory,"{'mat': 12, 'max_mp': 15}"

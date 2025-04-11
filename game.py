@@ -1,3 +1,5 @@
+from re import M
+from ssl import MemoryBIO
 import sys
 import random
 
@@ -5,6 +7,8 @@ import combat, enemies, text, inventory, player, items, events
 
 from test.clear_screen import clear_screen, enter_clear_screen
 from test.save_system import save_game, get_save_list, delete_save, load_game
+
+import test.fx
 
 #### 标题屏幕 #####
 def title_screen_selections():
@@ -77,7 +81,7 @@ def play():
     # 玩家实例
     my_player = player.Player("Test Player")
 
-    # debug_add_test_items(my_player)
+    give_initial_items(my_player)
 
     while my_player.alive:
         text.play_menu()
@@ -126,26 +130,21 @@ def play():
                 clear_screen()
                 print("请输入有效命令")
 
-def debug_add_test_items(my_player):
-    # 添加一些测试项目
-    items.hp_potion.add_to_inventory(my_player.inventory)
-    items.mp_potion.add_to_inventory(my_player.inventory)
-    items.long_sword.add_to_inventory_player(my_player.inventory)
-    items.dagger.add_to_inventory_player(my_player.inventory)
-    items.staff.add_to_inventory_player(my_player.inventory)
-    items.cloth_armor.add_to_inventory_player(my_player.inventory)
-    items.war_hammer.add_to_inventory_player(my_player.inventory)
-    items.iron_armor.add_to_inventory_player(my_player.inventory)
-    items.wooden_shield.add_to_inventory_player(my_player.inventory)
-    items.straw_hat.add_to_inventory_player(my_player.inventory)
-    items.gloves_wraps.add_to_inventory_player(my_player.inventory)
-    items.footrags.add_to_inventory_player(my_player.inventory)
-    items.helmet_bronze.add_to_inventory_player(my_player.inventory)
-    items.gauntlets_larmor.add_to_inventory_player(my_player.inventory)
-    items.boots_plate.add_to_inventory_player(my_player.inventory)
-    items.copper_ring.add_to_inventory_player(my_player.inventory)
-    items.ring_of_power.add_to_inventory_player(my_player.inventory)
-    items.ring_of_magic.add_to_inventory_player(my_player.inventory)
+def give_initial_items(my_player):
+    print(text.initial_event_text)
+    option = str(input("> "))
+    while option not in ["1", "2", "3"]:
+        option = str(input("> "))
+    if option == "1":
+        items.rusty_sword.add_to_inventory_player(my_player.inventory)
+        items.novice_armor.add_to_inventory_player(my_player.inventory)
+    elif option == "2":
+        items.broken_dagger.add_to_inventory_player(my_player.inventory)
+        items.novice_armor.add_to_inventory_player(my_player.inventory)
+    elif option == "3":
+        items.old_staff.add_to_inventory_player(my_player.inventory)
+        items.old_robes.add_to_inventory_player(my_player.inventory)
+    print(test.fx.red("[ 记得在库存 > 装备物品中装备这些物品 ]"))
 
 def generate_event(my_player):
     # 事件概率（%）
