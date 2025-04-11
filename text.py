@@ -60,7 +60,7 @@ def show_stats(player):
         left_eq = eq[left].name if eq[left] else None
         right_eq = eq[right].name if eq[right] else None
         print(f"    {left}: {left_eq}   {right}: {right_eq}")
-    print(f"    accessory: {eq["accessory"].name if eq["accessory"] else None}")
+    print(f"    accessory: {eq['accessory'].name if eq['accessory'] else None}")
     print("==================================")
 
 def show_equipment_info(player):
@@ -94,7 +94,6 @@ def inventory_menu():
     display_inventory = (
         "----------------------------------\n"
         "       U - Use an item\n"
-        "       S - Sell an item\n"
         "       D - Drop an item\n"
         "       E - Equip an item           \n"
         "           Q - Quit\n"
@@ -244,7 +243,7 @@ itz_magic_exit = "你离开了沼泽，继续踏上旅程。\n"
 medussa_statue_encounter = "在一座山丘的顶端，你发现了一座小型神殿。\n\
 这里矗立着一尊古老而被遗忘的女神雕像。\n\
 不知为何，你心生敬意，想要向它致敬。\n\
-你跪在了雕像前。"
+是否跪拜？[y/n]"
 medussa_statue_success = "你感受到一股温暖的力量流遍全身。\n"
 medussa_statue_fail = "什么也没有发生，或许只是你的错觉。\n"
 medussa_statue_refuse = "你决定不跪拜。\n"

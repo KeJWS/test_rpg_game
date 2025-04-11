@@ -288,6 +288,7 @@ def create_enemy_group(level):
     # 如果等级 < 10 -> 最多 3 个敌人
     # ...
     enemy_quantity_for_level = {
+        2: 1,
         5: 2,
         10: 3,
         100: 4

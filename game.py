@@ -28,8 +28,6 @@ def inventory_selections(player):
         match option.lower():
             case "u":
                 player.use_item(player.inventory.use_item())
-            case "s":
-                player.money += player.inventory.sell_item()
             case "d":
                 player.inventory.drop_item()
             case "e":
@@ -143,9 +141,9 @@ def debug_add_test_items(my_player):
 
 def generate_event(my_player):
     # 事件概率（%）
-    combat_chance = 0
+    combat_chance = 8
     shop_chance = 100
-    heal_chance = 0
+    heal_chance = 10
 
     event_list = random.choices(events.event_type_list, weights=(combat_chance, shop_chance, heal_chance))
     # random.choices 返回一个列表，所以我们需要使用 event_list[0]

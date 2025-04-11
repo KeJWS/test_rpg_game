@@ -50,7 +50,7 @@ class Player(combat.Battler):
             "foot": None, # 防御和敏捷
             "accessory": None
         }
-        self.money = 999 # 当前资金
+        self.money = 920 # 当前资金
         self.combos = [skills.slash_combo1, skills.armor_breaker1, skills.vampire_stab1] # 玩家选择的组合（atk, cp）
         self.spells = [skills.fire_ball, skills.divineBlessing, skills.benettFantasticVoyage] # 玩家选择的法术（matk, mp）
         self.is_ally = True # 检查战斗者是否是盟友
@@ -64,14 +64,15 @@ class Player(combat.Battler):
         # 卸下旧装备
         if current_equipment:
             print(f"{current_equipment.name} 已解除装备")
-            current_equipment.add_to_inventory(self.inventory)
+            current_equipment.add_to_inventory(self.inventory, 1)
             for stat, value in current_equipment.stat_change_list.items():
                 self.stats[stat] -= value
                 print(f"{stat} -{value}")
         # 装备新装备
         for stat in equipment.stat_change_list:
             self.stats[stat] += equipment.stat_change_list[stat]
-        self.equipment[equip_type] = equipment
+        self.equipment[equip_type] = equipment.create_item(1)
+        self.inventory.decrease_item_amount(equipment, 1)
         print(f"装备了 {equipment.name}")
         print(equipment.show_stats())
         text.inventory_menu()

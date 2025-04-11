@@ -37,11 +37,9 @@ class Inventory():
             return 0
         elif i <= len(self.items):
             item = self.items[i-1]
-            money_for_item = item.sell()
-            if item.amount <= 0:
-                self.items.pop(i-1)
+            money_for_item, amount_to_sell = item.sell()
+            self.decrease_item_amount(item, amount_to_sell)
             return money_for_item
-        return 0
 
     def equip_item(self):
         print("\n装备什么? ['0' 退出]") # 从库存中装备某件物品（必须是“装备”类型）
@@ -52,8 +50,7 @@ class Inventory():
             return None
         elif i <= len(self.items):
             item = self.items[i-1]
-            if type(item) == Equipment:
-                self.items.pop(i-1)
+            if isinstance(item, Equipment):
                 return item
             else:
                 print("选择一个可装备的物品")
@@ -76,6 +73,13 @@ class Inventory():
             else:
                 print("选择一个消耗品")
                 return None
+
+    def decrease_item_amount(self, item, amount):
+        for actual_item in self.items:
+            if item.name == actual_item.name:
+                actual_item.amount -= amount
+                if actual_item.amount <= 0:
+                    self.items.remove(actual_item)
 
     @property
     def total_worth(self):
@@ -104,40 +108,44 @@ class Item():
                 print("数量无效!")
 
     def sell(self):
-        if self.amount == 1:
-            self.amount -= 1
-            print(f"出售了一个 {self.name}, 得 {self.individual_value}")
-            return self.individual_value
-        elif self.amount > 1:
+        if self.amount >= 1:
             print(f"有 {self.amount} 个 {self.name}, 出售多少?")
             amount_to_sell = int(input("> "))
             if 0 < amount_to_sell <= self.amount:
                 # 物品售价为其价值的 50%
-                money_to_receive = self.individual_value * 0.5 * amount_to_sell
-                self.amount -= amount_to_sell
-                print(f"售出 {self.name}x{amount_to_sell}, 得 {money_to_receive}")
-                return money_to_receive
+                money_to_receive = int(round(self.individual_value * 0.5 * amount_to_sell))
+                print(f"您确定要以 {money_to_receive}G 的价格出售 {amount_to_sell} {self.name} 吗? [y/n]")
+                confirmation = input("> ")
+                if confirmation == "y":
+                    print(f"售出 {self.name}x{amount_to_sell}, 得 {money_to_receive}")
+                    return money_to_receive, amount_to_sell
+                else:
+                    pass
             else:
-                print("数量无效!")
+                print(f"没有那么多{self.name}")
         return 0
 
     def buy(self, player):
         if self.amount > 1:
             print("买多少?")
-            amount_to_bug = int(input("> "))
-            price = self.individual_value * amount_to_bug
-            if amount_to_bug > self.amount:
+            amount_to_buy = int(input("> "))
+            price = self.individual_value * amount_to_buy
+            if amount_to_buy > self.amount:
                 print(f"供应商没有那么多 {self.name}")
             elif price > player.money:
                 print("没有足够的钱")
             else:
-                item_for_player = Item(self.name, self.description, amount_to_bug, self.individual_value, self.object_type)
-                self.amount -= amount_to_bug
+                item_for_player = self.create_item(amount_to_buy)
+                self.amount -= amount_to_buy
                 item_for_player.add_to_inventory_player(player.inventory)
+                player.money -= price
         elif self.amount == 1 and self.individual_value <= player.money:
-            item_for_player = Item(self.name, self.description, 1, self.individual_value, self.object_type)
+            item_for_player = self.create_item(1)
             item_for_player.add_to_inventory_player(player.inventory)
             self.amount = 0
+
+    def create_item(self, amount):
+        return Item(self.name, self.description, amount, self.individual_value, self.object_type)
 
     def add_to_inventory_player(self, inventory):
         amount_added = self.amount
@@ -175,6 +183,9 @@ class Equipment(Item):
         stats_string += "]"
         return fx.green(stats_string)
 
+    def create_item(self, amount):
+        return Equipment(self.name, self.description, amount, self.individual_value, self.object_type, self.stat_change_list)
+
 class Potion(Item):
     def __init__(self, name, description, amount, individual_value, object_type, stat, amount_to_change) -> None:
         super().__init__(name, description, amount, individual_value, object_type)
@@ -187,3 +198,6 @@ class Potion(Item):
             caster.heal(self.amount_to_change)
         elif self.stat == "mp":
             caster.recover_mp(self.amount_to_change)
+
+    def create_item(self, amount):
+        return Potion(self.name, self.description, amount, self.individual_value, self.object_type, self.stat, self.amount_to_change)
