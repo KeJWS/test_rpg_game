@@ -61,8 +61,9 @@ class Battler():
         return random.randint(1, 100) <= min(75, self.stats["crit"])
 
     def _calc_critical_damage(self, defender):
-        crit_base = self.stats["atk"] * 4 + self.stats["luk"]
+        crit_base = self.stats["atk"]*4 + self.stats["luk"]*1.2
         rate = random.choices([1.5, 2.0, 2.5, 3.0], weights=[50, 30, 15, 5])[0] # 暴击倍率 : 概率
+        rate += self.stats["crit"]/100
         print(fx.critical(f"暴击! x{rate}"))
         dmg = round(crit_base * random.uniform(1.0, 1.2) * rate)
         battle_log(f"{self.name} 对 {defender.name} 造成了 {dmg} 点暴击伤害", "crit")

@@ -4,17 +4,17 @@ from data.constants import EXPERIENCE_RATE, MONEY_MULTIPLIER
 class Player(combat.Battler):
     def __init__(self, name) -> None:
         stats = {
-            "max_hp": 600,
-            "hp": 600,
-            "max_mp": 120,
-            "mp": 120,
-            "atk": 20,
-            "def": 20,
-            "mat": 10,
+            "max_hp": 500,
+            "hp": 500,
+            "max_mp": 100,
+            "mp": 100,
+            "atk": 15,
+            "def": 15,
+            "mat": 15,
             "mdf": 10,
             "agi": 10,
             "luk": 10, # 幸运影响伤害, 经验获得量, 逃跑概率
-            "crit": 5
+            "crit": 5 # 影响暴击倍率
         }
 
         super().__init__(name, stats)
@@ -34,9 +34,9 @@ class Player(combat.Battler):
         '''
         当能力提升时, 某些属性也会增加:
         STR -> ATK + 3
-        DEX -> AGI + 3, CRIT + 1
+        DEX -> AGI + 2, CRIT + 1
         INT -> MAT + 3
-        WIS -> MAXMP + 10
+        WIS -> MAXMP + 15
         CONST -> MAXHP + 10
         '''
 
@@ -138,9 +138,9 @@ class Player(combat.Battler):
     def update_stats_to_aptitudes(self, aptitude): # 当能力提升时更新统计数据
         aptitude_mapping = {
             "str": {"atk": 3},
-            "dex": {"agi": 3, "crit": 1},
+            "dex": {"agi": 2, "crit": 1},
             "int": {"mat": 3},
-            "wis": {"max_mp": 10},
+            "wis": {"max_mp": 15},
             "const": {"max_hp": 10}
         }
         updates = aptitude_mapping.get(aptitude, {})

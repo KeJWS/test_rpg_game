@@ -32,5 +32,6 @@ enemy_data = load_enemies_from_csv("data/enemies.csv")
 possible_enemies = {
     "imp": (1, 3),
     "golem": (2, 4),
-    "giant_slime": (3, 100)
+    "giant_slime": (3, 100),
+    "skeleton": (2, 5)
 }
