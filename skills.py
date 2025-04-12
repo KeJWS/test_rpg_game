@@ -1,4 +1,5 @@
 import random
+import allies
 
 """
 技能是法术(mat)和连击(atk)的父类
@@ -101,6 +102,17 @@ class Buff_debuff_spell(Spell):
             buff = Buff_debuff(self.name, target, self.start_to_change, self.amount_to_change, self.turns)
             buff.activate()
 
+class Summon_spell(Spell):
+    def __init__(self, name, description, power, cost, is_targeted, default_target, summoning) -> None:
+        super().__init__(name, description, power, cost, is_targeted, default_target)
+        self.summoning = summoning
+
+    def effect(self, caster, target):
+        if self.check_mp(caster):
+            summoning_inst = self.summoning()
+            target.append(summoning_inst)
+            print(f"你召唤了 {summoning_inst.name}")
+
 ##### 连击 #####
 
 class Slash_combo(Combo):
@@ -188,8 +200,10 @@ class Buff_debuff():
 
 spell_fire_ball = Damage_spell("火球术", "", 75, 30, True, None)
 spell_divine_blessing = Recovery_spell("神圣祝福", "", 60, 50, "hp", True, None)
-spell_enhance_weapon = Buff_debuff_spell("强化武器", "", 0, 30, False, "self", "atk", 0.5, 3)
-spell_inferno = Damage_spell("地狱火", "", 50, 50, False, "all_enemies")
+spell_enhance_weapon = Buff_debuff_spell("强化武器", "", 0, 32, False, "self", "atk", 0.5, 3)
+spell_inferno = Damage_spell("地狱火", "", 50, 55, False, "all_enemies")
+spell_skeleton_summoning = Summon_spell("召唤骷髅", "", 0, 37, False, "allies", allies.Summoned_skeleton)
+spell_fire_spirit_summoning = Summon_spell("召唤火精灵", "", 0, 68, False, "allies", allies.Summoned_fire_spirit)
 
 combo_slash1 = Slash_combo("斩击连击 I", "", 3, True, None, 3)
 combo_slash2 = Slash_combo("斩击连击 II", "", 3, True, None, 4)
@@ -198,7 +212,6 @@ combo_vampire_stab1 = Vampirism_combo("吸血之刺 I", "", 2, True, None, 0.5)
 combo_vampire_stab2 = Vampirism_combo("吸血之刺 II", "", 2, True, None, 0.75)
 combo_meditation1 = Recovery_combo("冥想 I", "", 1, "mp", 30, False, "self")
 combo_meditation2 = Recovery_combo("冥想 II", "", 2, "mp", 70, False, "self")
-
 
 enhance_weapon = Buff_debuff_spell("蓄力", "", 0, 0, False, "self", "atk", 0.25, 2)
 weakened_defense = Buff_debuff_spell("破防", "", 0, 0, False, "self", "def", -0.5, 2)

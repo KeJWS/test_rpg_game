@@ -234,3 +234,6 @@ class Grimore(Item):
         else:
             print(f"阅读 {self.name}, 你学会了释放: {self.skill.name}")
             caster.spells.append(self.skill)
+
+    def create_item(self, amount):
+        return Grimore(self.name, self.description, amount, self.individual_value, self.object_type, self.skill)

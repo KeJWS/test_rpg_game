@@ -51,17 +51,11 @@ def show_stats(player):
         f"----------------------------------"
     )
     print(stats_template)
-    eq = player.equipment
-    slots = [
-        ("weapon", "shield"),
-        ("head", "armor"),
-        ("hand", "foot")
-    ]
-    for left, right in slots:
-        left_eq = eq[left].name if eq[left] else None
-        right_eq = eq[right].name if eq[right] else None
-        print(f"    {left}: {left_eq}   {right}: {right_eq}")
-    print(f"    accessory: {eq['accessory'].name if eq['accessory'] else None}")
+    for equipment in player.equipment:
+        if player.equipment[equipment] is not None:
+            print(f"    {equipment}: {player.equipment[equipment].name}")
+        else:
+            print(f"    {equipment}:")
     print("==================================")
 
 def show_equipment_info(player):
@@ -102,11 +96,13 @@ def inventory_menu():
     )
     print(display_inventory)
 
-def combat_menu(player, enemies):
+def combat_menu(player, allies, enemies):
     print("-------------------------------------------------")
-    print(f"{player.name} - \033[31mHP: {player.stats['hp']}/{player.stats['max_hp']}\033[0m - MP: {player.stats['mp']}/{player.stats['max_mp']} - CP: {player.combo_points}")
+    print(f"{player.name} - {fx.RED}HP: {player.stats['hp']}/{player.stats['max_hp']}{fx.END} - MP: {player.stats['mp']}/{player.stats['max_mp']} - CP: {player.combo_points}")
     for enemy in enemies:
-        print(f"{enemy.name} - \033[32mHP: {enemy.stats['hp']}/{enemy.stats['max_hp']}\033[0m")
+        print(f"{enemy.name} - {fx.GREEN}HP: {enemy.stats['hp']}/{enemy.stats['max_hp']}{fx.END}")
+    for ally in allies:
+        print(f"{ally.name} - {fx.RED}HP: {ally.stats['hp']}/{ally.stats['max_hp']}{fx.END}")
     print("-------------------------------------------------")
     print("             A - Attack  C - Combos")
     print("             S - Spells  D - Defense             ")
@@ -219,7 +215,7 @@ def log_battle_result(result: str, player, enemies):
 
 # 初始事件
 initial_event_text = '这一天终于到来了。你已在冒险者公会登记了自己的姓名。\n\
-作为礼物，他们允许你从六套装备中选择一套。你会选择哪一套？\n\
+作为礼物，他们允许你从以下装备中选择一套。你会选择哪一套？\n\
 1 - 战士套装\n\
 2 - 盗贼套装\n\
 3 - 魔法师套装'
@@ -255,6 +251,14 @@ medussa_statue_encounter = "在一座山丘的顶端，你发现了一座小型�
 medussa_statue_success = "你感受到一股温暖的力量流遍全身。\n"
 medussa_statue_fail = "什么也没有发生，或许只是你的错觉。\n"
 medussa_statue_refuse = "你决定不跪拜。\n"
+
+# 客栈事件
+inn_event_encounter = "在穿越森林的途中，你发现了一家客栈。\n\
+你可以在这里休息，但需要支付一定的费用。\n\
+支付 20G 住一晚吗？[y/n]"
+inn_event_success = "你在柔软舒适的床上安然入睡。\n"
+inn_event_fail = "你的钱不够。\n"
+inn_event_refuse = "你决定不支付住宿费。\n"
 
 ## 任务
 quest_caesarus_bandit_text = "凯撒鲁斯和他的匪徒一直在\n\

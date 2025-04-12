@@ -74,6 +74,25 @@ def handle_save_menu(player):
                     print("存档已删除")
     return player
 
+def mystical_crystal(my_player):
+    cost = 50 * my_player.level
+
+    print("\n" + "="*34)
+    print(f"一个神秘的魔法水晶, 可以完全恢复,\n但需要花费: {cost}G")
+    print("-"*34)
+
+    if my_player.money < cost:
+        print("金币不足!")
+        return
+
+    confirm = input("确认抚摸吗? (y/n): ").lower()
+    if confirm == 'y':
+        my_player.money -= cost
+        combat.fully_heal(my_player)
+        combat.fully_recover_mp(my_player)
+    else:
+        print("已取消。")
+
 ##### 初始化函数#####
 def play():
     # 玩家实例
@@ -122,7 +141,7 @@ def play():
                 enter_clear_screen()
             case "9":
                 clear_screen()
-                my_player.add_exp(999)
+                mystical_crystal(my_player)
                 enter_clear_screen()
             case _:
                 clear_screen()
@@ -143,13 +162,15 @@ def give_initial_items(my_player):
         items.old_staff.add_to_inventory_player(my_player.inventory)
         items.old_robes.add_to_inventory_player(my_player.inventory)
         items.grimoire_fireball.add_to_inventory_player(my_player.inventory)
+        
+    my_player.add_money(100)
     print(test.fx.red("[ 记得在库存 > 装备物品中装备这些物品 ]"))
 
 def generate_event(my_player):
     # 事件概率（%）
-    combat_chance = 70
+    combat_chance = 65
     shop_chance = 20
-    heal_chance = 10
+    heal_chance = 15
 
     event_list = random.choices(events.event_type_list, weights=(combat_chance, shop_chance, heal_chance), k=1)
     # random.choices 返回一个列表，所以我们需要使用 event_list[0]

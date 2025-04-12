@@ -95,6 +95,26 @@ class Healing_event(Event):
         elif accept == "n":
             print(self.refuse)
 
+class Inn_event(Healing_event):
+    def __init__(self, name, encounter_text, success_text, fail_text, refuse_text, healing_amount, cost) -> None:
+        super().__init__(name, encounter_text, success_text, fail_text, refuse_text, 100, False, healing_amount)
+        self.cost = cost
+
+    def effect(self, player):
+        print(self.encounter)
+        accept = input("> ").lower()
+        while accept not in ["y", "n"]:
+            accept == input("> ").lower()
+        if accept == "y":
+            if player.money >= self.cost:
+                print(self.success)
+                player.heal(self.healing_amount)
+                player.money -= self.cost
+            else:
+                print(self.fail)
+        elif accept == "n":
+            print(self.refuse)
+
 # 任务
 # -> 凯撒鲁斯
 caesarus_bandit_combat = Fixed_combat_event('凯撒鲁斯与他的强盗', enemies.enemy_list_caesarus_bandit)
@@ -105,12 +125,13 @@ random_combat = Random_combat_event("随机战斗")
 shop_rik_armor = Shop_event("里克的盔甲店", False, text.rik_armor_shop_encounter, text.rik_armor_shop_enter, text.rik_armor_shop_talk, text.rik_armor_shop_exit, items.rik_armor_shop_item_set, quest_caesarus_bandit)
 shop_itz_magic = Shop_event("伊兹的魔法店", False, text.itz_magic_encounter, text.itz_magic_enter, text.itz_magic_talk, text.itz_magic_exit, items.itz_magic_item_set, None)
 heal_medussa_statue = Healing_event("美杜莎雕像", text.medussa_statue_encounter, text.medussa_statue_success,
-                                    text.medussa_statue_fail, text.medussa_statue_refuse, 70, False, 100)
+                                    text.medussa_statue_fail, text.medussa_statue_refuse, 70, False, 90)
+inn_event = Inn_event("Inn", text.inn_event_encounter, text.inn_event_success, text.inn_event_fail, text.inn_event_refuse, 120, 20)
 
 # 分组事件
 combat_event_list = [random_combat]
 shop_event_list = [shop_itz_magic, shop_rik_armor]
-heal_event_list = [heal_medussa_statue]
+heal_event_list = [heal_medussa_statue, inn_event]
 
 # 所有事件的列表，按类型划分
 event_type_list = [combat_event_list, shop_event_list, heal_event_list]

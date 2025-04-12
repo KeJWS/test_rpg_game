@@ -87,10 +87,12 @@ hp_potion = inventory.Potion('生命药水', 'a', 1, 20, 'consumable', 'hp', 70)
 mp_potion = inventory.Potion('法力药水', 'a', 1, 20, 'consumable', 'mp', 40)
 
 # 魔法书
-grimoire_fireball = inventory.Grimore("法典：火球术", "", 1, 80, "consumable", skills.spell_fire_ball)
-grimoire_divine_blessing = inventory.Grimore("法典：神圣祝福", "", 1, 120, "consumable", skills.spell_divine_blessing)
-grimoire_enhance_weapon = inventory.Grimore("法典：增强武器", "", 1, 120, "consumable", skills.spell_enhance_weapon)
-grimoire_inferno = inventory.Grimore("法典: 地狱火", "", 1, 210, "consumable", skills.spell_inferno)
+grimoire_fireball = inventory.Grimore("魔法书：火球术", "", 1, 80, "consumable", skills.spell_fire_ball)
+grimoire_divine_blessing = inventory.Grimore("魔法书：神圣祝福", "", 1, 120, "consumable", skills.spell_divine_blessing)
+grimoire_enhance_weapon = inventory.Grimore("魔法书：增强武器", "", 1, 120, "consumable", skills.spell_enhance_weapon)
+grimoire_inferno = inventory.Grimore("魔法书: 地狱火", "", 1, 210, "consumable", skills.spell_inferno)
+grimoire_skeleton_summoning = inventory.Grimore("唤灵书: 骷髅召唤", "", 1, 170, "consumable", skills.spell_skeleton_summoning)
+grimoire_fire_spirit_summoning = inventory.Grimore("唤灵书: 火精灵", "", 1, 215, "consumable", skills.spell_fire_spirit_summoning)
 
 # 商店物品套装
 
@@ -119,4 +121,6 @@ itz_magic_item_set = [
     grimoire_divine_blessing,
     grimoire_enhance_weapon,
     grimoire_inferno,
+    grimoire_skeleton_summoning,
+    grimoire_fire_spirit_summoning,
 ]

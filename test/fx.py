@@ -2,6 +2,7 @@
 import time, sys
 
 RED = "\033[31m"
+GREEN = "\033[32m"
 YELLO = "\033[33m"
 BLUE = "\033[34m"
 END = "\033[0m"

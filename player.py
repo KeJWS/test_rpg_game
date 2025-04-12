@@ -21,7 +21,7 @@ class Player(combat.Battler):
 
         self.level = 1 # 玩家等级
         self.xp = 0 # 当前经验值
-        self.xp_to_next_level = 70 # 达到下一等级所需的经验值每级乘以 1.5
+        self.xp_to_next_level = self.exp_required_formula()
         self.aptitudes = {
             "str": 0,
             "dex": 0,
@@ -67,8 +67,9 @@ class Player(combat.Battler):
                 if actual_equipment.combo != None:
                     self.combos.remove(actual_equipment.combo)
                     print(f"你不能再使用组合: {actual_equipment.combo.name}")
-                for stat in actual_equipment.stat_change_list:
+                for stat, value in actual_equipment.stat_change_list.items():
                     self.stats[stat] -= actual_equipment.stat_change_list[stat]
+                    print(f"{stat} -{value}")
             for stat in equipment.stat_change_list:
                 self.stats[stat] += equipment.stat_change_list[stat]
             self.equipment[equipment.object_type] = equipment.create_item(1)
@@ -100,7 +101,7 @@ class Player(combat.Battler):
         while(self.xp >= self.xp_to_next_level):
             self.xp -= self.xp_to_next_level
             self.level += 1
-            self.xp_to_next_level = round(self.xp_to_next_level * 1.5)
+            self.xp_to_next_level = self.exp_required_formula()
             for stat in self.stats:
                 self.stats[stat] += 1
             self.stats["max_hp"] += 4
@@ -109,6 +110,12 @@ class Player(combat.Battler):
             combat.fully_heal(self)
             combat.fully_recover_mp(self)
             print(f"\033[33m升级! 现在的等级是: {self.level}\033[0m, 有 {self.aptitude_points} 个能力点")
+
+    def exp_required_formula(self):
+        base = 100 * self.level
+        growth = (self.level ** 2.5) * 1.25
+        scaling = self.level * 35
+        return round(base + growth + scaling)
 
     def add_money(self, money): # 给玩家添加一定数量的金钱
         self.money += money * MONEY_MULTIPLIER
