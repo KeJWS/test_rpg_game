@@ -288,6 +288,8 @@ def check_if_dead(allies, enemies, battlers):
             dead_bodies.append(target)
     for dead in dead_bodies:
         battlers.remove(dead)
+        if dead in battlers:
+            battlers.remove(dead)
         if dead in enemies:
             enemies.remove(dead)
         elif dead in allies:

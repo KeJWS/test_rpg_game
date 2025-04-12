@@ -4,11 +4,11 @@ from data.constants import EXPERIENCE_RATE, MONEY_MULTIPLIER
 class Player(combat.Battler):
     def __init__(self, name) -> None:
         stats = {
-            "max_hp": 500,
+            "max_hp": 1500,
             "hp": 500,
             "max_mp": 100,
             "mp": 100,
-            "atk": 12,
+            "atk": 112,
             "def": 10,
             "mat": 12,
             "mdf": 10,

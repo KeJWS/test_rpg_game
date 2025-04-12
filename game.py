@@ -169,7 +169,7 @@ def give_initial_items(my_player):
 def generate_event(my_player):
     # 事件概率（%）
     combat_chance = 65
-    shop_chance = 20
+    shop_chance = 120
     heal_chance = 15
 
     event_list = random.choices(events.event_type_list, weights=(combat_chance, shop_chance, heal_chance), k=1)
@@ -177,7 +177,14 @@ def generate_event(my_player):
     event = random.choice(event_list[0])
     event.effect(my_player)
     if event.is_unique:
-        events.event_type_list.event_list.remove(event)
+        for ev_list in events.event_type_list:
+            for e in ev_list:
+                if e.name == event.name:
+                    for quest in my_player.active_quests:
+                        if quest.event == event:
+                            quest.complete_quest(my_player)
+                    ev_list.remove(event)
+                    break
 
 if __name__ == "__main__":
     title_screen_selections()

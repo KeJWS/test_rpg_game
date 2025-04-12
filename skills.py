@@ -208,8 +208,8 @@ spell_fire_spirit_summoning = Summon_spell("召唤火精灵", "", 0, 68, False, 
 combo_slash1 = Slash_combo("斩击连击 I", "", 3, True, None, 3)
 combo_slash2 = Slash_combo("斩击连击 II", "", 3, True, None, 4)
 combo_armor_breaker1 = Armor_breaking_combo("破甲 I", "", 2, True, None, -0.3)
-combo_vampire_stab1 = Vampirism_combo("吸血之刺 I", "", 2, True, None, 0.5)
-combo_vampire_stab2 = Vampirism_combo("吸血之刺 II", "", 2, True, None, 0.75)
+combo_vampire_stab1 = Vampirism_combo("吸血之刺 I", "", 2, True, None, 0.35)
+combo_vampire_stab2 = Vampirism_combo("吸血之刺 II", "", 2, True, None, 0.5)
 combo_meditation1 = Recovery_combo("冥想 I", "", 1, "mp", 30, False, "self")
 combo_meditation2 = Recovery_combo("冥想 II", "", 2, "mp", 70, False, "self")
 
