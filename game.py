@@ -1,7 +1,7 @@
 import sys
 import random
 
-import combat, enemies, text, inventory, player, items, events, skills
+import combat, text, player, items, events
 
 from test.clear_screen import clear_screen, enter_clear_screen
 from test.save_system import save_game, get_save_list, delete_save, load_game
@@ -10,6 +10,9 @@ import test.fx
 
 #### 标题屏幕 #####
 def title_screen_selections():
+    '''
+    标题画面的选项，包括开始游戏、获取帮助或退出。
+    '''
     text.title_screen()
     option = input("> ")
     while option not in ["1", "2", "3"]:
@@ -23,8 +26,15 @@ def title_screen_selections():
     elif option == "3":
         sys.exit()
 
-##### 库存菜单 #####
+##### 背包菜单 #####
 def inventory_selections(player):
+    '''
+    背包菜单，用于使用、丢弃或装备物品。
+
+    Parameters:
+    player: Player
+        需要访问其背包的玩家。
+    '''
     option = input("> ")
     while option.lower() != "q":
         match option.lower():
@@ -95,18 +105,25 @@ def mystical_crystal(my_player):
 
 ##### 初始化函数#####
 def play():
-    # 玩家实例
+    '''
+    主函数，用于进行游戏。
+
+    Returns:
+    alive: bool
+        当游戏结束（玩家死亡）时返回False。
+    '''
     my_player = player.Player("Test Player")
 
     give_initial_items(my_player)
 
+    event_chances = (65, 20, 15)  # 战斗、商店、治疗的概率
     while my_player.alive:
         text.play_menu()
         option = input("> ")
         match option:
             case "1":
                 clear_screen()
-                generate_event(my_player)
+                generate_event(my_player, *event_chances)
                 enter_clear_screen()
             case "2":
                 clear_screen()
@@ -148,6 +165,13 @@ def play():
                 print("请输入有效命令")
 
 def give_initial_items(my_player):
+    '''
+    根据选择给予玩家初始物品。
+
+    Parameters:
+    myPlayer: Player
+        需要给予初始物品的玩家。
+    '''
     print(text.initial_event_text)
     option = str(input("> "))
     while option not in ["1", "2", "3"]:
@@ -162,18 +186,27 @@ def give_initial_items(my_player):
         items.old_staff.add_to_inventory_player(my_player.inventory)
         items.old_robes.add_to_inventory_player(my_player.inventory)
         items.grimoire_fireball.add_to_inventory_player(my_player.inventory)
-        
+
     my_player.add_money(100)
     print(test.fx.red("[ 记得在库存 > 装备物品中装备这些物品 ]"))
+    enter_clear_screen()
 
-def generate_event(my_player):
-    # 事件概率（%）
-    combat_chance = 65
-    shop_chance = 120
-    heal_chance = 15
+def generate_event(my_player, combat_chance, shop_chance, heal_chance):
+    '''
+    根据指定几率生成随机事件。
+    还处理任务完成。
 
+    Parameters:
+    myPlayer: Player
+        受事件影响的玩家
+    combat_chance: int
+        生成战斗事件的几率（%）
+    shop_chance: int
+        生成商店事件的几率（%）
+    heal_chance: int
+        生成治疗事件的几率（%）
+    '''
     event_list = random.choices(events.event_type_list, weights=(combat_chance, shop_chance, heal_chance), k=1)
-    # random.choices 返回一个列表，所以我们需要使用 event_list[0]
     event = random.choice(event_list[0])
     event.effect(my_player)
     if event.is_unique:

@@ -91,8 +91,8 @@ grimoire_fireball = inventory.Grimore("魔法书：火球术", "", 1, 80, "consu
 grimoire_divine_blessing = inventory.Grimore("魔法书：神圣祝福", "", 1, 120, "consumable", skills.spell_divine_blessing)
 grimoire_enhance_weapon = inventory.Grimore("魔法书：增强武器", "", 1, 120, "consumable", skills.spell_enhance_weapon)
 grimoire_inferno = inventory.Grimore("魔法书: 地狱火", "", 1, 210, "consumable", skills.spell_inferno)
-grimoire_skeleton_summoning = inventory.Grimore("唤灵书: 骷髅召唤", "", 1, 170, "consumable", skills.spell_skeleton_summoning)
-grimoire_fire_spirit_summoning = inventory.Grimore("唤灵书: 火精灵", "", 1, 215, "consumable", skills.spell_fire_spirit_summoning)
+grimoire_summon_skeleton = inventory.Grimore("唤灵书: 骷髅召唤", "", 1, 170, "consumable", skills.spell_skeleton_summoning)
+grimoire_summon_fire_spirit = inventory.Grimore("唤灵书: 火精灵", "", 1, 215, "consumable", skills.spell_fire_spirit_summoning)
 
 # 商店物品套装
 
@@ -118,9 +118,9 @@ itz_magic_item_set = [
     sage_staff,
     student_robes,
     grimoire_fireball,
-    grimoire_divine_blessing,
     grimoire_enhance_weapon,
+    grimoire_divine_blessing,
     grimoire_inferno,
-    grimoire_skeleton_summoning,
-    grimoire_fire_spirit_summoning,
+    grimoire_summon_skeleton,
+    grimoire_summon_fire_spirit,
 ]

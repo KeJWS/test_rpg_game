@@ -8,12 +8,23 @@ from copy import deepcopy
 
 import test.fx as fx
 
-"""
-所有可以进入战斗的实例的父类。
-战斗者永远是敌人、玩家的盟友或玩家自己
-"""
 class Battler():
+    '''
+    所有可以参与战斗的实例的父类。
+    Battler 将始终是敌人、玩家的盟友或玩家本人。
 
+    Attributes:
+    name : str
+        战斗者的名称。
+    stats : dict
+        战斗者的属性，字典格式，例如：{'atk' : 3}。
+    alive : bool              
+        表示战斗者是否存活的布尔值。
+    buffsAndDebuffs : list     
+        战斗者当前拥有的增益和减益列表。
+    isAlly : bool             
+        表示战斗者是否为玩家的盟友的布尔值。
+    '''
     def __init__(self, name, stats) -> None:
         self.name = name
         self.stats = stats
@@ -21,26 +32,50 @@ class Battler():
         self.buffs_and_debuffs = []
         self.is_ally = False
         self.is_defending = False
-        self.combo_points = 0
 
-    # 受到来自特定来源的伤害
     def take_dmg(self, dmg):
+        '''
+        战斗者受到来自任何来源的伤害的函数。
+        从其生命值中减去伤害量，同时检查是否死亡。
+
+        Parameters:
+        dmg : int     
+            造成的伤害数量
+        '''
         from test.fx import red, bold, yellow
         """伤害结算与死亡检测"""
         dmg = max(dmg, 0)
         self.stats["hp"] -= dmg
         battle_log(f"{self.name} 受到伤害 {yellow(dmg)}", "dmg")
         time.sleep(0.3)
+        # 防御者死亡
         if self.stats["hp"] <= 0:
             print(bold(red(f"{self.name} 被杀死了")))
             self.alive = False
 
-    # 所有战斗者都有普通攻击
     def normal_attack(self, defender, defender_is_defending=False):
-        """普通攻击逻辑（含暴击机制、防御判定）"""
+        '''
+        所有战斗者都有的普通攻击。
+
+        伤害计算如下：
+        attacker_atk * (100 / (100 + defender_def * 1.5))
+
+        Parameters:
+        defender : Battler
+            防御的战斗者
+
+        Returns:
+        dmg : int        
+            对防御者造成的伤害
+        '''
         battle_log(f"{self.name} 发动攻击!", "info")
         dot_loading()
 
+        # 检查是否攻击未命中
+        if check_miss(self,defender):
+            print(fx.red(f"{self.name} 的攻击被 {defender.name} 躲开了"))
+            return 0
+        # 检查是否为暴击
         if self._is_critical():
             dmg = self._calc_critical_damage(defender)
         else:
@@ -49,16 +84,24 @@ class Battler():
         if defender_is_defending:
             dmg = round(dmg * 0.5)
             typewriter(fx.cyan(f"{defender.name} 正在防御，伤害减半!"))
-
-        if not check_miss(self, defender): # 检查攻击失败
-            defender.take_dmg(dmg)
-        else:
-            dmg = 0
+        defender.take_dmg(dmg)
         return dmg
 
-    # 检查暴击
     def _is_critical(self):
-        return random.randint(1, 100) <= min(75, self.stats["crit"])
+        '''
+        检查攻击是否为暴击。如果是，则伤害翻倍。
+
+        暴击几率来源于战斗者的属性：'critCh'
+
+        Parameters:
+        dmg : int     
+            基础伤害
+
+        Returns:
+        dmg : int 
+            经过检查和处理后的伤害
+        '''
+        return random.randint(1, 100) <= min(72, round(self.stats["crit"]*0.8+self.stats["luk"]*0.2))
 
     def _calc_critical_damage(self, defender):
         crit_base = self.stats["atk"]*3.5 + self.stats["luk"]*1.2
@@ -74,186 +117,259 @@ class Battler():
         base += self.stats["luk"] - defender.stats["luk"]
         return round(max(base, self.stats["luk"]*1.2) * random.uniform(0.8, 1.2)) # 伤害浮动：±20%
 
-    # 目标恢复一定量的 mp
     def recover_mp(self, amount):
+        '''
+        战斗者恢复一定量的 'mp'（法力值）。
+
+        Parameters:
+        amount : int      
+            恢复的法力值
+        '''
         self.stats["mp"] = min(self.stats["mp"] + amount, self.stats["max_mp"])
-        print(f"{self.name} 恢复了 {amount}MP")
+        typewriter(fx.blue(f"{self.name} 恢复了 {amount}MP"))
 
-    # 目标恢复一定量的生命值
     def heal(self, amount):
-        self.stats["hp"] = min(self.stats["hp"] + amount, self.stats["max_hp"])
-        print(f"{self.name} 治愈了 {amount}HP")
+        '''
+        战斗者恢复一定量的 'hp'（生命值）。
 
-    # 添加一定数量的连击点数
-    def add_combo_points(self, points):
-        self.combo_points += points
+        Parameters:
+        amount : int     
+            恢复的生命值
+        '''
+        self.stats["hp"] = min(self.stats["hp"] + amount, self.stats["max_hp"])
+        typewriter(fx.green(f"{self.name} 治愈了 {amount}HP"))
 
 class Enemy(Battler):
+    '''
+    所有敌人的基类。继承自 'Battler' 类。
+
+    Attributes:
+    xpReward : int    
+        被击杀时给予的经验值（XP）数量
+    goldReward : int 
+        被击杀时给予的金币数量
+    '''
     def __init__(self, name, stats, xp_reward, gold_reward) -> None:
         super().__init__(name, stats)
         self.xp_reward = xp_reward
         self.gold_reward = gold_reward
+        self.original_stats = stats.copy()
+
+    def clone(self):
+        new_stats = self.original_stats.copy()
+        return Enemy(self.name, new_stats, self.xp_reward, self.gold_reward)
 
 """
 主战斗循环
 """
+
 def combat(my_player, enemies):
     from player import Player
-    """主战斗流程控制"""
+    '''
+    处理玩家与敌人之间的主要战斗循环。
+
+    Parameters:
+    myPlayer : Player
+        当前玩家对象
+    enemies : list     
+        需要战斗的敌人列表
+
+    备注:
+    如果战斗支持多个盟友，应将 myPlayer 替换为名为 'allies' 的列表。
+    目前，只有通过召唤技能才能获得盟友，因此暂未做此修改。
+    '''
+    # 所有战斗单位（包括玩家和敌人）按速度排序，决定回合顺序
     allies = [my_player]
-    battlers = define_battlers(allies, enemies)
+    battlers = define_battlers(allies, enemies) # 参与战斗的单位（盟友 + 敌人）
+
+    # 统计敌人掉落的经验值和金钱
     enemy_exp = 0
     enemy_money = 0
-    original_enemies = enemies.copy()
+
     print("=================================================")
     for enemy in enemies:
         typewriter(f"野生的 {enemy.name} 出现了!")
         enemy_exp += enemy.xp_reward
         enemy_money += enemy.gold_reward
 
-    escaped = False
-
-    # 只要玩家还活着，并且还有敌人需要击败，战斗就会继续
-    # 战士应该根据速度变化进行更新（增益/减益）
-    my_player.defend_next_turn = False
-    while my_player.alive and enemies:
-        my_player.is_defending = my_player.defend_next_turn
-        my_player.defend_next_turn = False
-        if my_player.is_defending:
-            typewriter(f"{my_player.name} 进入防御状态，将受到的伤害减少!")
-        # 所有战斗者都被插入到战斗者列表中，并按速度（回合顺序）排序
+    # 只要玩家存活且仍有敌人，战斗就会持续
+    while my_player.alive and len(enemies) > 0:
+        # 由于速度可能因增益/减益效果改变，需要更新战斗顺序
         battlers = define_battlers(allies, enemies)
+
+        # 每个战斗单位轮流行动
         for battler in battlers:
+            # 玩家回合：选择行动
             if type(battler) == Player:
                 text.combat_menu(my_player, allies, enemies)
-                escaped = handle_player_turn(my_player, battler, enemies, battlers, allies)
-                if escaped:
-                    break
+                cmd = input("> ").lower()
+                while cmd not in ["a", "c", "s", "d", "e"]:
+                    print("请输入有效指令")
+                    cmd = input("> ").lower()
+                # 普通攻击
+                if "a" in cmd:
+                    targeted_enemy = select_target(enemies)
+                    battler.normal_attack(targeted_enemy)
+                    check_if_dead(allies, enemies, battlers)
+                # 施放技能
+                elif "s" in cmd:
+                    spell_menu(my_player, battlers, allies, enemies)
+                # 使用连招
+                elif "c" in cmd:
+                    combo_menu(my_player, battlers, allies, enemies)
+                elif "d" in cmd:
+                    pass
+                elif "e" in cmd:
+                    pass
             else:
+                # 盟友自动攻击随机敌人
                 if battler.is_ally:
                     if len(enemies) > 0:
                         random_enemy = random.choice(enemies)
                         battler.normal_attack(random_enemy)
                         check_if_dead(allies, enemies, battlers)
-                
                 else:
-                    # 目前，敌人只会对玩家进行正常攻击。
-                    # 这可以扩展为功能性 AI
+                    # 目前敌人只会进行普通攻击，未来可扩展为完整的AI逻辑
                     random_ally = random.choice(allies)
                     battler.normal_attack(random_ally)
                     check_if_dead(allies, enemies, battlers)
-                    # battler.normal_attack(my_player, defender_is_defending=my_player.is_defending)
-
-        my_player.is_defending = False
-
-        if escaped:
-            break
-
-        # 一轮已过
-        # 检查增益和减益效果的回合
+        # 回合结束，检查增益和减益的持续时间
         for battler in battlers:
             check_turns_buffs_and_debuffs(battler, False)
-        text.display_status_effects([my_player] + enemies)
 
-    if my_player.alive and not escaped:
-        # 停用所有现有的增益效果和减益效果
-        # 为玩家添加经验
+    if my_player.alive:
+        # 移除所有增益和减益效果
         check_turns_buffs_and_debuffs(my_player, True)
-        my_player.add_money(enemy_money)
+        # 给予玩家经验值和金钱奖励
         my_player.add_exp(enemy_exp)
-        take_a_rest(my_player)
-        # 重新开始连击点数
+        my_player.add_money(enemy_money)
+        # 重置连招点数
         my_player.combo_points = 0
-        text.log_battle_result("胜利", my_player, original_enemies)
-    elif escaped:
-        check_turns_buffs_and_debuffs(my_player, True)
-        typewriter(f"{my_player.name} 成功逃离了战斗")
-        take_a_rest(my_player)
-        my_player.combo_points = 0
-        text.log_battle_result("逃跑", my_player, original_enemies)
+        recover_hp_and_mp(my_player, 0.25)
 
-def handle_player_turn(my_player, battler, enemies, battlers, allies):
-    from skills import enhance_weapon
-    decision = get_valid_input("> ", ["a", "d", "c", "s", "e"])
-    match decision:
-        case "a":
-            # 进行普通攻击
-            targeted_enemy = select_target(enemies)
-            battler.normal_attack(targeted_enemy)
-            battler.add_combo_points(1)
-            check_if_dead(allies, enemies, battlers)
-        case "s":
-            # 施展咒语
-            text.spell_menu(battler)
-            cast_spell(my_player, enemies, battlers, allies)
-        case "c":
-            # 使用组合技能
-            text.combo_menu(battler)
-            cast_combo(my_player, enemies, battlers, allies)
-        case "d":
-            my_player.defend_next_turn = True
-            battler.add_combo_points(1)
-            typewriter(f"{my_player.name} 准备防御, 下一回合将受到的伤害减少50%!")
-            enhance_weapon.effect(my_player, my_player)
-            print(fx.yellow("你紧握武器, 时刻准备反击!"))
-        case "e":
-            if try_escape(my_player):
-                return True
-
-def cast_spell(my_player, enemies, battlers, allies):
-    option = get_valid_input("> ", range(len(my_player.spells)+1), int)
-    if option == 0:
-        return
-    spell_chosen = my_player.spells[option - 1]
-    if spell_chosen.is_targeted:
-        target = select_target(battlers)
-        spell_chosen.effect(my_player, target)
-        check_if_dead(allies, enemies, battlers)
-    else:
-        if spell_chosen.default_target == "self":
-            spell_chosen.effect(my_player, my_player)
-        elif spell_chosen.default_target == "all_enemies":
-            spell_chosen.effect(my_player, enemies)
-            check_if_dead(my_player, enemies, allies)
-        elif spell_chosen.default_target == "allies":
-            spell_chosen.effect(my_player, allies)
-
-def cast_combo(my_player, enemies, battlers, allies):
-    option = get_valid_input("> ", range(len(my_player.combos)+1), int)
-    if option == 0:
-        return
-    combo_chosen = my_player.combos[option - 1]
-    if combo_chosen.is_targeted:
-        target = select_target(battlers)
-        combo_chosen.effect(my_player, target)
-        check_if_dead(allies, enemies, battlers)
-    else:
-        if combo_chosen.default_target == "self":
-            combo_chosen.effect(my_player, my_player)
-        elif combo_chosen.default_target == "all_enemies":
-            combo_chosen.effect(my_player, enemies)
-            check_if_dead(allies, enemies, battlers)
-
-# 返回按速度（回合顺序）排序的战斗者列表
-# 当“玩家”变为“盟友”时，应该更新此内容。
 def define_battlers(allies, enemies):
+    '''
+    返回战斗单位列表，并按速度排序（决定回合顺序）。
+
+    Parameters:
+    allies : List
+        盟友单位列表
+    enemies : List
+        敌方单位列表
+
+    Returns:
+    battlers : List
+        包含敌人和盟友的战斗单位列表，按速度排序
+    '''
     battlers = enemies.copy()
     for ally in allies:
         battlers.append(ally)
     battlers.sort(key=lambda b: b.stats["agi"], reverse=True)
     return battlers
 
-# 从战场上选择某个目标
 def select_target(targets):
+    '''
+    从战场中选择一个目标。
+
+    Parameters:
+    targets : list
+        可选目标单位列表
+
+    Return:
+    target : Battler
+        选中的目标
+    '''
     text.select_objective(targets)
     index = get_valid_input("> ", range(1, len(targets)+1), int)
     return targets[index - 1]
 
-# 如果攻击失败则返回 True，否则返回 False
+def spell_menu(my_player, battlers, allies, enemies):
+    '''
+    让玩家选择一个目标施放法术。
+
+    Parameters:
+    myPlayer : Player
+        施放法术的玩家。
+    battlers : List
+        战斗中的所有参战者列表。
+    allies : List
+        友方单位列表。
+    enemies : List
+        敌方单位列表。
+    '''
+    text.spell_menu(my_player)
+    option = int(input("> "))
+    while option not in range(len(my_player.spells)+1):
+        print("请输入有效的数字")
+        option = int(input("> "))
+    if option != 0:
+        spell_chosen = my_player.spells[option-1]
+        if spell_chosen.is_targeted:
+            target = select_target(battlers)
+            spell_chosen.effect(my_player, target)
+            check_if_dead(allies, enemies, battlers)
+        else:
+            if spell_chosen.default_target == "self":
+                spell_chosen.effect(my_player, my_player)
+            elif spell_chosen.default_target == "all_enemies":
+                spell_chosen.effect(my_player, enemies)
+                check_if_dead(allies, enemies, battlers)
+            elif spell_chosen.default_target == "allies":
+                spell_chosen.effect(my_player, allies)
+
+def combo_menu(my_player, battlers, allies, enemies):
+    '''
+    让玩家选择一个目标执行连招。
+
+    Parameters:
+    myPlayer : Player
+        进行连招的玩家。
+    battlers : List
+        战斗中的所有参战者列表。
+    allies : List
+        友方单位列表。
+    enemies : List
+        敌方单位列表。
+    '''
+    text.combo_menu(my_player)
+    option = int(input("> "))
+    while option not in range(len(my_player.combos)+1):
+        print("请输入有效的数字")
+        option = int(input("> "))
+    if option != 0:
+        combo_chosen = my_player.combos[option-1]
+        if combo_chosen.is_targeted:
+            target = select_target(battlers)
+            combo_chosen.effect(my_player, target)
+            check_if_dead(allies, enemies, battlers)
+        else:
+            if combo_chosen.default_target == "self":
+                combo_chosen.effect(my_player, my_player)
+            elif combo_chosen.default_target == "all_enemies":
+                combo_chosen.effect(my_player, enemies)
+                check_if_dead(allies, enemies, battlers)
+
 def check_miss(attacker, defender):
+    '''
+    检查攻击是否命中，命中率由以下公式决定：
+
+    chance = math.floor(math.sqrt(max(0, (5 * defender.stats['speed'] - attacker.stats['speed'] * 2))))
+
+    经过多次尝试，这个公式表现得相对合理。当然，你可以根据需要进行调整。
+
+    Parameters:
+    attacker : Battler
+        发起攻击的单位。
+    defender : Battler
+        受到攻击的单位。
+
+    Returns:
+    True/False : Bool
+        True 代表攻击未命中，False 代表攻击命中。
+    '''
     miss_chance = math.floor(math.sqrt(max(0, 5 * defender.stats["agi"] - attacker.stats["agi"] * 2)))
     if miss_chance > random.randint(0, 100):
-        print(fx.red(f"{attacker.name} 的攻击被 {defender.name} 躲开了"))
+        typewriter(fx.red(f"{attacker.name} 的攻击被 {defender.name} 躲开了"))
         return True
     return False
 
@@ -267,18 +383,36 @@ def try_escape(my_player):
     else:
         print(fx.bold_red("逃跑失败!"))
         if random.random() < 0.35:
-            print(fx.red("你因慌乱防御力下降!"))
+            typewriter(fx.red("你因慌乱防御力下降!"))
             weakened_defense.effect(my_player, my_player)
         return False
 
-# 检查增益和减益效果是否仍应处于活动状态
-# 如果 deactivate = True，它们将立即停用
 def check_turns_buffs_and_debuffs(target, deactivate):
+    '''
+    检查目标的增益和减益状态是否仍然有效（基于回合数判断）。
+
+    Parameters:
+    target : Battler
+        需要检查状态的单位。
+    deactivate : bool
+        若为 True，则立即清除所有增益和减益状态（适用于战斗结束等情况）。
+        若为 False，则正常检测状态回合数。
+    '''
     for bd in target.buffs_and_debuffs:
         bd.deactivate() if deactivate else bd.check_turns()
 
-# 检查战斗者是否死亡并将其从适当的列表中删除
 def check_if_dead(allies, enemies, battlers):
+    '''
+    检查战斗单位是否阵亡，如果阵亡，则从相应列表中移除。
+
+    Parameters:
+    allies : List
+        友方单位列表。
+    enemies : List
+        敌方单位列表。
+    battlers : List
+        参战单位总列表。
+    '''
     dead_bodies = []
     for ally in allies:
         if ally.alive == False:
@@ -287,7 +421,6 @@ def check_if_dead(allies, enemies, battlers):
         if target.alive == False:
             dead_bodies.append(target)
     for dead in dead_bodies:
-        battlers.remove(dead)
         if dead in battlers:
             battlers.remove(dead)
         if dead in enemies:
@@ -295,21 +428,32 @@ def check_if_dead(allies, enemies, battlers):
         elif dead in allies:
             allies.remove(dead)
 
-# 完全治愈目标
 def fully_heal(target):
-    """HP 恢复相关函数"""
+    '''
+    完全恢复目标的生命值。
+
+    Parameters:
+    target : Battler
+        需要恢复的单位。
+    '''
     target.stats["hp"] = target.stats["max_hp"]
-    print(f"{target.name} 的生命完全恢复了!")
+    typewriter(f"{target.name} 的生命完全恢复了")
 
 def fully_recover_mp(target):
-    target.stats["mp"] = target.stats["max_mp"]
-    print(f"{target.name} 的魔法完全恢复了!")
+    '''
+    完全恢复目标的魔法值。
 
-def take_a_rest(player):
-    """战斗后休息恢复"""
-    player.stats["hp"] = min(player.stats["max_hp"], player.stats["hp"] + int(player.stats["max_hp"] * 0.3))
-    player.stats["mp"] = min(player.stats["max_mp"], player.stats["mp"] + int(player.stats["max_mp"] * 0.3))
-    print("\n稍作休整, 恢复了一部分生命值和魔法, 准备迎接下一个怪物!")
+    Parameters:
+    target : Battler
+        需要恢复的单位。
+    '''
+    target.stats["mp"] = target.stats["max_mp"]
+    typewriter(f"{target.name} 的魔法完全恢复了")
+
+def recover_hp_and_mp(target, percent):
+    target.stats["hp"] = min(target.stats["max_hp"], target.stats["hp"] + int(target.stats["max_hp"] * percent))
+    target.stats["mp"] = min(target.stats["max_mp"], target.stats["mp"] + int(target.stats["max_mp"] * percent))
+    typewriter(f"\n恢复了 {percent*100}% 生命值和魔法")
 
 def get_valid_input(prompt, valid_range, cast_func=str):
     while True:
@@ -321,8 +465,26 @@ def get_valid_input(prompt, valid_range, cast_func=str):
             pass
         print("请输入有效选项")
 
-def create_enemy_group(level):
-    from enemies import possible_enemies, enemy_data
+def create_enemy_group(level, possible_enemies, enemy_quantity_for_level):
+    from enemies import enemy_data
+    '''
+    根据玩家等级创建敌人小队。
+
+    Parameters:
+    lvl : int
+        玩家当前等级。
+    possible_enemies : Dictionary
+        可能出现的敌人及其对应的等级范围，
+        采用以下格式：{enemyClass : (最低等级, 最高等级)}
+    enemy_quantity_for_level : Dictionary
+        根据玩家等级决定敌人数量，
+        格式示例：{等级上限 : 敌人数量}，
+        例如 {3: 1} 表示 3 级及以下最多出现 1 名敌人。
+
+    Returns:
+    enemy_group : List
+        生成的敌人单位列表。
+    '''
 
     enemies_to_appear = []
     for enemy in possible_enemies:
@@ -330,17 +492,6 @@ def create_enemy_group(level):
         if low_level <= level <= high_level:
             enemies_to_appear.append(enemy)
 
-    # 战斗敌人数量的字典。
-    # 如果等级 < 5 -> 最多 2 个敌人
-    # 如果等级 < 10 -> 最多 3 个敌人
-    # ...
-    enemy_quantity_for_level = {
-        2: 1,
-        5: 2,
-        7: 3,
-        13: 4,
-        100: 5
-    }
     max_enemies = 1
     for max_level in enemy_quantity_for_level:
         if level < max_level:
@@ -359,4 +510,3 @@ def create_enemy_group(level):
 # TODO combo 和 spell 系统进一步封装, 让技能拥有 cooldown、条件触发等机制
 # TODO 战斗后恢复比例（25%）可以与“露营”机制、技能、药水等组合使用
 # TODO 敌人可以有“稀有出现率”字段, 例如 5% 出现某种稀有怪物
-# TODO 战斗前可以加入开场事件描述, 例如“黑暗森林传来诡异的咆哮...”

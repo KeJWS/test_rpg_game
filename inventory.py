@@ -1,21 +1,30 @@
 import test.fx as fx
 
-"""
-管理玩家的库存和物品。可以修改为具有一定容量。
-"""
 class Inventory():
+    '''
+    管理玩家的背包和物品。可以修改容量限制。
+    该类也用于商店。
+
+    Attributes:
+    items : List
+        当前背包中的物品列表
+    '''
     def __init__(self) -> None:
         self.items = []
 
-    def show_inventory(self): # 显示库存中的所有物品
-        if not self.items:
-            print("背包是空的。")
+    def show_inventory(self):
+        '''
+        显示背包中的所有物品（带索引）。
+        '''
         print(f"总价值: {self.total_worth}")
         for index, item in enumerate(self.items, start=1):
             print(f"{index} - {item.show_info()}")
 
     def drop_item(self):
-        print("\n丢掉什么? ['0' 退出]") # 从库存中丢弃一个物品
+        '''
+        从背包中选择并丢弃一个物品。
+        '''
+        print("\n丢掉什么? ['0' 退出]")
         self.show_inventory()
         i = int(input("> "))
         if i == 0:
@@ -29,7 +38,14 @@ class Inventory():
             self.show_inventory()
 
     def sell_item(self):
-        print("\n出售什么? ['0' 退出]") # 出售库存中的特定物品
+        '''
+        从背包中选择并出售一个物品。
+
+        Returns:
+        moneyForItem : int
+            出售物品所得的金额。
+        '''
+        print("\n出售什么? ['0' 退出]")
         self.show_inventory()
         i = int(input("> "))
         if i == 0:
@@ -40,9 +56,19 @@ class Inventory():
             money_for_item, amount_to_sell = item.sell()
             self.decrease_item_amount(item, amount_to_sell)
             return money_for_item
+        else:
+            print("关闭背包...")
+            return 0
 
     def equip_item(self):
-        print("\n装备什么? ['0' 退出]") # 从库存中装备某件物品（必须是“装备”类型）
+        '''
+        从背包中选择并装备某个物品（必须是“装备”类型）。
+
+        Returns:
+        item : Item
+            返回给玩家装备的物品。如果选择了一个不可装备的对象，则返回None。
+        '''
+        print("\n装备什么? ['0' 退出]")
         self.show_inventory()
         i = int(input("> "))
         if i == 0:
@@ -57,7 +83,14 @@ class Inventory():
                 return None
 
     def use_item(self):
-        print("\n使用什么? ['0' 退出]") # 使用特定类型的“消耗品”物品
+        '''
+        从背包中选择并使用某个物品（必须是“消耗品”类型）。
+
+        Returns:
+        item : Item
+            返回给玩家使用的物品。如果选择了一个不可消耗的对象，则返回None。
+        '''
+        print("\n使用什么? ['0' 退出]")
         self.show_inventory()
         i = int(input("> "))
         if i == 0:
@@ -75,6 +108,16 @@ class Inventory():
                 return None
 
     def decrease_item_amount(self, item, amount):
+        '''
+        在背包中减少某个物品的数量。
+        这是为了商店系统而设定的。
+
+        Parameters:
+        item : Item
+            要减少数量的物品
+        amount : int
+            要减少的数量
+        '''
         for actual_item in self.items:
             if item.name == actual_item.name:
                 actual_item.amount -= amount
@@ -87,6 +130,23 @@ class Inventory():
         return total_worth
 
 class Item():
+    '''
+    物品始终存储在特定的背包中。它们可以是：
+    - 装备（武器和盔甲）
+    - 消耗品（药水和法典）
+
+    Attributes:
+    name : str
+        物品名称
+    description : str
+        物品描述
+    amount : int
+        该物品在背包中的数量
+    individualValue : int
+        单个物品的价值（以金币计算）
+    objectType : str
+        物品类型
+    '''
     def __init__(self, name, description, amount, individual_value, object_type) -> None:
         self.name = name
         self.description = description
@@ -95,20 +155,36 @@ class Item():
         self.object_type = object_type
 
     def drop(self):
+        '''
+        丢弃一定数量的该物品。丢弃的物品无法恢复。
+        '''
         if self.amount == 1:
-            print(f"丢弃了一个 {self.name}.\n当前背包:")
+            print(f"丢弃了一个 {self.name}")
             self.amount -= 1
         else:
             print(f"有 {self.amount} 个 {self.name}, 丢弃多少?")
             amount_to_drop = int(input("> "))
             if 0 < amount_to_drop <= self.amount:
                 self.amount -= amount_to_drop
-                print(f"丢弃了 {self.name}x{amount_to_drop}.\n当前背包:")
+                print(f"丢弃了 {self.name}x{amount_to_drop}")
             else:
                 print("数量无效!")
 
     def sell(self):
-        if self.amount >= 1:
+        '''
+        出售一定数量的该物品。出售的物品无法恢复。
+
+        Returns:
+        moneyToReceive : int
+            出售X数量该物品所获得的金币。
+        amountToSell : int
+            要出售的该物品数量。
+        '''
+        if self.amount == 1:
+            money_to_receive = int(round(self.individual_value * 0.5))
+            print(f"已快速售出 {self.name}x1, 获得 {money_to_receive}G")
+            return money_to_receive, 1
+        elif self.amount > 1:
             print(f"有 {self.amount} 个 {self.name}, 出售多少?")
             amount_to_sell = int(input("> "))
             if 0 < amount_to_sell <= self.amount:
@@ -126,12 +202,19 @@ class Item():
         return 0, 0
 
     def buy(self, player):
+        '''
+        购买一定数量的该物品。
+
+        Parameters:
+        player : Player
+            购买物品的玩家。
+        '''
         if self.amount > 1:
             print("买多少?")
             amount_to_buy = int(input("> "))
             price = self.individual_value * amount_to_buy
             if amount_to_buy > self.amount:
-                print(f"供应商没有那么多 {self.name}")
+                print(f"商人没有那么多 {self.name}")
             elif price > player.money:
                 print("没有足够的钱")
             else:
@@ -148,35 +231,75 @@ class Item():
             print("没有足够的钱")
 
     def create_item(self, amount):
+        '''
+        创建一个该物品的副本，并指定自定义的“数量”。
+        这是为商店系统添加的功能。
+
+        Parameters:
+        amount : int
+            创建的物品数量。
+        '''
         return Item(self.name, self.description, amount, self.individual_value, self.object_type)
 
     def add_to_inventory_player(self, inventory):
+        '''
+        将物品添加到玩家的背包中。
+
+        Parameters:
+        inventory : Inventory
+            玩家背包。
+        '''
         amount_added = self.amount
         self.add_to_inventory(inventory, amount_added)
-        print(f"{amount_added} {self.name} 已添加到库存")
+        print(f"{amount_added} 个 {fx.YELLO}{self.name}{fx.END} 已添加到库存")
 
     def add_to_inventory(self, inventory, amount):
+        '''
+        将一定数量的该物品添加到背包中。
+        专门为商店系统设计。
+
+        Parameters:
+        inventory : Inventory
+            物品将被添加到的背包。
+        amount : int
+            要添加的物品数量
+        '''
         already_in_inventory = False
         for item in inventory.items:
             if self.name == item.name:
                 item.amount += amount
                 already_in_inventory = True
+                break
         if not already_in_inventory:
             self.amount = amount
             inventory.items.append(self)
 
     def show_info(self):
+        '''
+        显示该特定物品的信息。
+
+        Returns:
+        info : str
+            包含数量、名称、物品类型和单个价值的字符串。
+        '''
         return f"[x{self.amount}] {self.name} ({self.object_type}) - {self.individual_value}"
 
-"""
-装备应为物品，但需添加一个字典 statChangeList，其中包含待更改的属性，以及一个表示属性更改点数的数字，例如：
-{'hp' : 3
-'atk' : 2
-'speed' : -2
-}
-这将使生命值增加 3 点，攻击力增加 2 点，速度减少 2 点。
-"""
 class Equipment(Item):
+    '''
+    玩家可以装备的物品，以提高属性和获得独特的能力（组合技能）。
+
+    Parameters:
+    statChangeList : Dictionary
+        定义装备此物品后属性变化的字典。
+        Example:
+        {'hp' : 3,
+        'atk' : 2,
+        'speed' : -2
+        }
+        这将使hp增加3，atk增加2，并减少speed 2。
+    combo : Combo
+        此装备提供的组合技能。
+    '''
     def __init__(self, name, description, amount, individual_value, object_type, stat_change_list, combo):
         super().__init__(name, description, amount, individual_value, object_type)
         self.stat_change_list = stat_change_list
@@ -190,6 +313,13 @@ class Equipment(Item):
         )
 
     def show_stats(self):
+        '''
+        显示该装备的属性。
+
+        Returns:
+        statsString : str
+            包含该装备所有属性变化的字符串。
+        '''
         stats_string = "[ "
         for stat in self.stat_change_list:
             sign = "+"
@@ -203,12 +333,28 @@ class Equipment(Item):
         return Equipment(self.name, self.description, amount, self.individual_value, self.object_type, self.stat_change_list, self.combo)
 
 class Potion(Item):
+    '''
+    玩家使用药水恢复MP或HP。
+
+    Attributes:
+    stat : str
+        要恢复的属性
+    amountToChange : int
+        恢复的数量
+    '''
     def __init__(self, name, description, amount, individual_value, object_type, stat, amount_to_change) -> None:
         super().__init__(name, description, amount, individual_value, object_type)
         self.stat = stat
         self.amount_to_change = amount_to_change
 
     def activate(self, caster):
+        '''
+        激活使用该物品的效果。（恢复HP/MP）
+
+        Parameters:
+        caster : Player
+            需要恢复的玩家。
+        '''
         print(f"{caster.name} 使用了一个 {self.name}")
         if self.stat == "hp":
             caster.heal(self.amount_to_change)
@@ -219,21 +365,35 @@ class Potion(Item):
         return Potion(self.name, self.description, amount, self.individual_value, self.object_type, self.stat, self.amount_to_change)
 
 class Grimore(Item):
-    def __init__(self, name, description, amount, individual_value, object_type, skill) -> None:
+    '''
+    法典是玩家可以用来学习新法术的物品。
+
+    Attributes:
+    spell : Spell
+        玩家将学习的法术。
+    '''
+    def __init__(self, name, description, amount, individual_value, object_type, spell) -> None:
         super().__init__(name, description, amount, individual_value, object_type)
-        self.skill = skill
+        self.spell = spell
 
     def activate(self, caster):
+        '''
+        激活使用该物品的效果。（学习新法术）
+
+        Parameters:
+        caster : Player
+            学习法术的玩家。
+        '''
         already_learnt = False
         for skill in caster.spells:
-            if skill.name == self.skill.name:
+            if skill.name == self.spell.name:
                 already_learnt = True
                 break
         if already_learnt:
             print("你已经知道这个咒语")
         else:
-            print(f"阅读 {self.name}, 你学会了释放: {self.skill.name}")
-            caster.spells.append(self.skill)
+            print(f"阅读 {self.name}, 你学会了释放: {self.spell.name}")
+            caster.spells.append(self.spell)
 
     def create_item(self, amount):
-        return Grimore(self.name, self.description, amount, self.individual_value, self.object_type, self.skill)
+        return Grimore(self.name, self.description, amount, self.individual_value, self.object_type, self.spell)

@@ -13,7 +13,7 @@ def title_screen():
     print(display_content)
 
 def help_menu():
-    print("")
+    print("233...")
 
 def play_menu():
     display_content = (
@@ -99,10 +99,11 @@ def inventory_menu():
 def combat_menu(player, allies, enemies):
     print("-------------------------------------------------")
     print(f"{player.name} - {fx.RED}HP: {player.stats['hp']}/{player.stats['max_hp']}{fx.END} - MP: {player.stats['mp']}/{player.stats['max_mp']} - CP: {player.combo_points}")
+    for ally in allies:
+        if ally != player:
+            print(f"{ally.name} - {fx.RED}HP: {ally.stats['hp']}/{ally.stats['max_hp']}{fx.END}")
     for enemy in enemies:
         print(f"{enemy.name} - {fx.GREEN}HP: {enemy.stats['hp']}/{enemy.stats['max_hp']}{fx.END}")
-    for ally in allies:
-        print(f"{ally.name} - {fx.RED}HP: {ally.stats['hp']}/{ally.stats['max_hp']}{fx.END}")
     print("-------------------------------------------------")
     print("             A - Attack  C - Combos")
     print("             S - Spells  D - Defense             ")
@@ -197,18 +198,6 @@ def display_status_effects(battlers):
         else:
             print(f"{battler.name} 没有任何状态效果")
     print(fx.bright_cyan("=== 状态效果 ==="))
-
-def log_battle_result(result: str, player, enemies):
-    from datetime import datetime
-    with open("data/battle_log.txt", "a", encoding="utf-8") as f:
-        timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-        f.write(f"=== 战斗记录: {timestamp} ===\n")
-        f.write(f"结果: {result}\n")
-        f.write(f"玩家: {player.name} 等级{player.level} HP {player.stats['hp']}/{player.stats['max_hp']}\n")
-        f.write("敌人:\n")
-        for enemy in enemies:
-            f.write(f"- {enemy.name} 经验 {enemy.xp_reward}, 金币 {enemy.gold_reward}\n")
-        f.write("\n")
 
 
 ### 事件文本
