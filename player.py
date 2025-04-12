@@ -4,42 +4,6 @@ from data.constants import EXPERIENCE_RATE, MONEY_MULTIPLIER
 import test.fx as fx
 
 class Player(combat.Battler):
-    '''
-    玩家主类，负责处理所有与玩家属性和游戏进程相关的信息。
-
-    Attributes:
-    lvl: int
-        玩家当前等级，默认为 1。
-    xp: int
-        玩家当前经验值 (XP)。
-    xpToNextLvl: int
-        升级所需的经验值。
-    comboPoints: int
-        当前连击点数 (CP)。
-    aptitudes: Dictionary
-        负责管理能力系统的字典。每种能力可提供以下属性加成：
-            STR -> ATK + 3 （力量影响攻击）
-            DEX -> SPD + 2, CRIT + 1 （敏捷影响速度和暴击率）
-            INT -> MATK + 3 （智力影响魔法攻击）
-            WIS -> MP + 15 （智慧影响魔法值）
-            CONST -> MAXHP + 30 （体质影响最大生命值）
-    aptitudePoints: int
-        可用于提升能力的点数。
-    inventory: Inventory
-        玩家物品栏。
-    equipment: Dictionary
-        存储当前玩家装备的字典。
-    money: int
-        当前金钱（金币）。
-    combos: List
-        玩家可使用的连击列表。
-    spells: List
-        玩家可使用的法术列表。
-    activeQuests: List
-        当前进行中的任务列表。
-    completedQuests: List
-        已完成的任务列表。
-    '''
     def __init__(self, name) -> None:
         stats = {
             "max_hp": 500,
@@ -93,13 +57,6 @@ class Player(combat.Battler):
         return super().normal_attack(defender)
 
     def equip_item(self, equipment):
-        '''
-        玩家装备指定物品，物品必须是“装备”类型。
-
-        Parameters:
-        equipment: Equipment
-            需要装备的物品。
-        '''
         if isinstance(equipment, inventory.Equipment):
             actual_equipment = self.equipment[equipment.object_type]
             if actual_equipment != None:
@@ -131,13 +88,6 @@ class Player(combat.Battler):
         self.inventory.show_inventory()
 
     def use_item(self, item):
-        '''
-        使用指定的物品。物品必须属于 "usable_items" 列表中的类型才能被使用。
-
-        Parameters:
-        item: Item
-            要使用的物品。
-        '''
         usable_items = [inventory.Potion, inventory.Grimore]
         if type(item) in usable_items:
             item.activate(self)
@@ -145,14 +95,6 @@ class Player(combat.Battler):
         self.inventory.show_inventory()
 
     def add_exp(self, exp):
-        '''
-        增加玩家的经验值，并处理升级逻辑。
-        升级时，玩家的生命值和魔法值将完全恢复，并且所有属性 +1。
-
-        Parameters:
-        exp: int
-            要增加的经验值。
-        '''
         exp_value = (exp + self.stats["luk"]) * EXPERIENCE_RATE
         self.xp += exp_value
         print(f"获得了 {fx.YELLO}{exp_value}xp{fx.END}")
@@ -177,20 +119,10 @@ class Player(combat.Battler):
         return round(base + growth + scaling)
 
     def add_money(self, money):
-        '''
-        增加玩家的金钱。
-
-        Parameters:
-        money: int
-            要增加的金币数量。
-        '''
         self.money += money * MONEY_MULTIPLIER
         print(fx.yellow(f"获得了 {money*MONEY_MULTIPLIER} 枚硬币。(💰: {self.money})"))
 
     def assign_aptitude_points(self):
-        '''
-        能力点分配菜单。
-        '''
         options_dictionary = {
             "1": "str",
             "2": "dex",
@@ -215,13 +147,6 @@ class Player(combat.Battler):
             option = input("> ")
 
     def update_stats_to_aptitudes(self, aptitude):
-        '''
-        根据所提升的能力点分配对应的属性加成。
-
-        Parameters:
-        aptitude: str
-            要升级的能力。
-        '''
         aptitude_mapping = {
             "str": {"atk": 3},
             "dex": {"agi": 2, "crit": 1},
@@ -234,13 +159,6 @@ class Player(combat.Battler):
             self.stats[stat] += value
 
     def buy_from_vendor(self, vendor):
-        '''
-        从商店购买物品。
-
-        Parameters:
-        vendor: Shop
-            玩家要购买物品的商店。
-        '''
         text.shop_buy(self)
         vendor.inventory.show_inventory()
         i = int(input("> "))
@@ -253,9 +171,6 @@ class Player(combat.Battler):
                 i = int(input("> "))
 
     def show_quests(self):
-        '''
-        显示当前任务，包括进行中的任务和已完成的任务。
-        '''
         print("/// 进行中 ///")
         for actq in self.active_quests:
             actq.show_info()
@@ -264,11 +179,4 @@ class Player(combat.Battler):
             cmpq.show_info()
 
     def add_combo_points(self, points):
-        '''
-        增加一定数量的连击点数 (CP)。
-
-        Parameters:
-        points: int
-            要增加的连击点数。
-        '''
         self.combo_points += points

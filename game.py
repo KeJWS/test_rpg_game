@@ -9,9 +9,6 @@ import test.fx
 
 #### 标题屏幕 #####
 def title_screen_selections():
-    '''
-    标题画面的选项，包括开始游戏、获取帮助或退出。
-    '''
     text.title_screen()
     option = input("> ")
     while option not in ["1", "2", "3"]:
@@ -27,13 +24,6 @@ def title_screen_selections():
 
 ##### 背包菜单 #####
 def inventory_selections(player):
-    '''
-    背包菜单，用于使用、丢弃或装备物品。
-
-    Parameters:
-    player: Player
-        需要访问其背包的玩家。
-    '''
     option = input("> ")
     while option.lower() != "q":
         match option.lower():
@@ -71,13 +61,6 @@ def mystical_crystal(my_player):
 
 ##### 初始化函数#####
 def play():
-    '''
-    主函数，用于进行游戏。
-
-    Returns:
-    alive: bool
-        当游戏结束（玩家死亡）时返回False。
-    '''
     my_player = player.Player("Test Player")
 
     give_initial_items(my_player)
@@ -129,13 +112,6 @@ def play():
                 print("请输入有效命令")
 
 def give_initial_items(my_player):
-    '''
-    根据选择给予玩家初始物品。
-
-    Parameters:
-    myPlayer: Player
-        需要给予初始物品的玩家。
-    '''
     print(text.initial_event_text)
     option = str(input("> "))
     while option not in ["1", "2", "3"]:
@@ -158,20 +134,6 @@ def give_initial_items(my_player):
     enter_clear_screen()
 
 def generate_event(my_player, combat_chance, shop_chance, heal_chance):
-    '''
-    根据指定几率生成随机事件。
-    还处理任务完成。
-
-    Parameters:
-    myPlayer: Player
-        受事件影响的玩家
-    combat_chance: int
-        生成战斗事件的几率（%）
-    shop_chance: int
-        生成商店事件的几率（%）
-    heal_chance: int
-        生成治疗事件的几率（%）
-    '''
     event_list = random.choices(events.event_type_list, weights=(combat_chance, shop_chance, heal_chance), k=1)
     event = random.choice(event_list[0])
     event.effect(my_player)

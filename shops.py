@@ -2,15 +2,6 @@ import inventory
 import random
 
 class Shop():
-    '''
-    处理商店管理。
-
-    Attributes:
-    itemSet: List
-        商店可以拥有的物品池。
-    inventory: Inventory
-        商店的库存
-    '''
     def __init__(self, item_set) -> None:
         self.item_set = item_set
         self.inventory = inventory.Inventory()

@@ -9,22 +9,6 @@ from copy import deepcopy
 import test.fx as fx
 
 class Battler():
-    '''
-    所有可以参与战斗的实例的父类。
-    Battler 将始终是敌人、玩家的盟友或玩家本人。
-
-    Attributes:
-    name : str
-        战斗者的名称。
-    stats : dict
-        战斗者的属性，字典格式，例如：{'atk' : 3}。
-    alive : bool              
-        表示战斗者是否存活的布尔值。
-    buffsAndDebuffs : list     
-        战斗者当前拥有的增益和减益列表。
-    isAlly : bool             
-        表示战斗者是否为玩家的盟友的布尔值。
-    '''
     def __init__(self, name, stats) -> None:
         self.name = name
         self.stats = stats
@@ -34,16 +18,7 @@ class Battler():
         self.is_defending = False
 
     def take_dmg(self, dmg):
-        '''
-        战斗者受到来自任何来源的伤害的函数。
-        从其生命值中减去伤害量，同时检查是否死亡。
-
-        Parameters:
-        dmg : int     
-            造成的伤害数量
-        '''
         from test.fx import red, bold, yellow
-        """伤害结算与死亡检测"""
         dmg = max(dmg, 0)
         self.stats["hp"] -= dmg
         battle_log(f"{self.name} 受到伤害 {yellow(dmg)}", "dmg")
@@ -54,20 +29,6 @@ class Battler():
             self.alive = False
 
     def normal_attack(self, defender, defender_is_defending=False):
-        '''
-        所有战斗者都有的普通攻击。
-
-        伤害计算如下：
-        attacker_atk * (100 / (100 + defender_def * 1.5))
-
-        Parameters:
-        defender : Battler
-            防御的战斗者
-
-        Returns:
-        dmg : int        
-            对防御者造成的伤害
-        '''
         battle_log(f"{self.name} 发动攻击!", "info")
         dot_loading()
 
@@ -88,19 +49,6 @@ class Battler():
         return dmg
 
     def _is_critical(self):
-        '''
-        检查攻击是否为暴击。如果是，则伤害翻倍。
-
-        暴击几率来源于战斗者的属性：'critCh'
-
-        Parameters:
-        dmg : int     
-            基础伤害
-
-        Returns:
-        dmg : int 
-            经过检查和处理后的伤害
-        '''
         return random.randint(1, 100) <= min(72, round(self.stats["crit"]*0.8+self.stats["luk"]*0.2))
 
     def _calc_critical_damage(self, defender):
@@ -118,37 +66,14 @@ class Battler():
         return round(max(base, self.stats["luk"]*1.2) * random.uniform(0.8, 1.2)) # 伤害浮动：±20%
 
     def recover_mp(self, amount):
-        '''
-        战斗者恢复一定量的 'mp'（法力值）。
-
-        Parameters:
-        amount : int      
-            恢复的法力值
-        '''
         self.stats["mp"] = min(self.stats["mp"] + amount, self.stats["max_mp"])
         typewriter(fx.blue(f"{self.name} 恢复了 {amount}MP"))
 
     def heal(self, amount):
-        '''
-        战斗者恢复一定量的 'hp'（生命值）。
-
-        Parameters:
-        amount : int     
-            恢复的生命值
-        '''
         self.stats["hp"] = min(self.stats["hp"] + amount, self.stats["max_hp"])
         typewriter(fx.green(f"{self.name} 治愈了 {amount}HP"))
 
 class Enemy(Battler):
-    '''
-    所有敌人的基类。继承自 'Battler' 类。
-
-    Attributes:
-    xpReward : int    
-        被击杀时给予的经验值（XP）数量
-    goldReward : int 
-        被击杀时给予的金币数量
-    '''
     def __init__(self, name, stats, xp_reward, gold_reward) -> None:
         super().__init__(name, stats)
         self.xp_reward = xp_reward
@@ -159,25 +84,8 @@ class Enemy(Battler):
         new_stats = self.original_stats.copy()
         return Enemy(self.name, new_stats, self.xp_reward, self.gold_reward)
 
-"""
-主战斗循环
-"""
-
 def combat(my_player, enemies):
     from player import Player
-    '''
-    处理玩家与敌人之间的主要战斗循环。
-
-    Parameters:
-    myPlayer : Player
-        当前玩家对象
-    enemies : list     
-        需要战斗的敌人列表
-
-    备注:
-    如果战斗支持多个盟友，应将 myPlayer 替换为名为 'allies' 的列表。
-    目前，只有通过召唤技能才能获得盟友，因此暂未做此修改。
-    '''
     # 所有战斗单位（包括玩家和敌人）按速度排序，决定回合顺序
     allies = [my_player]
     battlers = define_battlers(allies, enemies) # 参与战斗的单位（盟友 + 敌人）
@@ -253,19 +161,6 @@ def combat(my_player, enemies):
         recover_hp_and_mp(my_player, 0.25)
 
 def define_battlers(allies, enemies):
-    '''
-    返回战斗单位列表，并按速度排序（决定回合顺序）。
-
-    Parameters:
-    allies : List
-        盟友单位列表
-    enemies : List
-        敌方单位列表
-
-    Returns:
-    battlers : List
-        包含敌人和盟友的战斗单位列表，按速度排序
-    '''
     battlers = enemies.copy()
     for ally in allies:
         battlers.append(ally)
@@ -273,35 +168,11 @@ def define_battlers(allies, enemies):
     return battlers
 
 def select_target(targets):
-    '''
-    从战场中选择一个目标。
-
-    Parameters:
-    targets : list
-        可选目标单位列表
-
-    Return:
-    target : Battler
-        选中的目标
-    '''
     text.select_objective(targets)
     index = get_valid_input("> ", range(1, len(targets)+1), int)
     return targets[index - 1]
 
 def spell_menu(my_player, battlers, allies, enemies):
-    '''
-    让玩家选择一个目标施放法术。
-
-    Parameters:
-    myPlayer : Player
-        施放法术的玩家。
-    battlers : List
-        战斗中的所有参战者列表。
-    allies : List
-        友方单位列表。
-    enemies : List
-        敌方单位列表。
-    '''
     text.spell_menu(my_player)
     option = int(input("> "))
     while option not in range(len(my_player.spells)+1):
@@ -323,19 +194,6 @@ def spell_menu(my_player, battlers, allies, enemies):
                 spell_chosen.effect(my_player, allies)
 
 def combo_menu(my_player, battlers, allies, enemies):
-    '''
-    让玩家选择一个目标执行连招。
-
-    Parameters:
-    myPlayer : Player
-        进行连招的玩家。
-    battlers : List
-        战斗中的所有参战者列表。
-    allies : List
-        友方单位列表。
-    enemies : List
-        敌方单位列表。
-    '''
     text.combo_menu(my_player)
     option = int(input("> "))
     while option not in range(len(my_player.combos)+1):
@@ -355,23 +213,6 @@ def combo_menu(my_player, battlers, allies, enemies):
                 check_if_dead(allies, enemies, battlers)
 
 def check_miss(attacker, defender):
-    '''
-    检查攻击是否命中，命中率由以下公式决定：
-
-    chance = math.floor(math.sqrt(max(0, (5 * defender.stats['speed'] - attacker.stats['speed'] * 2))))
-
-    经过多次尝试，这个公式表现得相对合理。当然，你可以根据需要进行调整。
-
-    Parameters:
-    attacker : Battler
-        发起攻击的单位。
-    defender : Battler
-        受到攻击的单位。
-
-    Returns:
-    True/False : Bool
-        True 代表攻击未命中，False 代表攻击命中。
-    '''
     miss_chance = math.floor(math.sqrt(max(0, 5 * defender.stats["agi"] - attacker.stats["agi"] * 2)))
     if miss_chance > random.randint(0, 100):
         typewriter(fx.red(f"{attacker.name} 的攻击被 {defender.name} 躲开了"))
@@ -380,7 +221,6 @@ def check_miss(attacker, defender):
 
 def try_escape(my_player):
     from skills import weakened_defense
-    """逃跑逻辑"""
     escape_chance = min(90, 35 + (my_player.stats["agi"] * 0.7 + my_player.stats["luk"] * 0.3))
     if random.randint(1, 100) <= escape_chance:
         print(fx.green("逃跑成功!"))
@@ -393,31 +233,10 @@ def try_escape(my_player):
         return False
 
 def check_turns_buffs_and_debuffs(target, deactivate):
-    '''
-    检查目标的增益和减益状态是否仍然有效（基于回合数判断）。
-
-    Parameters:
-    target : Battler
-        需要检查状态的单位。
-    deactivate : bool
-        若为 True，则立即清除所有增益和减益状态（适用于战斗结束等情况）。
-        若为 False，则正常检测状态回合数。
-    '''
     for bd in target.buffs_and_debuffs:
         bd.deactivate() if deactivate else bd.check_turns()
 
 def check_if_dead(allies, enemies, battlers):
-    '''
-    检查战斗单位是否阵亡，如果阵亡，则从相应列表中移除。
-
-    Parameters:
-    allies : List
-        友方单位列表。
-    enemies : List
-        敌方单位列表。
-    battlers : List
-        参战单位总列表。
-    '''
     dead_bodies = []
     for ally in allies:
         if ally.alive == False:
@@ -434,24 +253,10 @@ def check_if_dead(allies, enemies, battlers):
             allies.remove(dead)
 
 def fully_heal(target):
-    '''
-    完全恢复目标的生命值。
-
-    Parameters:
-    target : Battler
-        需要恢复的单位。
-    '''
     target.stats["hp"] = target.stats["max_hp"]
     typewriter(f"{target.name} 的生命完全恢复了")
 
 def fully_recover_mp(target):
-    '''
-    完全恢复目标的魔法值。
-
-    Parameters:
-    target : Battler
-        需要恢复的单位。
-    '''
     target.stats["mp"] = target.stats["max_mp"]
     typewriter(f"{target.name} 的魔法完全恢复了")
 
@@ -472,24 +277,6 @@ def get_valid_input(prompt, valid_range, cast_func=str):
 
 def create_enemy_group(level, possible_enemies, enemy_quantity_for_level):
     from enemies import enemy_data
-    '''
-    根据玩家等级创建敌人小队。
-
-    Parameters:
-    lvl : int
-        玩家当前等级。
-    possible_enemies : Dictionary
-        可能出现的敌人及其对应的等级范围，
-        采用以下格式：{enemyClass : (最低等级, 最高等级)}
-    enemy_quantity_for_level : Dictionary
-        根据玩家等级决定敌人数量，
-        格式示例：{等级上限 : 敌人数量}，
-        例如 {3: 1} 表示 3 级及以下最多出现 1 名敌人。
-
-    Returns:
-    enemy_group : List
-        生成的敌人单位列表。
-    '''
 
     enemies_to_appear = []
     for enemy in possible_enemies:

@@ -4,38 +4,17 @@ import text, shops, items, enemies, quest
 
 # 处理事件（遭遇敌人、商店、治疗场所......）
 class Event():
-    '''
-    处理各种事件（敌人遭遇战、商店、治疗地点等）
-
-    Attributes: 
-    name: str
-        事件名称
-    successChance: int
-        事件成功的概率
-    isUnique: bool
-        是否为唯一事件，若为 True，则该事件只能触发一次；若为 False，则可重复触发。
-    '''
     def __init__(self, name, success_chance, is_unique) -> None:
         self.name = name
         self.success_chance = success_chance
         self.is_unique = is_unique
 
     def check_success(self):
-        '''
-        检查事件是否成功触发
-
-        Returns:
-        True/False: bool
-            若事件成功触发，则返回 True，否则返回 False。
-        '''
         if self.success_chance < random.randint(0, 100):
             return False
         return True
 
     def add_event_to_event_list(self):
-        '''
-        将事件加入相应的事件类型列表
-        '''
         if type(self) == Fixed_combat_event:
             event_type_list[0].append(self)
         elif type(self) == Shop_event:
@@ -44,15 +23,6 @@ class Event():
             event_type_list[2].append(self)
 
 class Random_combat_event(Event):
-    '''
-    继承 Event 类。用于随机遭遇战。
-
-    Attributes:
-    enemy_quantity_for_level: dict
-        记录不同等级对应的敌人数量，
-        格式如下：{等级上限: 敌人数量}
-        例如 {3: 1} 表示等级在 3 级及以下时，仅出现 1 个敌人。
-    '''
     def __init__(self, name) -> None:
         super().__init__(name, 100, False)
         self.enemy_quantity_for_level = {
@@ -64,56 +34,18 @@ class Random_combat_event(Event):
         }
 
     def effect(self, player):
-        '''
-        触发事件效果
-
-        Parameters:
-        player: Player
-            事件作用的玩家对象
-        '''
         enemy_group = combat.create_enemy_group(player.level, enemies.possible_enemies, self.enemy_quantity_for_level)
         combat.combat(player, enemy_group)
 
 class Fixed_combat_event(Event):
-    '''
-    继承 Event 类。用于固定战斗（BOSS 战、任务战斗等）。
-
-    Attributes:
-    enemyList: list
-        需要战斗的敌人列表
-    '''
     def __init__(self, name, enemy_list) -> None:
         super().__init__(name, 10, True)
         self.enemy_list = enemy_list
 
     def effect(self, player):
-        '''
-        触发事件效果
-
-        Parameters:
-        player: Player
-            事件作用的玩家对象
-        '''
         combat.combat(player, self.enemy_list)
 
 class Shop_event(Event):
-    '''
-    继承 Event 类。用于商店事件。
-
-    Attributes:
-    encounter: str
-        遇到商店时的描述文本
-    enter: str
-        进入商店时的描述文本
-    talk: str
-        与店主交谈时的描述文本
-    exit: str
-        离开商店时的描述文本
-    itemSet: list
-        商店内可售卖的物品类别列表
-    quest: Quest
-        交谈时可接受的任务
-    '''
     def __init__(self, name, is_unique, encounter_text, enter_text, talk_text, exit_text, item_set, quest) -> None:
         super().__init__(name, 100, is_unique)
         self.encounter = encounter_text
@@ -124,13 +56,6 @@ class Shop_event(Event):
         self.quest = quest
 
     def effect(self, player):
-        '''
-        触发事件效果
-
-        Parameters:
-        player: Player
-            事件作用的玩家对象
-        '''
         print(self.encounter)
         enter = input("> ").lower()
         while enter not in ["y", "n"]:
@@ -155,21 +80,6 @@ class Shop_event(Event):
         print(self.exit)
 
 class Healing_event(Event):
-    '''
-    继承 Event 类。用于治疗类事件。
-
-    Attributes:
-    encounter: str
-        遭遇事件时的描述文本
-    success: str
-        事件成功时的描述文本
-    fail: str
-        事件失败时的描述文本
-    refuse: str
-        玩家拒绝参与事件时的描述文本
-    healingAmount: int
-        事件成功时恢复的生命值
-    '''
     def __init__(self, name, encounter_text, success_text, fail_text, refuse_text, success_chance, is_unique, healing_amount) -> None:
         super().__init__(name, success_chance, is_unique)
         self.encounter = encounter_text
@@ -179,13 +89,6 @@ class Healing_event(Event):
         self.healing_amount = healing_amount
 
     def effect(self, player):
-        '''
-        触发事件效果。
-
-        Parameters:
-        player: Player
-            事件作用的玩家对象
-        '''
         print(self.encounter)
         accept = input(">").lower()
         while accept not in ["y", "n"]:
@@ -200,25 +103,11 @@ class Healing_event(Event):
             print(self.refuse)
 
 class Inn_event(Healing_event):
-    '''
-    继承 HealingEvent 类。该事件总是成功，但需要支付一定费用。
-
-    Attributes:
-    cost: int
-        治疗的费用
-    '''
     def __init__(self, name, encounter_text, success_text, fail_text, refuse_text, healing_amount, cost) -> None:
         super().__init__(name, encounter_text, success_text, fail_text, refuse_text, 100, False, healing_amount)
         self.cost = cost
 
     def effect(self, player):
-        '''
-        触发事件效果。
-
-        Parameters:
-        player: Player
-            事件作用的玩家对象
-        '''
         print(self.encounter)
         accept = input("> ").lower()
         while accept not in ["y", "n"]:
