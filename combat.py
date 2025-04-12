@@ -220,7 +220,11 @@ def combat(my_player, enemies):
                 elif "d" in cmd:
                     pass
                 elif "e" in cmd:
-                    pass
+                    if try_escape(my_player):
+                        check_turns_buffs_and_debuffs(my_player, True)
+                        typewriter(f"{my_player.name} 成功逃离了战斗")
+                        my_player.combo_points = 0
+                        return
             else:
                 # 盟友自动攻击随机敌人
                 if battler.is_ally:
@@ -236,6 +240,7 @@ def combat(my_player, enemies):
         # 回合结束，检查增益和减益的持续时间
         for battler in battlers:
             check_turns_buffs_and_debuffs(battler, False)
+        text.display_status_effects(battlers)
 
     if my_player.alive:
         # 移除所有增益和减益效果
@@ -376,7 +381,7 @@ def check_miss(attacker, defender):
 def try_escape(my_player):
     from skills import weakened_defense
     """逃跑逻辑"""
-    escape_chance = min(90, 30 + (my_player.stats["agi"] * 0.4 + my_player.stats["luk"] * 0.1))
+    escape_chance = min(90, 35 + (my_player.stats["agi"] * 0.7 + my_player.stats["luk"] * 0.3))
     if random.randint(1, 100) <= escape_chance:
         print(fx.green("逃跑成功!"))
         return True
@@ -505,8 +510,3 @@ def create_enemy_group(level, possible_enemies, enemy_quantity_for_level):
         enemy_instance = deepcopy(enemy_data[enemy_id])
         enemy_group.append(enemy_instance)
     return enemy_group
-
-# TODO 未来拓展技能 AI, 比如根据 HP% 或回合数使用技能
-# TODO combo 和 spell 系统进一步封装, 让技能拥有 cooldown、条件触发等机制
-# TODO 战斗后恢复比例（25%）可以与“露营”机制、技能、药水等组合使用
-# TODO 敌人可以有“稀有出现率”字段, 例如 5% 出现某种稀有怪物

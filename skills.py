@@ -423,5 +423,5 @@ combo_meditation2 = Recovery_combo("冥想 II", "", 2, "mp", 70, False, "self")
 enhance_weapon = Buff_debuff_spell("蓄力", "", 0, 0, False, "self", "atk", 0.25, 2)
 weakened_defense = Buff_debuff_spell("破防", "", 0, 0, False, "self", "def", -0.5, 2)
 
-quickSshooting = Slash_combo('快速连射 I', '', 1, True, None, 2)
-quickSshooting2 = Slash_combo('快速连射 II', '', 2, True, None, 3)
+combo_quickSshooting = Slash_combo('快速连射 I', '', 1, True, None, 2)
+combo_quickSshooting2 = Slash_combo('快速连射 II', '', 2, True, None, 3)

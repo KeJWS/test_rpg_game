@@ -22,7 +22,7 @@ def play_menu():
         "   2 - See stats\n"
         "   3 - Aptitude\n"
         "   4 - Inventory\n"
-        "   5 - Save system\n"
+        "   5 - Recovery\n"
         "   6 - Show equipment info\n"
         "   7 - Battle\n"
         "   8 - Quests\n"

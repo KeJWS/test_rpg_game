@@ -27,6 +27,7 @@ equipment_data = load_equipment_from_csv()
 rusty_sword = equipment_data["rusty_sword"]
 broken_dagger = equipment_data["broken_dagger"]
 old_staff = equipment_data["old_staff"]
+wood_bow = equipment_data["wood_bow"]
 # -> 初始护甲
 novice_armor = equipment_data["novice_armor"]
 old_robes = equipment_data["old_robes"]
@@ -63,6 +64,7 @@ war_hammer = equipment_data["war_hammer"]
 zweihander = equipment_data["zweihander"]
 sage_staff = equipment_data["sage_staff"]
 sai = equipment_data["sai"]
+long_bow = equipment_data["long_bow"]
 
 # -> 高级装甲
 iron_armor = equipment_data["iron_armor"]
@@ -107,6 +109,7 @@ rik_armor_shop_item_set = [
     sai,
     thief_armor,
     wooden_shield,
+    long_bow,
 ]
 
 itz_magic_item_set = [

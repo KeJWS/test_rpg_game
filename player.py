@@ -42,7 +42,7 @@ class Player(combat.Battler):
     '''
     def __init__(self, name) -> None:
         stats = {
-            "max_hp": 1500,
+            "max_hp": 500,
             "hp": 500,
             "max_mp": 100,
             "mp": 100,

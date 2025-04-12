@@ -4,7 +4,6 @@ import random
 import combat, text, player, items, events
 
 from test.clear_screen import clear_screen, enter_clear_screen
-from test.save_system import save_game, get_save_list, delete_save, load_game
 
 import test.fx
 
@@ -50,39 +49,6 @@ def inventory_selections(player):
         text.inventory_menu()
         option = input("> ")
     enter_clear_screen()
-
-def handle_save_menu(player):
-    """处理存档菜单逻辑，返回可能更新的玩家对象"""
-    save_option = int(input("> "))
-    match save_option:
-        case 1:
-            save_name = input("输入存档名 (留空使用默认名称): ").strip()
-            save_name = save_name if save_name else None
-            save_metadata = save_game(player, save_name)
-            print(f"游戏已保存: {save_metadata['name']}")
-        case 2:
-            saves = get_save_list()
-            if not saves:
-                print("没有可用存档。")
-                return player
-            text.display_save_list(saves)
-            save_index = int(input("> "))
-            if 1 <= save_index <= len(saves):
-                loaded_player = load_game(saves[save_index-1]["name"])
-                if loaded_player:
-                    print(f"游戏已加载: {loaded_player.name} (等级 {loaded_player.level})")
-                    return loaded_player
-        case 3:
-            saves = get_save_list()
-            if not saves:
-                print("没有可删除的存档")
-                return player
-            text.display_save_list(saves)
-            save_index = int(input("> "))
-            if 1 <= save_index <= len(saves):
-                if delete_save(saves[save_index-1]["name"]):
-                    print("存档已删除")
-    return player
 
 def mystical_crystal(my_player):
     cost = 50 * my_player.level
@@ -140,8 +106,7 @@ def play():
                 inventory_selections(my_player)
             case "5":
                 clear_screen()
-                text.save_load_menu()
-                handle_save_menu(my_player)
+                mystical_crystal(my_player)
                 enter_clear_screen()
             case "6":
                 clear_screen()
@@ -158,7 +123,6 @@ def play():
                 enter_clear_screen()
             case "9":
                 clear_screen()
-                mystical_crystal(my_player)
                 enter_clear_screen()
             case _:
                 clear_screen()
@@ -187,6 +151,8 @@ def give_initial_items(my_player):
         items.old_robes.add_to_inventory_player(my_player.inventory)
         items.grimoire_fireball.add_to_inventory_player(my_player.inventory)
 
+    items.mp_potion.add_to_inventory_player(my_player.inventory)
+    items.hp_potion.add_to_inventory_player(my_player.inventory)
     my_player.add_money(100)
     print(test.fx.red("[ 记得在库存 > 装备物品中装备这些物品 ]"))
     enter_clear_screen()
