@@ -22,10 +22,11 @@ def play_menu():
         "   2 - See stats\n"
         "   3 - Aptitude\n"
         "   4 - Inventory\n"
-        "   5 - Recovery\n"
-        "   6 - Show equipment info\n"
+        "   5 - Life recovery\n"
+        "   6 - Show equipment\n"
         "   7 - Battle\n"
         "   8 - Quests\n"
+        "   9 - Show skills\n"
         "----------------------------------\n"
     )
     print(display_content)
@@ -153,6 +154,23 @@ def shop_buy(player):
         "----------------------------------\n"
     )
     print(display_shop_buy)
+
+
+def show_skills(player):
+    print("=== 法术技能 ===")
+    if player.spells:
+        for spell in player.spells:
+            print(f"• {spell.name} - {spell.description} ({fx.GREEN}MP: {spell.cost}, Power: {spell.power}{fx.END})")
+    else:
+        print("暂无法术。")
+
+    print("\n=== 组合技能 ===")
+    if player.combos:
+        for combo in player.combos:
+            print(f"• {combo.name} - {combo.description} ({fx.YELLO}CP: {combo.cost}{fx.END})")
+    else:
+        print("暂无连招。")
+
 
 def enter_shop(name):
     if name == "里克的盔甲店":

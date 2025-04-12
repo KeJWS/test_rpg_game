@@ -45,7 +45,7 @@ class Player(combat.Battler):
         }
         self.money = 20 # 当前资金
         self.combos = [] # 玩家选择的组合（atk, cp）
-        self.spells = [] # 玩家选择的法术（matk, mp）
+        # self.spells = [] # 玩家选择的法术（matk, mp）
 
         self.active_quests = []
         self.completed_quests = []

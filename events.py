@@ -122,6 +122,22 @@ class Inn_event(Healing_event):
         elif accept == "n":
             print(self.refuse)
 
+### 生命恢复水晶 ###
+def life_recovery_crystal(my_player):
+    cost = 50 * my_player.level
+    print("\n" + "="*34)
+    print(f"一个神秘的魔法水晶, 可以完全恢复,\n但需要花费: {cost}G")
+    print("-"*34)
+    if my_player.money < cost:
+        print("金币不足!")
+        return
+    if input("确认抚摸吗? (y/n): ").lower() == 'y':
+        my_player.money -= cost
+        combat.fully_heal(my_player)
+        combat.fully_recover_mp(my_player)
+    else:
+        print("已取消。")
+
 # 任务
 # -> 凯撒鲁斯
 caesarus_bandit_combat = Fixed_combat_event('凯撒鲁斯与他的强盗', enemies.enemy_list_caesarus_bandit)

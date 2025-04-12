@@ -16,6 +16,7 @@ class Battler():
         self.buffs_and_debuffs = []
         self.is_ally = False
         self.is_defending = False
+        self.spells = []
 
     def take_dmg(self, dmg):
         from test.fx import red, bold, yellow
