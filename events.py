@@ -1,6 +1,7 @@
 import combat
 import random
 import text, shops, items, enemies, quest
+from test.clear_screen import enter_clear_screen
 
 # 处理事件（遭遇敌人、商店、治疗场所......）
 class Event():
@@ -75,6 +76,10 @@ class Shop_event(Event):
                         self.quest.propose_quest(player)
                     else:
                         print(self.talk)
+                elif option == "ua":
+                    player.unequip_all()
+                elif option == "si":
+                    player.inventory.show_inventory(); enter_clear_screen()
                 text.shop_menu(player)
                 option = input("> ").lower()
         print(self.exit)
@@ -140,13 +145,16 @@ def life_recovery_crystal(my_player):
 
 # 任务
 # -> 凯撒鲁斯
-caesarus_bandit_combat = Fixed_combat_event('凯撒鲁斯与他的强盗', enemies.enemy_list_caesarus_bandit)
-quest_caesarus_bandit = quest.Quest('凯撒鲁斯与他的强盗', text.quest_caesarus_bandit_text, text.shop_quest_caesarus_bandits, 150, 150, None, caesarus_bandit_combat, 5)
+caesarus_bandit_combat = Fixed_combat_event("凯撒鲁斯与他的强盗", enemies.enemy_list_caesarus_bandit)
+quest_caesarus_bandit = quest.Quest("凯撒鲁斯与他的强盗", text.quest_caesarus_bandit_text, text.shop_quest_caesarus_bandits, 150, 150, None, caesarus_bandit_combat, 5)
+
+fight_against_slime_combat = Fixed_combat_event("史莱姆之王", enemies.enemy_list_fight_against_slime)
+quest_fight_against_slime = quest.Quest("史莱姆之王", text.quest_fight_against_slime_text, text.shop_fight_against_slime_text, 100, 100, items.long_bow, fight_against_slime_combat, 7)
 
 # 事件实例
 random_combat = Random_combat_event("随机战斗")
 shop_rik_armor = Shop_event("里克的盔甲店", False, text.rik_armor_shop_encounter, text.rik_armor_shop_enter, text.rik_armor_shop_talk, text.rik_armor_shop_exit, items.rik_armor_shop_item_set, quest_caesarus_bandit)
-shop_itz_magic = Shop_event("伊兹的魔法店", False, text.itz_magic_encounter, text.itz_magic_enter, text.itz_magic_talk, text.itz_magic_exit, items.itz_magic_item_set, None)
+shop_itz_magic = Shop_event("伊兹的魔法店", False, text.itz_magic_encounter, text.itz_magic_enter, text.itz_magic_talk, text.itz_magic_exit, items.itz_magic_item_set, quest_fight_against_slime)
 heal_medussa_statue = Healing_event("美杜莎雕像", text.medussa_statue_encounter, text.medussa_statue_success,
                                     text.medussa_statue_fail, text.medussa_statue_refuse, 70, False, 90)
 inn_event = Inn_event("Inn", text.inn_event_encounter, text.inn_event_success, text.inn_event_fail, text.inn_event_refuse, 120, 20)

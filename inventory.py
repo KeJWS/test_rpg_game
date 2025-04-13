@@ -79,6 +79,9 @@ class Inventory():
                 if actual_item.amount <= 0:
                     self.items.remove(actual_item)
 
+    def add_item(self, item):
+        item.add_to_inventory_player(self)
+
     @property
     def total_worth(self):
         total_worth = sum(item.amount * item.individual_value for item in self.items)

@@ -22,6 +22,7 @@ def inventory_selections(player):
             case "u": clear_screen(); player.use_item(player.inventory.use_item())
             case "d": clear_screen(); player.inventory.drop_item()
             case "e": clear_screen(); player.equip_item(player.inventory.equip_item())
+            case "ua": clear_screen(); player.unequip_all()
         enter_clear_screen()
         text.inventory_menu()
 
@@ -35,7 +36,7 @@ def play():
     print(test.fx.red("\n[ 记得在库存 > 装备物品中装备这些物品 ]"))
     enter_clear_screen()
 
-    event_chances = (65, 20, 15)  # 战斗、商店、治疗的概率
+    event_chances = (65, 220, 15)  # 战斗、商店、治疗的概率
     while p.alive:
         text.play_menu()
         match input("> "):

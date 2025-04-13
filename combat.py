@@ -216,7 +216,6 @@ def combo_menu(my_player, battlers, allies, enemies):
 def check_miss(attacker, defender):
     miss_chance = math.floor(math.sqrt(max(0, 5 * defender.stats["agi"] - attacker.stats["agi"] * 2)))
     if miss_chance > random.randint(0, 100):
-        typewriter(fx.red(f"{attacker.name} 的攻击被 {defender.name} 躲开了"))
         return True
     return False
 

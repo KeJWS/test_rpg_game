@@ -89,9 +89,10 @@ def show_aptitudes(player):
 def inventory_menu():
     display_inventory = (
         "----------------------------------\n"
-        "       U - Use an item\n"
-        "       D - Drop an item\n"
-        "       E - Equip an item           \n"
+        "       U  - Use an item\n"
+        "       D  - Drop an item\n"
+        "       E  - Equip an item           \n"
+        "       Ua - Unequip all\n"
         "           Q - Quit\n"
         "----------------------------------"
     )
@@ -138,10 +139,12 @@ def shop_menu(player):
         "----------------------------------\n"
         f"          SHOP - 💰: {player.money}\n"
         "----------------------------------\n"
-        "           B - Buy Items\n"
-        "           S - Sell Items\n"
-        "           T - Talk\n"
-        "           E - Exit\n"
+        "           B  - Buy Items\n"
+        "           S  - Sell Items\n"
+        "           T  - Talk\n"
+        "           Ua - Unequip all\n"
+        "           Si - Show inventory\n"
+        "           E  - Exit\n"
         "----------------------------------\n"
     )
     print(display_shop_menu_text)
@@ -273,3 +276,11 @@ quest_caesarus_bandit_text = "凯撒鲁斯和他的匪徒一直在\n\
 shop_quest_caesarus_bandits = "听说过那群强盗吗？他们一直在恐吓\n\
 这一带的村庄。一个叫凯撒鲁斯的家伙是他们的首领。\n\
 如果你能解决他们，也许村民会给你一些报酬。"
+
+quest_fight_against_slime_text = ""
+shop_fight_against_slime_text = ""
+
+quest_fight_against_slime_text = "沼泽深处出现了一只巨大的史莱姆之王，\n\
+你接下了这个任务。"
+shop_fight_against_slime_text = "听闻沼泽深处出现了一只巨大的史莱姆之王，\n\
+有兴趣吗？报酬嘛，我倒是可以把珍藏多年的长弓送给你...[y/n]"

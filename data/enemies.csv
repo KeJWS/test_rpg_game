@@ -6,3 +6,4 @@ id,name,name_zh,max_hp,max_mp,atk,def,mat,mdf,agi,luk,crit,xp_reward,gold_min,go
 5,slime,史莱姆,350,10,12,5,3,3,5,5,0,33,12,50
 6,bandit,土匪,780,10,19,18,10,10,12,10,7,88,35,150
 7,caesarus_bandit_leader,凯撒鲁斯•土匪头目,1300,10,25,22,10,10,15,15,12,127,70,220
+8,slime_king,史莱姆之王,2200,130,35,25,17,20,15,15,10,145,135,270

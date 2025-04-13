@@ -87,6 +87,20 @@ class Player(combat.Battler):
         text.inventory_menu()
         self.inventory.show_inventory()
 
+    def unequip_all(self):
+        for slot, equipment in self.equipment.items():
+            if equipment:
+                print(f"- 已卸下 {equipment.name}")
+                for stat, value in equipment.stat_change_list.items():
+                    self.stats[stat] -= value
+                    print(f"  {stat} -{value}")
+                if equipment.combo and equipment.combo in self.combos:
+                    self.combos.remove(equipment.combo)
+                    print(f"  不再可用连招: {equipment.combo.name}")
+                self.inventory.add_item(equipment)
+                self.equipment[slot] = None
+        print(f"所有装备已解除")
+
     def use_item(self, item):
         usable_items = [inventory.Potion, inventory.Grimore]
         if type(item) in usable_items:

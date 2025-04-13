@@ -38,3 +38,4 @@ possible_enemies = {
 }
 
 enemy_list_caesarus_bandit = [enemy_data["caesarus_bandit_leader"].clone(), enemy_data["bandit"].clone(), enemy_data["bandit"].clone()]
+enemy_list_fight_against_slime = [enemy_data["slime_king"].clone(), enemy_data["giant_slime"].clone(), enemy_data["giant_slime"].clone()]
