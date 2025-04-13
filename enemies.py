@@ -26,7 +26,7 @@ def load_enemies_from_csv(filepath):
             enemies[row["name"]] = enemy
     return enemies
 
-enemy_data = load_enemies_from_csv("data/enemies.csv")
+enemy_data = load_enemies_from_csv("data/monsters.csv")
 
 possible_enemies = {
     "slime": (1, 3),

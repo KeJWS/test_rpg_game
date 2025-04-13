@@ -36,7 +36,7 @@ def play():
     print(test.fx.red("\n[ 记得在库存 > 装备物品中装备这些物品 ]"))
     enter_clear_screen()
 
-    event_chances = (65, 220, 15)  # 战斗、商店、治疗的概率
+    event_chances = (65, 20, 15)  # 战斗、商店、治疗的概率
     while p.alive:
         text.play_menu()
         match input("> "):

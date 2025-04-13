@@ -45,7 +45,7 @@ class Quest():
         if self.gold_reward > 0:
             player.money += self.gold_reward
         if self.item_reward != None:
-            self.item_reward.add_to_inventory(player.inventory)
+            self.item_reward.add_to_inventory_player(player.inventory)
 
     def propose_quest(self, player):
         print(self.proposal_text)
