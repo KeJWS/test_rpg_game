@@ -113,7 +113,7 @@ class Slash_combo(Combo):
         if self.check_cp(caster):
             print(f"{caster.name} 攻击 {target.name} {self.time_to_hit} 次!")
             for _ in range(self.time_to_hit):
-                caster.normal_attack(target)
+                caster.normal_attack(target, gain_cp=False)
 
 class Armor_breaking_combo(Combo):
     def __init__(self, name, description, cost, is_targeted, default_target, armor_destryed) -> None:
@@ -205,5 +205,5 @@ combo_meditation2 = Recovery_combo("冥想 II", "恢复大量魔法", 2, "mp", 7
 enhance_weapon = Buff_debuff_spell("蓄力", "临时提升攻击力", 0, 0, False, "self", "atk", 0.25, 2)
 weakened_defense = Buff_debuff_spell("破防", "降低防御力", 0, 0, False, "self", "def", -0.5, 2)
 
-combo_quickSshooting = Slash_combo('快速连射 I', '快速射击敌人两次', 1, True, None, 2)
+combo_quickSshooting = Slash_combo('快速连射 I', '快速射击敌人两次', 2, True, None, 2)
 combo_quickSshooting2 = Slash_combo('快速连射 II', '快速射击敌人三次', 2, True, None, 3)

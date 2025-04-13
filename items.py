@@ -85,16 +85,20 @@ ring_of_power = equipment_data["ring_of_power"]
 ring_of_magic = equipment_data["ring_of_magic"]
 
 # 消耗品
-hp_potion = inventory.Potion('生命药水', 'a', 1, 20, 'consumable', 'hp', 70)
-mp_potion = inventory.Potion('法力药水', 'a', 1, 20, 'consumable', 'mp', 40)
+hp_potion = inventory.Potion("生命药水", "恢复70点生命值的药水", 1, 25, "consumable", "hp", 70)
+mp_potion = inventory.Potion("法力药水", "恢复40点法力值的药水", 1, 25, "consumable", "mp", 40)
+
+atk_jewel = inventory.Jewel("攻击宝石", "提升3点攻击力的宝石", 1, 150, "consumable", "atk", 3)
+mat_jewel = inventory.Jewel("魔法宝石", "提升3点魔法攻击力的宝石", 1, 150, "consumable", "mat", 3)
+agi_jewel = inventory.Jewel("敏捷宝石", "提升3点敏捷的宝石", 1, 150, "consumable", "agi", 3)
 
 # 魔法书
-grimoire_fireball = inventory.Grimore("魔法书：火球术", "", 1, 80, "consumable", skills.spell_fire_ball)
-grimoire_divine_blessing = inventory.Grimore("魔法书：神圣祝福", "", 1, 120, "consumable", skills.spell_divine_blessing)
-grimoire_enhance_weapon = inventory.Grimore("魔法书：增强武器", "", 1, 120, "consumable", skills.spell_enhance_weapon)
-grimoire_inferno = inventory.Grimore("魔法书: 地狱火", "", 1, 210, "consumable", skills.spell_inferno)
-grimoire_summon_skeleton = inventory.Grimore("唤灵书: 骷髅召唤", "", 1, 170, "consumable", skills.spell_skeleton_summoning)
-grimoire_summon_fire_spirit = inventory.Grimore("唤灵书: 火精灵", "", 1, 215, "consumable", skills.spell_fire_spirit_summoning)
+grimoire_fireball = inventory.Grimoire("魔法书：火球术", "记载了基础的火焰魔法，释放一颗灼热火球攻击敌人。", 1, 80, "consumable", skills.spell_fire_ball)
+grimoire_divine_blessing = inventory.Grimoire("魔法书：神圣祝福", "古老教会的祝文，可恢复目标生命，带来圣光的治愈。", 1, 120, "consumable", skills.spell_divine_blessing)
+grimoire_enhance_weapon = inventory.Grimoire("魔法书：增强武器", "魔法附魔术式，可短时间内强化武器的攻击力。", 1, 120, "consumable", skills.spell_enhance_weapon)
+grimoire_inferno = inventory.Grimoire("魔法书: 地狱火", "中级火焰咒文，召唤烈焰吞噬所有敌人。", 1, 210, "consumable", skills.spell_inferno)
+grimoire_summon_skeleton = inventory.Grimoire("唤灵书: 骷髅召唤", "记载亡灵召唤术，可呼唤骷髅战士为你作战。", 1, 170, "consumable", skills.spell_skeleton_summoning)
+grimoire_summon_fire_spirit = inventory.Grimoire("唤灵书: 火精灵", "源自炎之古国的召唤术，召唤火焰元素协助作战。", 1, 215, "consumable", skills.spell_fire_spirit_summoning)
 
 # 商店物品套装
 
@@ -126,4 +130,5 @@ itz_magic_item_set = [
     grimoire_inferno,
     grimoire_summon_skeleton,
     grimoire_summon_fire_spirit,
+    mat_jewel,
 ]

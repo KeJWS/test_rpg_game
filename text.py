@@ -60,9 +60,9 @@ def show_stats(player):
     print("==================================")
 
 def show_equipment_info(player):
-    print("==================================")
+    print("=================================================")
     print("  EQUIPMENT")
-    print("----------------------------------")
+    print("-------------------------------------------------")
 
     for equipment in player.equipment:
         if player.equipment[equipment] is not None:

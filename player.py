@@ -52,8 +52,9 @@ class Player(combat.Battler):
 
         self.is_ally = True # 检查战斗者是否是盟友
 
-    def normal_attack(self, defender):
-        self.add_combo_points(1)
+    def normal_attack(self, defender, gain_cp=True):
+        if gain_cp:
+            self.add_combo_points(1)
         return super().normal_attack(defender)
 
     def equip_item(self, equipment):
@@ -73,7 +74,7 @@ class Player(combat.Battler):
             # 增加新装备提供的属性加成
             for stat in equipment.stat_change_list:
                 self.stats[stat] += equipment.stat_change_list[stat]
-            self.equipment[equipment.object_type] = equipment.create_item(1)
+            self.equipment[equipment.object_type] = equipment.clone(1)
             # 添加新装备的连击
             if equipment.combo != None and equipment.combo not in self.combos:
                 self.combos.append(equipment.combo)
@@ -102,7 +103,7 @@ class Player(combat.Battler):
         print(f"所有装备已解除")
 
     def use_item(self, item):
-        usable_items = [inventory.Potion, inventory.Grimore]
+        usable_items = [inventory.Potion, inventory.Grimoire]
         if type(item) in usable_items:
             item.activate(self)
         text.inventory_menu()
@@ -194,3 +195,19 @@ class Player(combat.Battler):
 
     def add_combo_points(self, points):
         self.combo_points += points
+
+    def rebirth(self):
+        print(fx.cyan("你选择了转生! 重置所有成长, 但保留了财富与物品"))
+        self.unequip_all()
+
+        saved_money = self.money
+        saved_inventory = self.inventory
+        # saved_spells = self.spells.copy()
+
+        self.__init__(self.name)
+        self.money = saved_money
+        self.inventory = saved_inventory
+        # self.spells = saved_spells
+
+        print(fx.cyan(f"你以 Lv.{self.level} 重生，保留了 {self.money} 金币和背包物品!"))
+        self.inventory.show_inventory()

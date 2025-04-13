@@ -111,7 +111,7 @@ class Item():
     def sell(self):
         if self.amount == 1:
             money_to_receive = int(round(self.individual_value * 0.5))
-            print(f"已快速售出 {self.name}x1, 获得 {money_to_receive}G")
+            print(f"快速售出 {self.name}x1, 获得 {money_to_receive}G")
             return money_to_receive, 1
         elif self.amount > 1:
             print(f"有 {self.amount} 个 {self.name}, 出售多少?")
@@ -140,19 +140,19 @@ class Item():
             elif price > player.money:
                 print("没有足够的钱")
             else:
-                item_for_player = self.create_item(amount_to_buy)
+                item_for_player = self.clone(amount_to_buy)
                 self.amount -= amount_to_buy
                 item_for_player.add_to_inventory_player(player.inventory)
                 player.money -= price
         elif self.amount == 1 and self.individual_value <= player.money:
-            item_for_player = self.create_item(1)
+            item_for_player = self.clone(1)
             item_for_player.add_to_inventory_player(player.inventory)
             player.money -= self.individual_value
             self.amount = 0
         else:
             print("没有足够的钱")
 
-    def create_item(self, amount):
+    def clone(self, amount):
         return Item(self.name, self.description, amount, self.individual_value, self.object_type)
 
     def add_to_inventory_player(self, inventory):
@@ -183,8 +183,8 @@ class Equipment(Item):
     def show_info(self):
         combo_name = fx.yellow(self.combo.name) if self.combo else ""
         return (
-            f"[x{self.amount}] {self.name} ({self.object_type}): "
-            f"{self.description} {self.show_stats()} - {self.individual_value}G {combo_name}"
+            f"[x{self.amount}] {self.name} ({self.object_type}) {self.show_stats()} - {self.individual_value}G {combo_name}\n"
+            f"    简介: {self.description}"
         )
 
     def show_stats(self):
@@ -197,7 +197,7 @@ class Equipment(Item):
         stats_string += "]"
         return fx.green(stats_string)
 
-    def create_item(self, amount):
+    def clone(self, amount):
         return Equipment(self.name, self.description, amount, self.individual_value, self.object_type, self.stat_change_list, self.combo)
 
 class Potion(Item):
@@ -213,10 +213,10 @@ class Potion(Item):
         elif self.stat == "mp":
             caster.recover_mp(self.amount_to_change)
 
-    def create_item(self, amount):
+    def clone(self, amount):
         return Potion(self.name, self.description, amount, self.individual_value, self.object_type, self.stat, self.amount_to_change)
 
-class Grimore(Item):
+class Grimoire(Item):
     def __init__(self, name, description, amount, individual_value, object_type, spell) -> None:
         super().__init__(name, description, amount, individual_value, object_type)
         self.spell = spell
@@ -233,5 +233,19 @@ class Grimore(Item):
             print(f"阅读 {self.name}, 你学会了释放: {self.spell.name}")
             caster.spells.append(self.spell)
 
-    def create_item(self, amount):
-        return Grimore(self.name, self.description, amount, self.individual_value, self.object_type, self.spell)
+    def clone(self, amount):
+        return Grimoire(self.name, self.description, amount, self.individual_value, self.object_type, self.spell)
+
+class Jewel(Item):
+    def __init__(self, name, description, amount, individual_value, object_type, stat, amount_to_change) -> None:
+        super().__init__(name, description, amount, individual_value, object_type)
+        self.stat = stat
+        self.amount_to_change = amount_to_change
+
+    def activate(self, caster):
+        print(f"{caster.name} 使用了一个 {self.name}")
+        if self.stat in caster.stats:
+            caster.stats[self.stat] += self.amount_to_change
+
+    def clone(self, amount):
+        return Jewel(self.name, self.description, amount, self.individual_value, self.object_type, self.stat, self.amount_to_change)

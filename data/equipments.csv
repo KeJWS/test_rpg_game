@@ -26,19 +26,22 @@ id,name,name_zh,description,amount,individual_value,object_type,stat_change_list
 24,-> 基础饰品,,,1,0,accessory,{},
 25,copper_ring,铜戒指,普通的铜制戒指，提供些许幸运属性,1,27,accessory,{'luk': 2},
 26,-> 高级武器,,,1,0,weapon,{},
-27,war_hammer,战锤,沉重且威力强大的战锤,1,116,weapon,"{'atk': 13, 'agi': -2}",combo_armor_breaker1
+27,war_hammer,战锤,沉重且威力强大的战锤,1,116,weapon,"{'atk': 15, 'agi': -2}",combo_armor_breaker1
 28,zweihander,双手剑,一把巨大的双手剑，力量与威严的象征,1,125,weapon,{'atk': 12},combo_slash2
 29,sage_staff,智者法杖,增强智力的法杖，适合强大的魔法师,1,105,weapon,"{'max_mp': 15, 'mat': 12}",combo_meditation2
-30,sai,三叉戟,一把威力强大的三叉戟，常被海军使用,1,135,weapon,"{'atk': 7, 'crit': 10, 'agi': 6}",combo_vampire_stab2
-,long_bow,长弓,一把远程射击的长弓，适合熟练的弓箭手,1,167,weapon,"{'atk': 8, 'crit': 12}",combo_quickSshooting
+30,sai,三叉戟,一把威力强大的三叉戟，常被海军使用,1,135,weapon,"{'atk': 10, 'crit': 5, 'agi': 3}",combo_slash1
+,long_bow,长弓,一把远程射击的长弓，适合熟练的弓箭手,1,167,weapon,"{'atk': 10, 'crit': 12}",combo_quickSshooting
+,hunting_knife,猎刀,,1,175,weapon,"{'atk': 9, 'crit': 10, 'agi': 6}",combo_vampire_stab2
 31,-> 高级装甲,,,1,0,armor,{},
 32,iron_armor,铁甲,坚固的铁制护甲,1,190,armor,"{'max_hp': 25, 'def': 10}",
 33,sage_tunic,智者上衣,一件适合智者的长上衣，增强法术效果,1,225,armor,"{'max_mp': 20, 'def': 5, 'mdf': 7}",
 34,thief_armor,盗贼盔甲,轻便的盔甲，适合潜行和敏捷的动作,1,210,armor,"{'def': 7, 'agi': 5, 'luk': 5}",
+,-> 高级护盾,,,1,0,shield,{},
+,bronze_shield,青铜盾,,1,170,shield,"{'def': 6, 'agi': -1}",
 35,-> 高级头盔,,,1,0,head,{},
 36,helmet_bronze,青铜头盔,一顶坚固的整体成型的封闭式青铜头盔，在眼部有个开口,1,345,head,"{'def': 12, 'agi': -2}",
 37,-> 高级护手,,,1,0,hand,{},
-38,gauntlets_larmor,皮甲护手,一对沉重的无指皮革手套,1,170,hand,"{'atk': 3, 'def': 5, 'agi': -1}",
+38,gauntlets_larmor,皮甲护手,一对沉重的无指皮革手套,1,190,hand,"{'atk': 3, 'def': 5, 'agi': -1}",
 39,-> 高级护足,,,1,0,foot,{},
 40,boots_plate,护甲靴,一双十分沉重的重型金属靴,1,275,foot,"{'def': 8, 'agi': -2}",
 41,-> 高级饰品,,,1,0,accessory,{},

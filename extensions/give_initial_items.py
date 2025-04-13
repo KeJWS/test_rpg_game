@@ -9,9 +9,11 @@ def give_initial_items(my_player):
     if option == "1":
         items.rusty_sword.add_to_inventory_player(my_player.inventory)
         items.novice_armor.add_to_inventory_player(my_player.inventory)
+        items.atk_jewel.add_to_inventory_player(my_player.inventory)
     elif option == "2":
         items.broken_dagger.add_to_inventory_player(my_player.inventory)
         items.novice_armor.add_to_inventory_player(my_player.inventory)
+        items.agi_jewel.add_to_inventory_player(my_player.inventory)
     elif option == "3":
         items.old_staff.add_to_inventory_player(my_player.inventory)
         items.old_robes.add_to_inventory_player(my_player.inventory)

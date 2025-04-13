@@ -149,7 +149,7 @@ caesarus_bandit_combat = Fixed_combat_event("凯撒鲁斯与他的强盗", enemi
 quest_caesarus_bandit = quest.Quest("凯撒鲁斯与他的强盗", text.quest_caesarus_bandit_text, text.shop_quest_caesarus_bandits, 150, 150, None, caesarus_bandit_combat, 5)
 # -> 史莱姆之王
 fight_against_slime_combat = Fixed_combat_event("史莱姆之王", enemies.enemy_list_fight_against_slime)
-quest_fight_against_slime = quest.Quest("史莱姆之王", text.quest_fight_against_slime_text, text.shop_fight_against_slime_text, 100, 100, items.long_bow, fight_against_slime_combat, 9)
+quest_fight_against_slime = quest.Quest("史莱姆之王", text.quest_fight_against_slime_text, text.shop_fight_against_slime_text, 120, 120, items.long_bow, fight_against_slime_combat, 9)
 
 # 事件实例
 random_combat = Random_combat_event("随机战斗")

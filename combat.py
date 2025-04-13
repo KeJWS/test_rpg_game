@@ -87,6 +87,7 @@ class Enemy(Battler):
 
 def combat(my_player, enemies):
     from player import Player
+    from skills import enhance_weapon
     # 所有战斗单位（包括玩家和敌人）按速度排序，决定回合顺序
     allies = [my_player]
     battlers = define_battlers(allies, enemies) # 参与战斗的单位（盟友 + 敌人）
@@ -108,6 +109,8 @@ def combat(my_player, enemies):
 
         # 每个战斗单位轮流行动
         for battler in battlers:
+            if not my_player.alive:
+                return
             # 玩家回合：选择行动
             if type(battler) == Player:
                 text.combat_menu(my_player, allies, enemies)
@@ -127,6 +130,10 @@ def combat(my_player, enemies):
                 elif "c" in cmd:
                     combo_menu(my_player, battlers, allies, enemies)
                 elif "d" in cmd:
+                    battler.add_combo_points(1)
+                    typewriter(f"{my_player.name} 准备防御, 下一回合将受到的伤害减少50%!")
+                    enhance_weapon.effect(my_player, my_player)
+                    print(fx.yellow("你紧握武器, 时刻准备反击!"))
                     pass
                 elif "e" in cmd:
                     if try_escape(my_player):
@@ -142,10 +149,11 @@ def combat(my_player, enemies):
                         battler.normal_attack(random_enemy)
                         check_if_dead(allies, enemies, battlers)
                 else:
-                    # 目前敌人只会进行普通攻击，未来可扩展为完整的AI逻辑
-                    random_ally = random.choice(allies)
-                    battler.normal_attack(random_ally)
-                    check_if_dead(allies, enemies, battlers)
+                    if len(allies) > 0:
+                        # 目前敌人只会进行普通攻击，未来可扩展为完整的AI逻辑
+                        random_ally = random.choice(allies)
+                        battler.normal_attack(random_ally)
+                        check_if_dead(allies, enemies, battlers)
         # 回合结束，检查增益和减益的持续时间
         for battler in battlers:
             check_turns_buffs_and_debuffs(battler, False)

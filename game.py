@@ -27,15 +27,17 @@ def inventory_selections(player):
         text.inventory_menu()
 
 ### 主游戏循环 ###
-def play():
-    from extensions.give_initial_items import give_initial_items
+def play(p=None):
+    if p is None:
+        from extensions.give_initial_items import give_initial_items
+        p = player.Player("Test Player")
+        print(text.initial_event_text)
+        give_initial_items(p)
+        print(test.fx.red("\n[ 记得在库存 > 装备物品中装备这些物品 ]"))
+        enter_clear_screen()
+    game_loop(p)
 
-    p = player.Player("Test Player")
-    print(text.initial_event_text)
-    give_initial_items(p)
-    print(test.fx.red("\n[ 记得在库存 > 装备物品中装备这些物品 ]"))
-    enter_clear_screen()
-
+def game_loop(p):
     event_chances = (65, 20, 15)  # 战斗、商店、治疗的概率
     while p.alive:
         text.play_menu()
@@ -50,6 +52,12 @@ def play():
             case "8": clear_screen(); p.show_quests(); enter_clear_screen()
             case "9": clear_screen(); text.show_skills(p); enter_clear_screen()
             case _: clear_screen(); print("请输入有效命令")
+
+    choice = input("是否要转生? (y/n): ")
+    if choice.lower() == "y":
+        p.rebirth()
+        enter_clear_screen()
+        play(p)
 
 def generate_event(my_player, combat_chance, shop_chance, heal_chance):
     event_list = random.choices(events.event_type_list, weights=(combat_chance, shop_chance, heal_chance), k=1)
