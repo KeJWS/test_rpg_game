@@ -11,6 +11,7 @@
   agi: low
   luk: low
   crit: low
+  anti_crit: low
   xp_reward: medium
   gold: high
 - id: 2
@@ -26,6 +27,7 @@
   agi: high
   luk: high
   crit: very_high
+  anti_crit: high
   xp_reward: very_high
   gold: best
 - id: 3
@@ -34,13 +36,14 @@
   level: 2
   max_hp: very_high
   max_mp: low
-  atk: medium
+  atk: high
   def: low
   mat: low
   mdf: low
   agi: low
   luk: low
   crit: low
+  anti_crit: very_low
   xp_reward: medium
   gold: low
 - id: 4
@@ -56,6 +59,7 @@
   agi: medium
   luk: low
   crit: low
+  anti_crit: very_low
   xp_reward: medium
   gold: medium
 - id: 5
@@ -71,6 +75,7 @@
   agi: low
   luk: low
   crit: low
+  anti_crit: very_low
   xp_reward: high
   gold: medium
 - id: 6
@@ -86,6 +91,7 @@
   agi: low
   luk: low
   crit: low
+  anti_crit: low
   xp_reward: medium
   gold: medium
 - id: 7
@@ -101,6 +107,7 @@
   agi: high
   luk: low
   crit: medium
+  anti_crit: low
   xp_reward: high
   gold: high
 - id: 8
@@ -116,6 +123,7 @@
   agi: high
   luk: medium
   crit: medium
+  anti_crit: low
   xp_reward: high
   gold: high
 - id: 9
@@ -130,7 +138,8 @@
   mdf: medium
   agi: very_high
   luk: high
-  crit: best
+  crit: very_high
+  anti_crit: medium
   xp_reward: best
   gold: very_high
 - id: 10
@@ -146,5 +155,6 @@
   agi: medium
   luk: high
   crit: medium
+  anti_crit: medium
   xp_reward: best
   gold: very_high
