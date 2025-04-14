@@ -4,6 +4,7 @@ import random
 import combat, text, player, items, events
 from test.clear_screen import enter_clear_screen, clear_screen
 import test.fx
+import data.event_text
 
 ### 标题菜单 ###
 def title_screen_selections():
@@ -31,7 +32,7 @@ def play(p=None):
     from extensions.give_initial_items import give_initial_items, apply_class_bonuses
     if p is None:
         p = player.Player("Test Player")
-        print(text.initial_event_text)
+        print(data.event_text.initial_event_text)
         give_initial_items(p)
         print(test.fx.red("\n[ 记得在库存 > 装备物品中装备这些物品 ]"))
         enter_clear_screen()

@@ -1,6 +1,4 @@
-import math
-import random
-import time
+import math, random, time
 import text
 from test.fx import dot_loading, typewriter, battle_log
 from copy import deepcopy
