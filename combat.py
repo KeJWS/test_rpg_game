@@ -3,9 +3,7 @@ import random
 import time
 import text
 from test.fx import dot_loading, typewriter, battle_log
-
 from copy import deepcopy
-
 import test.fx as fx
 
 class Battler():
@@ -38,8 +36,12 @@ class Battler():
             print(fx.red(f"{self.name} 的攻击被 {defender.name} 躲开了"))
             return 0
         # 检查是否为暴击
-        if self._is_critical():
+        is_crit, crit_suppressed = self._is_critical(defender)
+        if is_crit:
             dmg = self._calc_critical_damage(defender)
+        elif crit_suppressed:
+            battle_log(f"{defender.name} 回避了暴击攻击!", "info")
+            dmg = self._calc_normal_damage(defender)
         else:
             dmg = self._calc_normal_damage(defender)
 
@@ -49,8 +51,16 @@ class Battler():
         defender.take_dmg(dmg)
         return dmg
 
-    def _is_critical(self):
-        return random.randint(1, 100) <= min(72, round(self.stats["crit"]*0.8+self.stats["luk"]*0.2))
+    def _is_critical(self, defender):
+        raw_chance = round(self.stats["crit"] * 0.8 + self.stats["luk"] * 0.2)
+        anti_crit = defender.stats.get("anti_crit", 0)
+        final_chance = max(0, min(75, raw_chance - anti_crit))
+
+        roll = random.randint(1, 100)
+        is_crit = roll <= final_chance
+        was_suppressed = raw_chance > final_chance and roll <= raw_chance
+
+        return is_crit, was_suppressed
 
     def _calc_critical_damage(self, defender):
         crit_base = self.stats["atk"]*3.5 + self.stats["luk"]*1.2

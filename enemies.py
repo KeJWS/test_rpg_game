@@ -18,7 +18,8 @@ def load_enemies_from_csv(filepath):
                 "mdf": int(row["mdf"]),
                 "agi": int(row["agi"]),
                 "luk": int(row["luk"]),
-                "crit": int(row["crit"])
+                "crit": int(row["crit"]),
+                "anti_crit": int(row["anti_crit"])
             }
             xp = int(row["xp_reward"])
             gold = randint(int(row["gold_min"]), int(row["gold_max"]))
@@ -26,7 +27,7 @@ def load_enemies_from_csv(filepath):
             enemies[row["name"]] = enemy
     return enemies
 
-enemy_data = load_enemies_from_csv("data/monsters.csv")
+enemy_data = load_enemies_from_csv("data/enemies.csv")
 
 possible_enemies = {
     "slime": (1, 3),

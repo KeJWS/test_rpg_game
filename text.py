@@ -41,6 +41,7 @@ def show_stats(player):
         f"      ATK: {player.stats['atk']}        DEF: {player.stats['def']}\n"
         f"      MAT: {player.stats['mat']}        MDF: {player.stats['mdf']}\n"
         f"      AGI: {player.stats['agi']}        CRT: {player.stats['crit']}%\n"
+        f"      Anti CRT: {player.stats['anti_crit']}\n"
         f"----------------------------------\n"
         f"  APTITUDES\n"
         f"----------------------------------\n"
@@ -218,7 +219,7 @@ def display_status_effects(battlers):
                 print(f" - {effect.name}(剩余 {turns} 回合){warn}")
         else:
             print(f"{battler.name} 没有任何状态效果")
-    print(fx.bright_cyan("=== 状态效果 ==="))
+    print(fx.bright_cyan("==============="))
 
 
 ### 事件文本

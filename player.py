@@ -18,7 +18,8 @@ class Player(combat.Battler):
             "mdf": 10,
             "agi": 10,
             "luk": 10, # 幸运影响伤害, 经验获得量, 逃跑概率
-            "crit": 3 # 影响暴击倍率
+            "crit": 3, # 影响暴击倍率
+            "anti_crit": 5
         }
 
         super().__init__(name, stats)
@@ -121,9 +122,10 @@ class Player(combat.Battler):
             self.level += 1
             self.xp_to_next_level = self.exp_required_formula()
             for stat in self.stats:
-                self.stats[stat] += 1
-            self.stats["max_hp"] += 4
-            self.stats["max_mp"] += 2
+                self.stats[stat] += 2
+            self.stats["anti_crit"] -= 2
+            self.stats["max_hp"] += 8
+            self.stats["max_mp"] += 3
             self.aptitude_points +=1
             combat.fully_heal(self)
             combat.fully_recover_mp(self)
