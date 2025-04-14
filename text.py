@@ -95,6 +95,7 @@ def inventory_menu():
         "       D  - Drop an item\n"
         "       E  - Equip an item           \n"
         "       Ua - Unequip all\n"
+        "       Vi - View item\n"
         "           Q - Quit\n"
         "----------------------------------"
     )
@@ -185,7 +186,6 @@ def enter_shop(name):
         print(itz_magic_encounter)
 
 def save_load_menu():
-    """显示存档/读档菜单"""
     display_content = (
         "----------------------------------\n"
         "           S - Save game           \n"

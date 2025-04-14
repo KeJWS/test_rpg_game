@@ -26,6 +26,7 @@ def inventory_selections(player):
             case "d": clear_screen(); player.inventory.drop_item()
             case "e": clear_screen(); player.equip_item(player.inventory.equip_item())
             case "ua": clear_screen(); player.unequip_all()
+            case "vi": clear_screen(); player.view_item_detail(player.inventory.view_item())
         enter_clear_screen()
         text.inventory_menu()
 

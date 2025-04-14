@@ -87,6 +87,22 @@ class Inventory():
         total_worth = sum(item.amount * item.individual_value for item in self.items)
         return total_worth
 
+    def view_item(self):
+        if not self.items:
+            print("背包为空。")
+            return None
+        print("选择一个物品查看详情：")
+        self.show_inventory()
+        while True:
+            choice = input("输入编号 (或 0 取消):")
+            if choice.isdigit():
+                choice = int(choice)
+                if choice == 0:
+                    return None
+                elif 1 <= choice <= len(self.items):
+                    return self.items[choice - 1]
+            print("无效输入")
+
 class Item():
     def __init__(self, name, description, amount, individual_value, object_type) -> None:
         self.name = name
@@ -174,11 +190,23 @@ class Item():
     def show_info(self):
         return f"[x{self.amount}] {self.name} ({self.object_type}) - {self.individual_value}"
 
+    def get_detailed_info(self):
+        info = f"名称: {self.name}\n"
+        info += f"类型: {self.object_type}\n"
+        info += f"价值: {fx.YELLO}{self.individual_value}G{fx.END}\n"
+        info += f"描述: {self.description}\n"
+        info += f"数量: x{self.amount}\n"
+
+        return info
+
 class Equipment(Item):
     def __init__(self, name, description, amount, individual_value, object_type, stat_change_list, combo):
         super().__init__(name, description, amount, individual_value, object_type)
         self.stat_change_list = stat_change_list
         self.combo = combo
+        self.durability = 100  # 耐久度
+        self.max_durability = 100
+        self.level = 0  # 装备等级
 
     def show_info(self):
         combo_name = fx.yellow(self.combo.name) if self.combo else ""
@@ -196,6 +224,18 @@ class Equipment(Item):
             stats_string += f"{stat} {sign}{self.stat_change_list[stat]} "
         stats_string += "]"
         return fx.green(stats_string)
+
+    def get_detailed_info(self):
+        info = super().get_detailed_info()
+        info += f"装备等级: +{self.level}\n"
+        info += f"耐久度: {self.durability}/{self.max_durability}\n"
+        info += "属性加成:\n"
+
+        for stat, value in self.stat_change_list.items():
+            sign = "+" if value >= 0 else ""
+            info += f"  {fx.GREEN}{stat}: {sign}{value}{fx.END}\n"
+
+        return info
 
     def clone(self, amount):
         return Equipment(self.name, self.description, amount, self.individual_value, self.object_type, self.stat_change_list, self.combo)

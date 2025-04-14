@@ -90,6 +90,13 @@ class Player(combat.Battler):
         text.inventory_menu()
         self.inventory.show_inventory()
 
+    def view_item_detail(self, item):
+        if item:
+            print("\n==== 物品详情 ====")
+            print(item.get_detailed_info())
+        else:
+            print("未选择任何物品")
+
     def unequip_all(self):
         for slot, equipment in self.equipment.items():
             if equipment:
