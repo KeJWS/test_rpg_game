@@ -219,7 +219,7 @@ def display_status_effects(battlers):
                 print(f" - {effect.name}(剩余 {turns} 回合){warn}")
         else:
             print(f"{battler.name} 没有任何状态效果")
-    print(fx.bright_cyan("==============="))
+    print(fx.bright_cyan("================"))
 
 
 ### 事件文本

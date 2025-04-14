@@ -54,7 +54,7 @@ class Damage_spell(Spell):
     def effect(self, caster, target):
         if self.check_mp(caster):
             if self.is_targeted:
-                base_dmg = self.power + (caster.stats["mat"]*2 - target.stats["mdf"] + caster.stats["luk"])
+                base_dmg = self.power + (caster.stats["mat"]*2.2 - target.stats["mdf"] + caster.stats["luk"])
                 dmg = round(base_dmg * random.uniform(1.0, 1.2))
                 target.take_dmg(dmg)
             else:

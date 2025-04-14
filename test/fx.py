@@ -65,4 +65,5 @@ def battle_log(message, style=""):
         case "heal": slow_print(green(message))
         case "death": slow_print(bold_red(message))
         case "info": slow_print(cyan(message))
+        case "magic": slow_print(blue(message))
         case _: slow_print(message)

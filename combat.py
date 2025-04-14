@@ -31,6 +31,12 @@ class Battler():
         battle_log(f"{self.name} 发动攻击!", "info")
         dot_loading()
 
+        if self.stats["mat"] > self.stats["atk"]:
+            battle_log(f"{self.name} 释放了魔法攻击", "magic")
+            dmg = self._calc_magic_damage(defender)
+            defender.take_dmg(dmg)
+            return dmg
+
         # 检查是否攻击未命中
         if check_miss(self,defender):
             print(fx.red(f"{self.name} 的攻击被 {defender.name} 躲开了"))
@@ -75,6 +81,11 @@ class Battler():
         base = self.stats["atk"]*4 - defender.stats["def"]*2.5
         base += self.stats["luk"] - defender.stats["luk"]
         return round(max(base, self.stats["luk"]*1.2) * random.uniform(0.8, 1.2)) # 伤害浮动：±20%
+
+    def _calc_magic_damage(self, defender):
+        base = self.stats["mat"]*3 - defender.stats["mdf"]*1.7
+        base += self.stats["luk"]*1.2 - defender.stats["luk"]
+        return round(max(base, self.stats["luk"]*1.5) * random.uniform(0.8, 1.3))
 
     def recover_mp(self, amount):
         self.stats["mp"] = min(self.stats["mp"] + amount, self.stats["max_mp"])
