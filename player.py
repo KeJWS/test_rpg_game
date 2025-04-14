@@ -123,6 +123,7 @@ class Player(combat.Battler):
             self.xp_to_next_level = self.exp_required_formula()
             for stat in self.stats:
                 self.stats[stat] += 2
+            self.stats["crit"] -= 1
             self.stats["anti_crit"] -= 2
             self.stats["max_hp"] += 8
             self.stats["max_mp"] += 3

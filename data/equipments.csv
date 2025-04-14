@@ -13,7 +13,7 @@ id,name,name_zh,description,amount,individual_value,object_type,stat_change_list
 11,staff,法杖,简易的木制法杖,1,65,weapon,"{'mat': 3, 'max_mp': 5}",combo_meditation1
 12,-> 基础护甲,,,1,0,armor,{},
 13,cloth_armor,布甲,简单的布制护甲,1,60,armor,"{'max_hp': 10, 'def': 2, 'agi': 1}",
-,leather_armor,轻便皮甲,适合灵活移动的轻型护甲,1,80,armor,"{'max_hp': 12, 'def': 2, 'agi': 2}",
+,leather_armor,轻便皮甲,适合灵活移动的轻型护甲,1,83,armor,"{'max_hp': 12, 'def': 2, 'agi': 1, 'anti_crit': 3}",
 14,bronze_armor,青铜盔甲,坚固的青铜护甲，能提供良好的防护,1,150,armor,"{'max_hp': 10, 'def': 8, 'agi': -2}",
 15,student_robes,学者长袍,一件华丽的长袍，适合知识渊博的学者,1,100,armor,"{'max_mp': 10, 'def': 3, 'mdf': 5}",
 16,-> 基础护盾,,,1,0,shield,{},
@@ -36,7 +36,7 @@ id,name,name_zh,description,amount,individual_value,object_type,stat_change_list
 31,-> 高级装甲,,,1,0,armor,{},
 32,iron_armor,铁甲,坚固的铁制护甲,1,190,armor,"{'max_hp': 25, 'def': 10}",
 33,sage_tunic,智者上衣,一件适合智者的长上衣，增强法术效果,1,225,armor,"{'max_mp': 20, 'def': 5, 'mdf': 7}",
-34,thief_armor,盗贼盔甲,轻便的盔甲，适合潜行和敏捷的动作,1,210,armor,"{'def': 7, 'agi': 5, 'luk': 5}",
+34,thief_armor,盗贼盔甲,轻便的盔甲，适合潜行和敏捷的动作,1,223,armor,"{'def': 7, 'agi': 5, 'luk': 5, 'anti_crit': 5}",
 ,-> 高级护盾,,,1,0,shield,{},
 ,bronze_shield,青铜盾,,1,170,shield,"{'def': 6, 'agi': -1}",
 35,-> 高级头盔,,,1,0,head,{},

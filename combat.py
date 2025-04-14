@@ -54,7 +54,7 @@ class Battler():
     def _is_critical(self, defender):
         raw_chance = round(self.stats["crit"] * 0.8 + self.stats["luk"] * 0.2)
         anti_crit = defender.stats.get("anti_crit", 0)
-        final_chance = max(0, min(75, raw_chance - anti_crit))
+        final_chance = max(0, min(80, raw_chance - anti_crit))
 
         roll = random.randint(1, 100)
         is_crit = roll <= final_chance
