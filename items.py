@@ -40,6 +40,7 @@ staff = equipment_data["staff"]
 
 # -> 基础护甲
 cloth_armor = equipment_data["cloth_armor"]
+leather_armor = equipment_data["leather_armor"]
 bronze_armor = equipment_data["bronze_armor"]
 student_robes = equipment_data["student_robes"]
 
@@ -88,9 +89,15 @@ ring_of_magic = equipment_data["ring_of_magic"]
 hp_potion = inventory.Potion("生命药水", "恢复70点生命值的药水", 1, 25, "consumable", "hp", 70)
 mp_potion = inventory.Potion("法力药水", "恢复40点法力值的药水", 1, 25, "consumable", "mp", 40)
 
-atk_jewel = inventory.Jewel("攻击宝石", "提升3点攻击力的宝石", 1, 150, "consumable", "atk", 3)
-mat_jewel = inventory.Jewel("魔法宝石", "提升3点魔法攻击力的宝石", 1, 150, "consumable", "mat", 3)
-agi_jewel = inventory.Jewel("敏捷宝石", "提升3点敏捷的宝石", 1, 150, "consumable", "agi", 3)
+atk_small_gems = inventory.Jewel("攻击小宝石", "提升3点攻击力的宝石", 1, 150, "consumable", "atk", 3)
+mat_small_gems = inventory.Jewel("魔攻小宝石", "提升3点魔法攻击力的宝石", 1, 150, "consumable", "mat", 3)
+agi_small_gems = inventory.Jewel("敏捷小宝石", "提升3点敏捷的宝石", 1, 150, "consumable", "agi", 3)
+crit_small_gems = inventory.Jewel("暴击小宝石", "提升1点暴击的宝石", 1, 125, "consumable", "crit", 1)
+
+atk_gems = inventory.Jewel("攻击宝石", "提升5点攻击力的宝石", 1, 235, "consumable", "atk", 5)
+mat_gems = inventory.Jewel("魔攻宝石", "提升5点魔法攻击力的宝石", 1, 235, "consumable", "mat", 5)
+agi_gems = inventory.Jewel("敏捷宝石", "提升5点敏捷的宝石", 1, 235, "consumable", "agi", 5)
+crit_gems = inventory.Jewel("暴击宝石", "提升3点暴击的宝石", 1, 310, "consumable", "crit", 3)
 
 # 魔法书
 grimoire_fireball = inventory.Grimoire("魔法书：火球术", "记载了基础的火焰魔法，释放一颗灼热火球攻击敌人。", 1, 80, "consumable", skills.spell_fire_ball)
@@ -109,6 +116,7 @@ rik_armor_shop_item_set = [
     iron_armor,
     zweihander,
     cloth_armor,
+    leather_armor,
     bronze_armor,
     sai,
     thief_armor,
@@ -130,5 +138,5 @@ itz_magic_item_set = [
     grimoire_inferno,
     grimoire_summon_skeleton,
     grimoire_summon_fire_spirit,
-    mat_jewel,
+    mat_small_gems,
 ]

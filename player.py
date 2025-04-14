@@ -5,6 +5,8 @@ import test.fx as fx
 
 class Player(combat.Battler):
     def __init__(self, name) -> None:
+        self.class_name = ""
+        self.class_description = ""
         stats = {
             "max_hp": 500,
             "hp": 500,
@@ -103,7 +105,7 @@ class Player(combat.Battler):
         print(f"所有装备已解除")
 
     def use_item(self, item):
-        usable_items = [inventory.Potion, inventory.Grimoire]
+        usable_items = [inventory.Potion, inventory.Grimoire, inventory.Jewel]
         if type(item) in usable_items:
             item.activate(self)
         text.inventory_menu()
@@ -202,11 +204,13 @@ class Player(combat.Battler):
 
         saved_money = self.money
         saved_inventory = self.inventory
+        saved_class_name = self.class_name
         # saved_spells = self.spells.copy()
 
         self.__init__(self.name)
         self.money = saved_money
         self.inventory = saved_inventory
+        self.class_name = saved_class_name
         # self.spells = saved_spells
 
         print(fx.cyan(f"你以 Lv.{self.level} 重生，保留了 {self.money} 金币和背包物品!"))

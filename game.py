@@ -28,13 +28,15 @@ def inventory_selections(player):
 
 ### 主游戏循环 ###
 def play(p=None):
+    from extensions.give_initial_items import give_initial_items, apply_class_bonuses
     if p is None:
-        from extensions.give_initial_items import give_initial_items
         p = player.Player("Test Player")
         print(text.initial_event_text)
         give_initial_items(p)
         print(test.fx.red("\n[ 记得在库存 > 装备物品中装备这些物品 ]"))
         enter_clear_screen()
+    apply_class_bonuses(p)
+    enter_clear_screen()
     game_loop(p)
 
 def game_loop(p):
