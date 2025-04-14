@@ -6,6 +6,8 @@ from test.clear_screen import enter_clear_screen, clear_screen
 import test.fx
 import data.event_text
 
+from save_system_json import save_game, get_save_list, load_game
+
 ### 标题菜单 ###
 def title_screen_selections():
     text.title_screen()
@@ -44,16 +46,37 @@ def game_loop(p):
     event_chances = (65, 20, 15)  # 战斗、商店、治疗的概率
     while p.alive:
         text.play_menu()
-        match input("> "):
-            case "1": clear_screen(); generate_event(p, *event_chances); enter_clear_screen()
-            case "2": clear_screen(); text.show_stats(p); enter_clear_screen()
-            case "3": clear_screen(); p.assign_aptitude_points(); enter_clear_screen()
-            case "4": clear_screen(); text.inventory_menu(); p.inventory.show_inventory(); inventory_selections(p)
-            case "5": clear_screen(); events.life_recovery_crystal(p); enter_clear_screen()
-            case "6": clear_screen(); text.show_equipment_info(p); enter_clear_screen()
-            case "7": clear_screen(); events.random_combat.effect(p); enter_clear_screen()
-            case "8": clear_screen(); p.show_quests(); enter_clear_screen()
-            case "9": clear_screen(); text.show_skills(p); enter_clear_screen()
+        match input("> ").lower():
+            case "w": clear_screen(); generate_event(p, *event_chances); enter_clear_screen()
+            case "s": clear_screen(); text.show_stats(p); enter_clear_screen()
+            case "a": clear_screen(); p.assign_aptitude_points(); enter_clear_screen()
+            case "i": clear_screen(); text.inventory_menu(); p.inventory.show_inventory(); inventory_selections(p)
+            case "lr": clear_screen(); events.life_recovery_crystal(p); enter_clear_screen()
+            case "se": clear_screen(); text.show_equipment_info(p); enter_clear_screen()
+            case "sk": clear_screen(); text.show_skills(p); enter_clear_screen()
+            case "q": clear_screen(); p.show_quests(); enter_clear_screen()
+            case "b": clear_screen(); events.random_combat.effect(p); enter_clear_screen()
+            case "sg":
+                clear_screen()
+                text.save_load_menu()
+                save_option = input("> ").lower()
+                if save_option == "s":
+                    save_name = input("输入存档名 (留空使用默认名称): ")
+                    if not save_name.strip():
+                        save_name = None
+                    p.unequip_all()
+                    save_metadata = save_game(p, save_name)
+                    print(f"游戏已保存: {save_metadata['name']}")
+                elif save_option == "l":
+                    saves = get_save_list()
+                    text.display_save_list(saves)
+                    save_index = int(input("> "))
+                    if save_index > 0 and save_index <= len(saves):
+                        loaded_player = load_game(saves[save_index-1]['name'])
+                        if loaded_player:
+                            p = loaded_player
+                            print(f"游戏已加载: {loaded_player.name} (等级: {loaded_player.level}, 职业: {loaded_player.class_name})")
+                enter_clear_screen()
             case _: clear_screen(); print("请输入有效命令")
 
     choice = input("是否要转生? (y/n): ")

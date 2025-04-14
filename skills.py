@@ -45,7 +45,6 @@ class Combo(Skill):
             return True
 
 ##### 法术类 #####
-
 class Damage_spell(Spell):
     def __init__(self, name, description, power, mp_cost, is_targeted, default_target) -> None:
         super().__init__(name, description, power, mp_cost, is_targeted, default_target)

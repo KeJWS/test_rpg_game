@@ -6,7 +6,6 @@ import test.fx as fx
 class Player(combat.Battler):
     def __init__(self, name) -> None:
         self.class_name = ""
-        self.class_description = ""
         stats = {
             "max_hp": 500,
             "hp": 500,

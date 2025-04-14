@@ -26,7 +26,7 @@ def give_initial_items(my_player):
     elif option == "3":
         items.old_staff.add_to_inventory_player(my_player.inventory)
         items.old_robes.add_to_inventory_player(my_player.inventory)
-        items.grimoire_fireball.add_to_inventory_player(my_player.inventory)
+        items.grimoires[0].add_to_inventory_player(my_player.inventory)
         my_player.class_name = "法师"
     elif option == "4":
         items.wood_bow.add_to_inventory_player(my_player.inventory)

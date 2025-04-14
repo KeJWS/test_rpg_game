@@ -18,15 +18,16 @@ def help_menu():
 def play_menu():
     display_content = (
         "----------------------------------\n"
-        "   1 - Walk\n"
-        "   2 - See stats\n"
-        "   3 - Aptitude\n"
-        "   4 - Inventory\n"
-        "   5 - Life recovery\n"
-        "   6 - Show equipment\n"
-        "   7 - Battle\n"
-        "   8 - Quests\n"
-        "   9 - Show skills\n"
+        "   W  - Walk\n"
+        "   S  - See stats\n"
+        "   A  - Aptitude\n"
+        "   I  - Inventory\n"
+        "   Q  - Quests\n"
+        "   B  - Battle\n"
+        "   Lr - Life recovery\n"
+        "   Se - Show equipment\n"
+        "   Sk - Show skills\n"
+        "   Sg - Save game\n"
         "----------------------------------\n"
     )
     print(display_content)
@@ -187,10 +188,9 @@ def save_load_menu():
     """显示存档/读档菜单"""
     display_content = (
         "----------------------------------\n"
-        "           1 - Save game           \n"
-        "           2 - Load game\n"
-        "           3 - Delete save\n"
-        "           0 - Return\n"
+        "           S - Save game           \n"
+        "           L - Load game\n"
+        "           R - Return\n"
         "----------------------------------\n"
     )
     print(display_content)
