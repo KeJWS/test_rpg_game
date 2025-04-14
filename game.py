@@ -6,7 +6,7 @@ from test.clear_screen import enter_clear_screen, clear_screen
 import test.fx
 import data.event_text
 
-from save_system_json import save_game, get_save_list, load_game
+from save_system import save_game, get_save_list, load_game
 
 ### 标题菜单 ###
 def title_screen_selections():
