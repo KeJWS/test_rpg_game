@@ -1,6 +1,5 @@
 import inventory, skills
-import csv
-import ast
+import csv, ast
 
 def load_equipment_from_csv(filepath="data/equipments.csv"):
     equipment_dict = {}
@@ -13,7 +12,6 @@ def load_equipment_from_csv(filepath="data/equipments.csv"):
             amount = int(row["amount"])
             individual_value = int(row["individual_value"])
             object_type = row["object_type"]
-            # 用 ast.literal_eval 安全地解析字典字符串
             stat_change_list = ast.literal_eval(row["stat_change_list"])
             combo_object = getattr(skills, row["combo"], None)
             eq = inventory.Equipment(name_zh, description, amount, individual_value, object_type, stat_change_list, combo_object)
@@ -48,16 +46,12 @@ student_robes = equipment_data["student_robes"]
 wooden_shield = equipment_data["wooden_shield"]
 
 # -> 基础头盔
-straw_hat = equipment_data["straw_hat"]
 
 # -> 基础护手
-gloves_wraps = equipment_data["gloves_wraps"]
 
 # -> 基础护足
-footrags = equipment_data["footrags"]
 
 # -> 基础饰品
-copper_ring = equipment_data["copper_ring"]
 
 # 高级物品
 # -> 高级武器
@@ -73,17 +67,12 @@ sage_tunic = equipment_data["sage_tunic"]
 thief_armor = equipment_data["thief_armor"]
 
 # -> 高级头盔
-helmet_bronze = equipment_data["helmet_bronze"]
 
 # -> 高级护手
-gauntlets_larmor = equipment_data["gauntlets_larmor"]
 
 # -> 高级护足
-boots_plate = equipment_data["boots_plate"]
 
 # -> 高级饰品
-ring_of_power = equipment_data["ring_of_power"]
-ring_of_magic = equipment_data["ring_of_magic"]
 
 # 消耗品
 hp_potion = inventory.Potion("生命药水", "恢复70点生命值的药水", 1, 25, "consumable", "hp", 70)
@@ -100,12 +89,20 @@ agi_gems = inventory.Jewel("敏捷宝石", "提升5点敏捷的宝石", 1, 235, 
 crit_gems = inventory.Jewel("暴击宝石", "提升3点暴击的宝石", 1, 310, "consumable", "crit", 3)
 
 # 魔法书
-grimoire_fireball = inventory.Grimoire("魔法书：火球术", "记载了基础的火焰魔法，释放一颗灼热火球攻击敌人。", 1, 80, "consumable", skills.spell_fire_ball)
-grimoire_divine_blessing = inventory.Grimoire("魔法书：神圣祝福", "古老教会的祝文，可恢复目标生命，带来圣光的治愈。", 1, 120, "consumable", skills.spell_divine_blessing)
-grimoire_enhance_weapon = inventory.Grimoire("魔法书：增强武器", "魔法附魔术式，可短时间内强化武器的攻击力。", 1, 120, "consumable", skills.spell_enhance_weapon)
-grimoire_inferno = inventory.Grimoire("魔法书: 地狱火", "中级火焰咒文，召唤烈焰吞噬所有敌人。", 1, 210, "consumable", skills.spell_inferno)
-grimoire_summon_skeleton = inventory.Grimoire("唤灵书: 骷髅召唤", "记载亡灵召唤术，可呼唤骷髅战士为你作战。", 1, 170, "consumable", skills.spell_skeleton_summoning)
-grimoire_summon_fire_spirit = inventory.Grimoire("唤灵书: 火精灵", "源自炎之古国的召唤术，召唤火焰元素协助作战。", 1, 215, "consumable", skills.spell_fire_spirit_summoning)
+grimoire_data = [
+    ("魔法书：火球术", "记载了基础的火焰魔法，释放一颗灼热火球攻击敌人。", 1, 80, skills.spell_fire_ball),
+    ("魔法书：神圣祝福", "古老教会的祝文，可恢复目标生命，带来圣光的治愈。", 1, 120, skills.spell_divine_blessing),
+    ("魔法书：增强武器", "魔法附魔术式，可短时间内强化武器的攻击力。", 1, 120, skills.spell_enhance_weapon),
+    ("魔法书: 地狱火", "中级火焰咒文，召唤烈焰吞噬所有敌人。", 1, 210, skills.spell_inferno),
+    ("唤灵书: 骷髅召唤", "记载亡灵召唤术，可呼唤骷髅战士为你作战。", 1, 170, skills.spell_skeleton_summoning),
+    ("唤灵书: 火精灵", "源自炎之古国的召唤术，召唤火焰元素协助作战。", 1, 215, skills.spell_fire_spirit_summoning),
+]
+
+grimoires = [
+    inventory.Grimoire(n, d, a, v, "consumable", spell)
+    for (n, d, a, v, spell) in grimoire_data
+]
+
 
 # 商店物品套装
 
@@ -132,11 +129,6 @@ itz_magic_item_set = [
     sage_tunic,
     sage_staff,
     student_robes,
-    grimoire_fireball,
-    grimoire_enhance_weapon,
-    grimoire_divine_blessing,
-    grimoire_inferno,
-    grimoire_summon_skeleton,
-    grimoire_summon_fire_spirit,
+    *grimoires[:6],
     mat_small_gems,
 ]
