@@ -200,13 +200,17 @@ class Item():
         return info
 
 class Equipment(Item):
-    def __init__(self, name, description, amount, individual_value, object_type, stat_change_list, combo):
+    def __init__(self, name, description, amount, individual_value, object_type, stat_change_list, combo, ascii_art):
         super().__init__(name, description, amount, individual_value, object_type)
         self.stat_change_list = stat_change_list
         self.combo = combo
         self.durability = 100  # 耐久度
         self.max_durability = 100
         self.level = 0  # 装备等级
+        self.ascii_art = ascii_art or ""
+
+    def show_ascii_art(self):
+        return self.ascii_art
 
     def show_info(self):
         combo_name = fx.yellow(self.combo.name) if self.combo else ""
@@ -227,6 +231,8 @@ class Equipment(Item):
 
     def get_detailed_info(self):
         info = super().get_detailed_info()
+        ascii_art = self.show_ascii_art()
+        info += fx.cyan(f"{ascii_art}\n")
         info += f"装备等级: +{self.level}\n"
         info += f"耐久度: {self.durability}/{self.max_durability}\n"
         info += "属性加成:\n"

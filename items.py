@@ -1,8 +1,31 @@
 import inventory, skills
 import csv, ast
+from functools import lru_cache
+
+@lru_cache(maxsize=1)
+def load_ascii_art_library(filepath="data/ascii_art.txt"):
+    ascii_art_dict = {}
+    current_key = None
+    current_lines = []
+
+    with open(filepath, encoding='utf-8') as file:
+        for line in file:
+            line = line.rstrip('\n')
+            if line.startswith("[") and line.endswith("]") and not line.startswith("[/"):
+                current_key = line[1:-1].strip()
+                current_lines = []
+            elif line.startswith("[/") and line.endswith("]"):
+                if current_key:
+                    ascii_art_dict[current_key] = "\n".join(current_lines)
+                    current_key = None
+            elif current_key:
+                current_lines.append(line)
+
+    return ascii_art_dict
 
 def load_equipment_from_csv(filepath="data/equipments.csv"):
     equipment_dict = {}
+    ascii_art_dict = load_ascii_art_library()
     with open(filepath, newline='', encoding='utf-8') as csvfile:
         reader = csv.DictReader(csvfile)
         for row in reader:
@@ -14,7 +37,10 @@ def load_equipment_from_csv(filepath="data/equipments.csv"):
             object_type = row["object_type"]
             stat_change_list = ast.literal_eval(row["stat_change_list"])
             combo_object = getattr(skills, row["combo"], None)
-            eq = inventory.Equipment(name_zh, description, amount, individual_value, object_type, stat_change_list, combo_object)
+
+            ascii_art = ascii_art_dict.get(name, "")
+
+            eq = inventory.Equipment(name_zh, description, amount, individual_value, object_type, stat_change_list, combo_object, ascii_art)
             equipment_dict[name] = eq
         return equipment_dict
 
