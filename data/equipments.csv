@@ -31,7 +31,7 @@ id,name,name_zh,description,amount,individual_value,object_type,stat_change_list
 30,zweihander,双手剑,一把巨大的双手剑，力量与威严的象征,1,125,weapon,{'atk': 12},combo_slash2
 31,sage_staff,智者法杖,增强智力的法杖，适合强大的魔法师,1,145,weapon,"{'max_mp': 15, 'mat': 12}",combo_meditation2
 32,sai,三叉戟,一把威力强大的三叉戟，常被海军使用,1,135,weapon,"{'atk': 10, 'crit': 5, 'agi': 3}",combo_slash1
-33,long_bow,长弓,一把远程射击的长弓，适合熟练的弓箭手,1,167,weapon,"{'atk': 10, 'crit': 12}",combo_quickSshooting
+33,long_bow,长弓,一把远程射击的长弓，适合熟练的弓箭手,1,175,weapon,"{'atk': 10, 'crit': 12}",combo_quickSshooting
 34,hunting_knife,猎刀,猎人常用的刀具，这种单刃带鞘的小刀专用于切削、剥皮等用途，而不是战斗,1,163,weapon,"{'atk': 8, 'crit': 10, 'agi': 6}",combo_vampire_stab2
 35,-> 高级装甲,Lv3,,1,0,armor,{},
 36,iron_armor,铁甲,坚固的铁制护甲,1,190,armor,"{'max_hp': 25, 'def': 10}",

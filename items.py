@@ -1,7 +1,9 @@
-import inventory, skills
 import csv, ast
 from functools import lru_cache
 
+import inventory, skills
+
+# ASCII 图库加载
 @lru_cache(maxsize=1)
 def load_ascii_art_library(filepath="data/ascii_art_equipment.txt"):
     ascii_art_dict = {}
@@ -23,6 +25,7 @@ def load_ascii_art_library(filepath="data/ascii_art_equipment.txt"):
 
     return ascii_art_dict
 
+# 装备数据加载
 def load_equipment_from_csv(filepath="data/equipments.csv"):
     equipment_dict = {}
     ascii_art_dict = load_ascii_art_library()
@@ -47,10 +50,12 @@ def load_equipment_from_csv(filepath="data/equipments.csv"):
 equipment_data = load_equipment_from_csv()
 
 # *-> 初始武器
-rusty_sword = equipment_data["rusty_sword"]
-broken_dagger = equipment_data["broken_dagger"]
-old_staff = equipment_data["old_staff"]
-wood_bow = equipment_data["wood_bow"]
+basic_weapons = {
+    "rusty_sword": equipment_data["rusty_sword"],
+    "broken_dagger": equipment_data["broken_dagger"],
+    "old_staff": equipment_data["old_staff"],
+    "wood_bow": equipment_data["wood_bow"],
+}
 
 # *-> 初始护甲
 novice_armor = equipment_data["novice_armor"]
@@ -70,16 +75,16 @@ student_robes = equipment_data["student_robes"]
 # *-> 基础护盾
 wooden_shield = equipment_data["wooden_shield"]
 
-# -> 基础头盔
+# *-> 基础头盔
 straw_hat = equipment_data["straw_hat"]
 
-# -> 基础护手
+# *-> 基础护手
 gloves_wraps = equipment_data["gloves_wraps"]
 
-# -> 基础护足
+# *-> 基础护足
 footrags = equipment_data["footrags"]
 
-# -> 基础饰品
+# *-> 基础饰品
 copper_ring = equipment_data["copper_ring"]
 
 # *-> 高级武器
@@ -176,7 +181,7 @@ anna_armor_shop_set = [
 ]
 
 jack_weapon_shop_set = [
-    wood_bow,
+    basic_weapons["wood_bow"],
     long_sword,
     dagger,
     war_hammer,

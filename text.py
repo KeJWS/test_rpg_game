@@ -263,7 +263,7 @@ def map_menu(player):
     available_quests = map.world_map.show_region_quests(player)
 
     print("\n可前往地区:")
-    print(map.world_map.list_avaliable_regions())
+    print(map.world_map.list_available_regions())
     print("\n1-N. 前往对应编号的地区\nq. 返回主菜单")
 
     if available_quests:

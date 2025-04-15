@@ -42,7 +42,7 @@ class Quest():
             if self in region.quests:
                 print(f"\n所在地区: {region.name}")
                 break
-                
+
         print("")
 
     def get_status_text(self):

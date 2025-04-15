@@ -31,11 +31,8 @@ enemy_data = load_enemies_from_csv("data/enemies.csv")
 
 possible_enemies = {
     "slime": (1, 3),
-    "imp": (1, 4),
-    "golem": (2, 7),
-    "skeleton": (2, 10),
-    "giant_slime": (3, 100),
-    "bandit": (4, 100)
+    "imp": (1, 5),
+    "golem": (1, 7),
 }
 
 enemy_list_caesarus_bandit = [enemy_data["caesarus_bandit_leader"].clone(), enemy_data["bandit"].clone(), enemy_data["bandit"].clone()]

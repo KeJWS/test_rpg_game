@@ -13,13 +13,13 @@ class Region:
     name: str
     description: str
     danger_level: int # 影响敌人等级和数量
-    possible_enemies: Dict[str, Tuple[int, int]] # 每个地区的敌人池 {enemy_name: (min_level, max_level)}
+    possible_enemies: Dict[str, Tuple[int, int]]
     shop_events: List[events.Shop_event]
     heal_events: List[events.Healing_event]
     special_events: List[events.Event]
     quests: List[quest.Quest]
     ascii_art: str
-    is_unclocked: bool = True
+    is_unlocked: bool = True
 
     def available_quests(self, player):
         """返回该地区可接受的任务列表（未激活的）"""
@@ -42,32 +42,46 @@ class World_map:
 
     def _initialize_special_events(self):
         """初始化各地区的特殊事件"""
-        pass
+        shadow_wolf = enemies.enemy_data["shadow_wolf"].clone()
+        forest_boss_combat = events.Fixed_combat_event(
+            "影狼袭击", 
+            [shadow_wolf]
+        )
+
+        self.regions["forest"].special_events.append(forest_boss_combat)
 
     def _initialize_regions(self):
         ascii_art_dict = items.load_ascii_art_library("data/ascii_art_map.txt")
 
-        caesarus_bandit_combat = events.Fixed_combat_event("凯撒鲁斯与他的强盗", enemies.enemy_list_caesarus_bandit)
-        caesarus_bandit_quest = quest.Quest("凯撒鲁斯与他的强盗", 
-                                          event_text.quest_caesarus_bandit_text, 
-                                          event_text.shop_quest_caesarus_bandits, 
-                                          150, 150, None, caesarus_bandit_combat, 5)
+        forest = self._create_forest(ascii_art_dict)
+        town = self._create_town(ascii_art_dict)
+        mountain = self._create_mountain(ascii_art_dict)
 
-        fight_against_slime_combat = events.Fixed_combat_event("史莱姆之王", enemies.enemy_list_fight_against_slime)
-        fight_against_slime_quest = quest.Quest("史莱姆之王", 
-                                             event_text.quest_fight_against_slime_text, 
-                                             event_text.shop_fight_against_slime_text, 
-                                             120, 120, items.long_bow, fight_against_slime_combat, 9)
+        self.regions = {
+            "town": town,
+            "forest": forest,
+            "mountain": mountain,
+        }
 
+        self.current_region = self.regions["town"]
+
+    def _create_forest(self, ascii_art_dict):
         forest_enemies = {
             "slime": (1, 3),
             "imp": (1, 5),
-            "giant_slime": (3, 100)
+            "forest_spider": (2, 7),
+            "poison_frog": (2, 9),
+            "giant_slime": (4, 100),
+            "shadow_wolf": (5, 12),
         }
-
+        fight_against_slime_combat = events.Fixed_combat_event("史莱姆狩猎", enemies.enemy_list_fight_against_slime)
+        fight_against_slime_quest = quest.Quest("史莱姆狩猎", 
+                                             event_text.quest_fight_against_slime_text, 
+                                             event_text.shop_fight_against_slime_text, 
+                                             120, 120, items.long_bow, fight_against_slime_combat, 9)
         forest = Region(
             name="雾林",
-            description="一片神秘的森林, 低级怪物在这里游荡。适合初学者冒险",
+            description="一片神秘的森林, 低级怪物在这里游荡。适合初学者冒险, \n不过要小心这里的森林守卫者",
             danger_level=1,
             possible_enemies=forest_enemies,
             shop_events=[events.shop_itz_magic],
@@ -76,7 +90,9 @@ class World_map:
             quests=[fight_against_slime_quest],
             ascii_art=ascii_art_dict.get("雾林", "")
         )
+        return forest
 
+    def _create_town(self, ascii_art_dict):
         town = Region(
             name="安全镇",
             description="一个和平的小镇, 这里没有敌人, 但有许多商店和休息的地方",
@@ -88,13 +104,19 @@ class World_map:
             quests=[],
             ascii_art=ascii_art_dict.get("安全镇", "")
         )
+        return town
 
+    def _create_mountain(self, ascii_art_dict):
+        caesarus_bandit_combat = events.Fixed_combat_event("凯撒鲁斯与他的强盗", enemies.enemy_list_caesarus_bandit)
+        caesarus_bandit_quest = quest.Quest("凯撒鲁斯与他的强盗", 
+                                          event_text.quest_caesarus_bandit_text, 
+                                          event_text.shop_quest_caesarus_bandits, 
+                                          150, 150, None, caesarus_bandit_combat, 5)
         mountain_enemies = {
             "golem": (1, 7),
             "skeleton": (3, 10),
             "bandit": (4, 100)
         }
-
         mountain = Region(
             name="龙脊山",
             description="危险的山脉地带，强盗和山地怪物出没。",
@@ -106,14 +128,7 @@ class World_map:
             quests=[caesarus_bandit_quest],
             ascii_art=ascii_art_dict.get("龙脊山", "")
         )
-
-        self.regions = {
-            "town": town,
-            "forest": forest,
-            "mountain": mountain,
-        }
-
-        self.current_region = self.regions["town"]
+        return mountain
 
     def unclock_region(self, region_name):
         """解锁指定地区"""
@@ -135,15 +150,15 @@ class World_map:
             return (
                 f"{fx.GREEN}\n{self.current_region.ascii_art}{fx.END}\n"
                 f"当前位置: {self.current_region.name}\n"
-                f"危险等级: {'★' * self.current_region.danger_level}\n"
+                f"危险等级: {'★ ' * self.current_region.danger_level}\n"
                 f"{self.current_region.description}"
             )
         return "未知地区"
 
-    def list_avaliable_regions(self):
+    def list_available_regions(self):
         """列出所有可前往的地区"""
         return "\n".join([
-            f"{i+1}. {region.name} 危险等级: {'★' * region.danger_level}" 
+            f"{i+1}. {region.name} 危险等级: {'★ ' * region.danger_level}" 
             for i, region in enumerate(self.regions.values())
         ])
 
@@ -226,10 +241,8 @@ class World_map:
 
         if event_type == "combat":
             combat_event = events.Random_combat_event(f"{self.current_region.name}的随机战斗")
-            old_enemies = enemies.possible_enemies
             enemies.possible_enemies = self.current_region.possible_enemies
             combat_event.effect(player)
-            enemies.possible_enemies = old_enemies
 
         elif event_type == "shop":
             shop_event = random.choice(self.current_region.shop_events)
@@ -242,7 +255,7 @@ class World_map:
         if (self.current_region.special_events and 
             random.randint(1, 100) <= 10):
             special_event = random.choice(self.current_region.special_events)
-            print("\n一个特殊事件发生了!")
+            print(f"\n一个特殊事件发生了: {special_event.name}")
             escaped = special_event.effect(player)
             if special_event.is_unique and not escaped and player.alive:
                 self.current_region.special_events.remove(special_event)

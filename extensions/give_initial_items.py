@@ -14,22 +14,22 @@ def give_initial_items(my_player):
     my_player.add_money(100)
 
     if option == "1":
-        items.rusty_sword.add_to_inventory_player(my_player.inventory)
+        items.basic_weapons["rusty_sword"].add_to_inventory_player(my_player.inventory)
         items.novice_armor.add_to_inventory_player(my_player.inventory)
         items.atk_gems.add_to_inventory_player(my_player.inventory)
         my_player.class_name = "战士"
     elif option == "2":
-        items.broken_dagger.add_to_inventory_player(my_player.inventory)
+        items.basic_weapons["broken_dagger"].add_to_inventory_player(my_player.inventory)
         items.novice_armor.add_to_inventory_player(my_player.inventory)
         items.agi_gems.add_to_inventory_player(my_player.inventory)
         my_player.class_name = "盗贼"
     elif option == "3":
-        items.old_staff.add_to_inventory_player(my_player.inventory)
+        items.basic_weapons["old_staff"].add_to_inventory_player(my_player.inventory)
         items.old_robes.add_to_inventory_player(my_player.inventory)
         items.grimoires[0].add_to_inventory_player(my_player.inventory)
         my_player.class_name = "法师"
     elif option == "4":
-        items.wood_bow.add_to_inventory_player(my_player.inventory)
+        items.basic_weapons["wood_bow"].add_to_inventory_player(my_player.inventory)
         items.leather_armor.add_to_inventory_player(my_player.inventory)
         items.crit_gems.add_to_inventory_player(my_player.inventory)
         my_player.class_name = "弓箭手"
