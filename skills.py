@@ -1,5 +1,5 @@
 import random
-import allies
+import extensions.allies as allies
 
 class Skill():
     def __init__(self, name, description, cost, is_targeted, default_target) -> None:

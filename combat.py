@@ -121,6 +121,7 @@ def combat(my_player, enemies):
         enemy_exp += enemy.xp_reward
         enemy_money += enemy.gold_reward
 
+    escaped = False
     # 只要玩家存活且仍有敌人，战斗就会持续
     while my_player.alive and len(enemies) > 0:
         # 由于速度可能因增益/减益效果改变，需要更新战斗顺序
@@ -159,7 +160,8 @@ def combat(my_player, enemies):
                         check_turns_buffs_and_debuffs(my_player, True)
                         typewriter(f"{my_player.name} 成功逃离了战斗")
                         my_player.combo_points = 0
-                        return
+                        escaped = True
+                        return escaped
             else:
                 # 盟友自动攻击随机敌人
                 if battler.is_ally:
@@ -187,6 +189,7 @@ def combat(my_player, enemies):
         # 重置连招点数
         my_player.combo_points = 0
         recover_hp_and_mp(my_player, 0.25)
+        return False
 
 def define_battlers(allies, enemies):
     battlers = enemies.copy()

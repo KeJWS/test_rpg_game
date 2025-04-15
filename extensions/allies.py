@@ -1,3 +1,5 @@
+import sys
+sys.path.append("..")
 import combat
 
 class Summoned_skeleton(combat.Battler):

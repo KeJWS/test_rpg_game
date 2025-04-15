@@ -1,6 +1,6 @@
 import combat
 import random
-import text, shops, items, enemies, quest
+import text, extensions.shops as shops, items, enemies, quest
 from test.clear_screen import enter_clear_screen
 
 import data.event_text as event_text
@@ -25,6 +25,10 @@ class Event():
         elif type(self) == Healing_event:
             event_type_list[2].append(self)
 
+        from map import world_map
+        if world_map.current_region and self not in world_map.current_region.special_events:
+            world_map.current_region.special_events.append(self)
+
 class Random_combat_event(Event):
     def __init__(self, name) -> None:
         super().__init__(name, 100, False)
@@ -46,7 +50,8 @@ class Fixed_combat_event(Event):
         self.enemy_list = enemy_list
 
     def effect(self, player):
-        combat.combat(player, self.enemy_list)
+        escaped = combat.combat(player, self.enemy_list)
+        return escaped
 
 class Shop_event(Event):
     def __init__(self, name, is_unique, encounter_text, enter_text, talk_text, exit_text, item_set) -> None:

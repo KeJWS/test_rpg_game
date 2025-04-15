@@ -27,7 +27,7 @@ def player_to_dict(player):
         "alive": player.alive,
         "money": player.money,
         "inventory": [],
-        "spells": [spell.name for spell in player.spells]
+        "spells": [spell.name for spell in player.spells],
     }
 
     # 保存库存物品
@@ -81,6 +81,7 @@ def dict_to_player(player_dict):
     player.is_defending = player_dict["is_defending"]
     player.alive = player_dict["alive"]
     player.money = player_dict["money"]
+    player.completed_quests = player_dict["completed_quests"]
 
     player.inventory.items = []
 

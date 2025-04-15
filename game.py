@@ -84,7 +84,7 @@ def game_loop(p):
 
     choice = input("是否要转生? (y/n): ")
     if choice.lower() == "y":
-        p.rebirth()
+        p.rebirth(map.world_map)
         enter_clear_screen()
         play(p)
 

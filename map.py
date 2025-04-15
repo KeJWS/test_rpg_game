@@ -224,11 +224,14 @@ class World_map:
             random.randint(1, 100) <= 10):
             special_event = random.choice(self.current_region.special_events)
             print("\n一个特殊事件发生了!")
-            special_event.effect(player)
-            if special_event.is_unique:
+            escaped = special_event.effect(player)
+            if special_event.is_unique and not escaped and player.alive:
                 self.current_region.special_events.remove(special_event)
                 for quest in player.active_quests:
                     if hasattr(quest, 'event') and quest.event == special_event:
                         quest.complete_quest(player)
+            elif special_event.is_unique and escaped:
+                print(fx.yellow("你逃离了战斗, 不过没关系还可以再次尝试"))
+                pass
 
 world_map = World_map()

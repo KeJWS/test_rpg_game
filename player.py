@@ -199,7 +199,7 @@ class Player(combat.Battler):
     def add_combo_points(self, points):
         self.combo_points += points
 
-    def rebirth(self):
+    def rebirth(self, world_map):
         print(fx.cyan("你选择了转生! 重置所有成长, 但保留了财富与物品"))
         self.unequip_all()
 
@@ -214,7 +214,12 @@ class Player(combat.Battler):
         self.class_name = saved_class_name
         # self.spells = saved_spells
 
+        self.active_quests.clear()
+        self.completed_quests.clear()
+    
+        for region in world_map.regions.values():
+            for q in region.quests:
+                q.status = "Not Active"
+
         print(fx.cyan(f"你以 Lv.{self.level} 重生，保留了 {self.money} 金币和背包物品!"))
         self.inventory.show_inventory()
-
-# TODO 转生以后任务无法接受
