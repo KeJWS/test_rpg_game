@@ -44,7 +44,7 @@ def player_to_dict(player):
         # 处理特定项目类型
         if item.__class__.__name__ == "Equipment":
             item_dict["stat_change_list"] = item.stat_change_list
-            item_dict["combo"] = item.combo
+            item_dict["combo"] = item.combo.name if hasattr(item.combo, "name") else str(item.combo)
             item_dict["ascii_art"] = item.ascii_art
         elif item.__class__.__name__ == "Potion":
             item_dict["stat"] = item.stat
@@ -67,6 +67,24 @@ def dict_to_player(player_dict):
     spell_mapping = {
         "火球术": skills.spell_fire_ball,
         "神圣祝福": skills.spell_divine_blessing,
+        "强化武器": skills.spell_enhance_weapon,
+        "地狱火": skills.spell_inferno,
+        "召唤骷髅": skills.spell_skeleton_summoning,
+        "召唤火精灵": skills.spell_fire_spirit_summoning,
+    }
+
+    combo_mapping = {
+        "斩击连击 I": skills.combo_slash1,
+        "斩击连击 II": skills.combo_slash2,
+        "破甲 I": skills.combo_armor_breaker1,
+        "吸血之刺 I": skills.combo_vampire_stab1,
+        "吸血之刺 II": skills.combo_vampire_stab2,
+        "冥想 I": skills.combo_meditation1,
+        "冥想 II": skills.combo_meditation2,
+        "快速连射 I": skills.combo_quickSshooting,
+        "快速连射 II": skills.combo_quickSshooting2,
+
+
     }
 
     player = Player(player_dict["name"])
@@ -88,6 +106,7 @@ def dict_to_player(player_dict):
     # 恢复库存
     for item_dict in player_dict["inventory"]:
         if item_dict["type"] == "Equipment":
+            combo_obj = combo_mapping.get(item_dict["combo"])
             item = inventory.Equipment(
                 item_dict["name"],
                 item_dict["description"],
@@ -95,7 +114,7 @@ def dict_to_player(player_dict):
                 item_dict["individual_value"],
                 item_dict["object_type"],
                 item_dict["stat_change_list"],
-                item_dict["combo"],
+                combo_obj,
                 item_dict["ascii_art"],
             )
         elif item_dict["type"] == "Potion":

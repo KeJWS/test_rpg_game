@@ -61,7 +61,7 @@ class World_map:
 
         forest_enemies = {
             "slime": (1, 3),
-            "imp": (1, 4),
+            "imp": (1, 5),
             "giant_slime": (3, 100)
         }
 
@@ -82,16 +82,35 @@ class World_map:
             description="一个和平的小镇, 这里没有敌人, 但有许多商店和休息的地方",
             danger_level=0,
             possible_enemies={},
-            shop_events=[events.shop_rik_armor],
+            shop_events=[events.shop_jack_weapon, events.shop_anna_armor],
             heal_events=[events.inn_event],
             special_events=[],
-            quests=[caesarus_bandit_quest],
+            quests=[],
             ascii_art=ascii_art_dict.get("安全镇", "")
+        )
+
+        mountain_enemies = {
+            "golem": (1, 7),
+            "skeleton": (3, 10),
+            "bandit": (4, 100)
+        }
+
+        mountain = Region(
+            name="龙脊山",
+            description="危险的山脉地带，强盗和山地怪物出没。",
+            danger_level=2,
+            possible_enemies=mountain_enemies,
+            shop_events=[events.shop_rik_armor],
+            heal_events=[events.heal_medussa_statue],
+            special_events=[],
+            quests=[caesarus_bandit_quest],
+            ascii_art=ascii_art_dict.get("龙脊山", "")
         )
 
         self.regions = {
             "town": town,
             "forest": forest,
+            "mountain": mountain,
         }
 
         self.current_region = self.regions["town"]
@@ -137,7 +156,7 @@ class World_map:
         available_quests = self.current_region.available_quests(player)
         active_quests = self.current_region.active_quests(player)
         completed_quests = self.current_region.completed_quests(player)
-        
+
         print(f"\n=== {self.current_region.name} 的任务 ===")
 
         if available_quests:

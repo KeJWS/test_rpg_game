@@ -210,7 +210,7 @@ def display_save_list(saves):
 
 def display_status_effects(battlers):
     import test.fx as fx
-    print(fx.bright_cyan("======= 状态效果 ======="))
+    print(fx.bright_cyan("=== 状态效果 ==="))
     for battler in battlers:
         if battler.buffs_and_debuffs:
             print(fx.cyan(f"{battler.name} 的状态: "))
@@ -220,7 +220,7 @@ def display_status_effects(battlers):
                 print(f" - {effect.name}(剩余 {turns} 回合){warn}")
         else:
             print(f"{battler.name} 没有任何状态效果")
-    print(fx.bright_cyan("========================"))
+    print(fx.bright_cyan("================"))
 
 def show_all_quests(player):
     print(fx.bright_cyan("\n======= 任务列表 ======="))

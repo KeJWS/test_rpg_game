@@ -46,51 +46,56 @@ def load_equipment_from_csv(filepath="data/equipments.csv"):
 
 equipment_data = load_equipment_from_csv()
 
-# 初始物品
-# -> 初始武器
+# *-> 初始武器
 rusty_sword = equipment_data["rusty_sword"]
 broken_dagger = equipment_data["broken_dagger"]
 old_staff = equipment_data["old_staff"]
 wood_bow = equipment_data["wood_bow"]
-# -> 初始护甲
+
+# *-> 初始护甲
 novice_armor = equipment_data["novice_armor"]
 old_robes = equipment_data["old_robes"]
 
-# 基本物品
-# -> 基本武器
+# *-> 基本武器
 long_sword = equipment_data["long_sword"]
 dagger = equipment_data["dagger"]
 staff = equipment_data["staff"]
 
-# -> 基础护甲
+# *-> 基础护甲
 cloth_armor = equipment_data["cloth_armor"]
 leather_armor = equipment_data["leather_armor"]
 bronze_armor = equipment_data["bronze_armor"]
 student_robes = equipment_data["student_robes"]
 
-# -> 基础护盾
+# *-> 基础护盾
 wooden_shield = equipment_data["wooden_shield"]
 
 # -> 基础头盔
+straw_hat = equipment_data["straw_hat"]
 
 # -> 基础护手
+gloves_wraps = equipment_data["gloves_wraps"]
 
 # -> 基础护足
+footrags = equipment_data["footrags"]
 
 # -> 基础饰品
+copper_ring = equipment_data["copper_ring"]
 
-# 高级物品
-# -> 高级武器
+# *-> 高级武器
 war_hammer = equipment_data["war_hammer"]
 zweihander = equipment_data["zweihander"]
 sage_staff = equipment_data["sage_staff"]
 sai = equipment_data["sai"]
 long_bow = equipment_data["long_bow"]
 
-# -> 高级装甲
+# *-> 高级装甲
 iron_armor = equipment_data["iron_armor"]
 sage_tunic = equipment_data["sage_tunic"]
 thief_armor = equipment_data["thief_armor"]
+
+# *-> 高级护盾
+bronze_shield = equipment_data["bronze_shield"]
 
 # -> 高级头盔
 
@@ -129,9 +134,7 @@ grimoires = [
     for (n, d, a, v, spell) in grimoire_data
 ]
 
-
 # 商店物品套装
-
 rik_armor_shop_item_set = [
     long_sword,
     dagger,
@@ -144,6 +147,7 @@ rik_armor_shop_item_set = [
     sai,
     thief_armor,
     wooden_shield,
+    bronze_shield,
     long_bow,
 ]
 
@@ -157,4 +161,23 @@ itz_magic_item_set = [
     student_robes,
     *grimoires[:6],
     mat_small_gems,
+]
+
+anna_armor_shop_set = [
+    cloth_armor,
+    leather_armor,
+    bronze_armor,
+    student_robes,
+    wooden_shield,
+    straw_hat,
+    gloves_wraps,
+    footrags,
+    copper_ring,
+]
+
+jack_weapon_shop_set = [
+    wood_bow,
+    long_sword,
+    dagger,
+    war_hammer,
 ]

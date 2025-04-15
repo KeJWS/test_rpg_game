@@ -33,10 +33,10 @@ class Random_combat_event(Event):
     def __init__(self, name) -> None:
         super().__init__(name, 100, False)
         self.enemy_quantity_for_level = {
-            2: 1,
-            5: 2,
-            7: 3,
-            13: 4,
+            3: 1,
+            6: 2,
+            9: 3,
+            15: 4,
             100: 5,
         }
 
@@ -168,6 +168,9 @@ shop_itz_magic = Shop_event("伊兹的魔法店", False, event_text.itz_magic_en
 heal_medussa_statue = Healing_event("美杜莎雕像", event_text.medussa_statue_encounter, event_text.medussa_statue_success,
                                     event_text.medussa_statue_fail, event_text.medussa_statue_refuse, 70, False, 90)
 inn_event = Inn_event("客栈", event_text.inn_event_encounter, event_text.inn_event_success, event_text.inn_event_fail, event_text.inn_event_refuse, 120, 20)
+
+shop_anna_armor = Shop_event("安娜的防具店", False, event_text.anna_armor_shop_encounter, event_text.anna_armor_shop_enter, event_text.anna_armor_shop_talk, event_text.anna_armor_shop_exit, items.anna_armor_shop_set)
+shop_jack_weapon = Shop_event("杰克的武器店", False, event_text.jack_weapon_shop_encounter, event_text.jack_weapon_shop_enter, event_text.jack_weapon_shop_talk, event_text.jack_weapon_shop_exit, items.jack_weapon_shop_set)
 
 # 事件分类
 combat_event_list = [random_combat]
