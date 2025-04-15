@@ -28,24 +28,7 @@ class World_map:
 
     def _initialize_special_events(self):
         """初始化各地区的特殊事件"""
-        poisonous_swamp_encounter = """
-你不小心踩入一片冒着绿色气泡的沼泽地带。突然, 一股恶臭的气体从沼泽中涌出!
-要屏住呼吸快速离开吗?(y/n)
-"""
-        poisonous_swamp_success = "你成功憋住了呼吸, 迅速逃离了毒气区域!"
-        poisonous_swamp_fail = "你吸入了一些毒气, 感到一阵头晕目眩, 生命值减少!"
-        poisonous_swamp_refuse = "你决定绕道而行, 避开了危险的沼泽地带"
-        swamp_poison_event = events.Healing_event(
-            "毒沼气",
-            poisonous_swamp_encounter,
-            poisonous_swamp_success,
-            poisonous_swamp_fail,
-            poisonous_swamp_refuse,
-            40, False, -30
-        )
-
-        if "swamp" in self.regions:
-            self.regions["swamp"].special_events.append(swamp_poison_event)
+        pass
 
     def _initialize_regions(self):
         ascii_art_dict = items.load_ascii_art_library("data/ascii_art_map.txt")
@@ -66,15 +49,6 @@ class World_map:
             ascii_art=ascii_art_dict.get("雾林", "")
         )
 
-        mountain_ascii = """
-        /\\  /\\  /\\  /\\  /\\
-        |   Mountain   |
-        /\\  /\\  /\\  /\\  /\\
-           /\\_/\\_/\\_/\\
-          /         \\
-         /           \\
-        """
-
         town = Region(
             name="安全镇",
             description="一个和平的小镇, 这里没有敌人, 但有许多商店和休息的地方",
@@ -85,15 +59,6 @@ class World_map:
             special_events=[],
             ascii_art=ascii_art_dict.get("安全镇", "")
         )
-
-        swamp_ascii = """
-        ~~~~~~~~~~~~~~~~~~~
-        |      Swamp     |
-        ~~~~~~~~~~~~~~~~~~~
-        ~   ~   ~   ~   ~
-         ~ ~ ~ ~ ~ ~ ~ ~ ~
-        ~   ~   ~   ~   ~
-        """
 
         self.regions = {
             "town": town,
