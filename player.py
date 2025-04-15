@@ -196,14 +196,6 @@ class Player(combat.Battler):
                 vendor.inventory.show_inventory()
                 i = int(input("> "))
 
-    def show_quests(self):
-        print("/// 进行中 ///")
-        for actq in self.active_quests:
-            actq.show_info()
-        print("/// 已完成 ///")
-        for cmpq in self.completed_quests:
-            cmpq.show_info()
-
     def add_combo_points(self, points):
         self.combo_points += points
 
@@ -224,3 +216,5 @@ class Player(combat.Battler):
 
         print(fx.cyan(f"你以 Lv.{self.level} 重生，保留了 {self.money} 金币和背包物品!"))
         self.inventory.show_inventory()
+
+# TODO 转生以后任务无法接受

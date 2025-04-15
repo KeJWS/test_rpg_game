@@ -3,7 +3,6 @@ import os
 import time
 
 from player import Player
-
 SAVE_FOLDER = "saves"
 
 def ensure_save_folder():
@@ -46,6 +45,7 @@ def player_to_dict(player):
         if item.__class__.__name__ == "Equipment":
             item_dict["stat_change_list"] = item.stat_change_list
             item_dict["combo"] = item.combo
+            item_dict["ascii_art"] = item.ascii_art
         elif item.__class__.__name__ == "Potion":
             item_dict["stat"] = item.stat
             item_dict["amount_to_change"] = item.amount_to_change
@@ -81,10 +81,9 @@ def dict_to_player(player_dict):
     player.is_defending = player_dict["is_defending"]
     player.alive = player_dict["alive"]
     player.money = player_dict["money"]
-    
-    # 清除默认库存
+
     player.inventory.items = []
-    
+
     # 恢复库存
     for item_dict in player_dict["inventory"]:
         if item_dict["type"] == "Equipment":
@@ -95,7 +94,8 @@ def dict_to_player(player_dict):
                 item_dict["individual_value"],
                 item_dict["object_type"],
                 item_dict["stat_change_list"],
-                item_dict["combo"]
+                item_dict["combo"],
+                item_dict["ascii_art"],
             )
         elif item_dict["type"] == "Potion":
             item = inventory.Potion(
@@ -207,3 +207,5 @@ def get_save_list():
 
     saves.sort(key=lambda x: x["timestamp"], reverse=True)
     return saves
+
+# TODO 读档以后任务会清空

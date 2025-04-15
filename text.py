@@ -23,6 +23,7 @@ def play_menu():
         "   A  - Aptitude\n"
         "   I  - Inventory\n"
         "   Q  - Quests\n"
+        "   M  - Map\n"
         "   Lr - Life recovery\n"
         "   Se - Show equipment\n"
         "   Sk - Show skills\n"
@@ -220,3 +221,74 @@ def display_status_effects(battlers):
         else:
             print(f"{battler.name} 没有任何状态效果")
     print(fx.bright_cyan("================"))
+
+def show_all_quests(player):
+    print(fx.bright_cyan("\n=== 任务列表 ==="))
+    if player.active_quests:
+        print("\n进行中的任务:")
+        for i, q in enumerate(player.active_quests):
+            print(f"{i+1}. {q.name} (推荐等级: {q.recommended_level})")
+            print(f"   所在地区: {get_quest_region(q)}")
+            print(f"   {q.description[:50]}..." if len(q.description) > 50 else f"   {q.description}")
+    else:
+        print("\n当前没有进行中的任务")
+    if player.completed_quests:
+        print("\n已完成的任务:")
+        for i, q in enumerate(player.completed_quests):
+            print(f"{i+1}. {q.name} [已完成]")
+    else:
+        print("\n尚未完成任何任务")
+    print(fx.bright_cyan("\n================"))
+    print("\n输入q数字查看任务详情 (例如: q1), 或输入任意键返回")
+    option = input("> ").lower()
+    if option.startswith('q'):
+        try:
+            quest_idx = int(option[1:]) - 1
+            if quest_idx >= 0 and quest_idx < len(player.active_quests):
+                player.active_quests[quest_idx].show_info()
+        except ValueError:
+            pass
+
+def get_quest_region(quest_obj):
+    import map
+    """查找任务所在地区"""
+    for region_name, region in map.world_map.regions.items():
+        if quest_obj in region.quests:
+            return region.name
+    return "未知地区"
+
+def map_menu(player):
+    import map
+    print(map.world_map.get_current_region_info())
+    available_quests = map.world_map.show_region_quests(player)
+
+    print("\n可前往地区:")
+    print(map.world_map.list_avaliable_regions())
+    print("\n1-N. 前往对应编号的地区\nq. 返回主菜单")
+
+    if available_quests:
+        print("t+数字, 接受任务(例如: t1)")
+
+    option = input("> ").lower()
+    if option == "q":
+        return
+
+    if option.startswith('t') and available_quests:
+        try:
+            quest_idx = int(option[1:]) - 1
+            map.world_map.accept_quest(player, quest_idx, available_quests)
+        except ValueError:
+            print("无效的任务选择")
+
+    else:
+        try:
+            idx = int(option) - 1
+            if 0 <= idx < len(map.world_map.regions):
+                region_key = list(map.world_map.regions.keys())[idx]
+                map.world_map.change_region(region_key)
+                print(f"\n你已经抵达 {map.world_map.current_region.name}")
+                print(map.world_map.current_region.description)
+            else:
+                print("无效的选择")
+        except ValueError:
+            print("请输入有效的命令")

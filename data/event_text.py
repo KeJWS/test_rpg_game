@@ -58,11 +58,11 @@ inn_event_refuse = "你决定不支付住宿费。\n"
 ## 任务
 quest_caesarus_bandit_text = "凯撒鲁斯和他的匪徒一直在\n\
 骚扰附近的村庄。去解决他们吧。"
-shop_quest_caesarus_bandits = "听说过那群强盗吗？他们一直在恐吓\n\
+shop_quest_caesarus_bandits = "里克: 听说过那群强盗吗？他们一直在恐吓\n\
 这一带的村庄。一个叫凯撒鲁斯的家伙是他们的首领。\n\
 如果你能解决他们，也许村民会给你一些报酬。"
 
 quest_fight_against_slime_text = "沼泽深处出现了一只巨大的史莱姆之王，\n\
 你接下了这个任务。"
-shop_fight_against_slime_text = "听闻沼泽深处出现了一只巨大的史莱姆之王，\n\
+shop_fight_against_slime_text = "魔法师伊兹: 听闻沼泽深处出现了一只巨大的史莱姆之王，\n\
 有兴趣吗？报酬嘛，我倒是可以把珍藏多年的长弓送给你..."

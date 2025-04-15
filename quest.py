@@ -35,23 +35,33 @@ class Quest():
         if self.gold_reward > 0:
             print(f"G: {self.gold_reward}")
         if self.item_reward != None:
-            print(f"Item: {self.item_reward.name}")
+            print(f"物品: {self.item_reward.name}")
+        print("")
+        from map import world_map
+        for region_name, region in world_map.regions.items():
+            if self in region.quests:
+                print(f"\n所在地区: {region.name}")
+                break
+                
         print("")
 
+    def get_status_text(self):
+        """获取任务状态的中文描述"""
+        status_dict = {
+            "Not Active": "未接受",
+            "Active": "进行中",
+            "Completed": "已完成"
+        }
+        return status_dict.get(self.status, self.status)
+
     def give_rewards(self, player):
-        print(f"任务 \"{self.name}\" 已完成。您获得了 {self.xp_reward}xp 和 {self.gold_reward}G")
+        print(f"任务 \"{self.name}\" 已完成。您获得了:")
         if self.xp_reward > 0:
+            print(f"- {self.xp_reward}xp")
             player.add_exp(self.xp_reward)
         if self.gold_reward > 0:
+            print(f"- {self.gold_reward}G")
             player.money += self.gold_reward
         if self.item_reward != None:
+            print(f"- {self.item_reward.name}")
             self.item_reward.add_to_inventory_player(player.inventory)
-
-    def propose_quest(self, player):
-        print(self.proposal_text)
-        print(f"接受? [y/n] (推荐级别: {self.recommended_level})")
-        option = input("> ").lower()
-        while option not in ["y", "n"]:
-            option = input("> ").lower()
-        if option == "y":
-            self.activate_quest(player)
