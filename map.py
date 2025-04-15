@@ -24,7 +24,7 @@ class Region:
     def available_quests(self, player):
         """返回该地区可接受的任务列表（未激活的）"""
         return [q for q in self.quests if q.status == "Not Active" and q not in player.completed_quests]
-    
+
     def active_quests(self, player):
         """返回该地区已激活但未完成的任务"""
         return [q for q in self.quests if q in player.active_quests]
@@ -124,7 +124,7 @@ class World_map:
     def list_avaliable_regions(self):
         """列出所有可前往的地区"""
         return "\n".join([
-            f"{i+1}. {region.name} (危险等级: {'★' * region.danger_level})" 
+            f"{i+1}. {region.name} 危险等级: {'★' * region.danger_level}" 
             for i, region in enumerate(self.regions.values())
         ])
 
@@ -133,30 +133,30 @@ class World_map:
         if not self.current_region:
             print("未知地区，无法查看任务")
             return
-        
+
         available_quests = self.current_region.available_quests(player)
         active_quests = self.current_region.active_quests(player)
         completed_quests = self.current_region.completed_quests(player)
         
         print(f"\n=== {self.current_region.name} 的任务 ===")
-        
+
         if available_quests:
             print("可接受的任务:")
             for i, q in enumerate(available_quests):
                 print(f"{i+1}. {q.name} (推荐等级: {q.recommended_level})")
         else:
             print("\n当前没有可接受的任务")
-            
+
         if active_quests:
             print("\n正在进行的任务:")
             for q in active_quests:
                 print(f"- {q.name} (进行中)")
-                
+
         if completed_quests:
             print("\n已完成的任务:")
             for q in completed_quests:
                 print(f"- {q.name} (已完成)")
-        
+
         return available_quests
 
     def accept_quest(self, player, quest_index, available_quests):

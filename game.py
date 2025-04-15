@@ -8,7 +8,8 @@ import data.event_text
 
 from save_system import save_game, get_save_list, load_game
 
-### 标题菜单 ###
+
+# *标题菜单*
 def title_screen_selections():
     text.title_screen()
     while (option := input("> ")) not in {"1", "2", "3"}:
@@ -18,7 +19,8 @@ def title_screen_selections():
         case "2": text.help_menu()
         case "3":sys.exit()
 
-##### 背包菜单 #####
+
+# *背包菜单*
 def inventory_selections(player):
     while (option := input("> ").lower()) != "q":
         match option:
@@ -30,7 +32,8 @@ def inventory_selections(player):
         enter_clear_screen()
         text.inventory_menu()
 
-### 主游戏循环 ###
+
+# *主游戏循环*
 def play(p=None):
     from extensions.give_initial_items import give_initial_items, apply_class_bonuses
     if p is None:

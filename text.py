@@ -90,14 +90,14 @@ def show_aptitudes(player):
 
 def inventory_menu():
     display_inventory = (
-        "----------------------------------\n"
+        "-------------------------------------------------\n"
         "       U  - Use an item\n"
         "       D  - Drop an item\n"
-        "       E  - Equip an item           \n"
+        "       E  - Equip an item\n"
         "       Ua - Unequip all\n"
         "       Vi - View item\n"
-        "           Q - Quit\n"
-        "----------------------------------"
+        "       Q  - Quit\n"
+        "================================================="
     )
     print(display_inventory)
 
@@ -163,19 +163,19 @@ def shop_buy(player):
 
 
 def show_skills(player):
-    print("=== 法术技能 ===")
+    print("======= 法术技能 =======")
     if player.spells:
         for spell in player.spells:
             print(f"• {spell.name} - {spell.description} ({fx.GREEN}MP: {spell.cost}, Power: {spell.power}{fx.END})")
     else:
-        print("暂无法术。")
+        print("暂无法术")
 
-    print("\n=== 组合技能 ===")
+    print("\n======= 组合技能 =======")
     if player.combos:
         for combo in player.combos:
             print(f"• {combo.name} - {combo.description} ({fx.YELLO}CP: {combo.cost}{fx.END})")
     else:
-        print("暂无连招。")
+        print("暂无连招")
 
 
 def enter_shop(name):
@@ -210,7 +210,7 @@ def display_save_list(saves):
 
 def display_status_effects(battlers):
     import test.fx as fx
-    print(fx.bright_cyan("=== 状态效果 ==="))
+    print(fx.bright_cyan("======= 状态效果 ======="))
     for battler in battlers:
         if battler.buffs_and_debuffs:
             print(fx.cyan(f"{battler.name} 的状态: "))
@@ -220,10 +220,10 @@ def display_status_effects(battlers):
                 print(f" - {effect.name}(剩余 {turns} 回合){warn}")
         else:
             print(f"{battler.name} 没有任何状态效果")
-    print(fx.bright_cyan("================"))
+    print(fx.bright_cyan("========================"))
 
 def show_all_quests(player):
-    print(fx.bright_cyan("\n=== 任务列表 ==="))
+    print(fx.bright_cyan("\n======= 任务列表 ======="))
     if player.active_quests:
         print("\n进行中的任务:")
         for i, q in enumerate(player.active_quests):
@@ -238,7 +238,7 @@ def show_all_quests(player):
             print(f"{i+1}. {q.name} [已完成]")
     else:
         print("\n尚未完成任何任务")
-    print(fx.bright_cyan("\n================"))
+    print(fx.bright_cyan("\n========================"))
     print("\n输入q数字查看任务详情 (例如: q1), 或输入任意键返回")
     option = input("> ").lower()
     if option.startswith('q'):

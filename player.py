@@ -23,8 +23,8 @@ class Player(combat.Battler):
 
         super().__init__(name, stats)
 
-        self.level = 1 # 玩家等级
-        self.xp = 0 # 当前经验值
+        self.level = 1
+        self.xp = 0
         self.xp_to_next_level = self.exp_required_formula()
         self.combo_points = 0
         self.aptitudes = {
@@ -38,16 +38,16 @@ class Player(combat.Battler):
         self.inventory = inventory.Inventory() # 玩家的库存
         self.equipment = {
             "weapon": None,
-            "shield": None, # 防御
-            "head": None, # 防御
-            "armor": None, # 防御和生命
-            "hand": None, # 防御和攻击力
-            "foot": None, # 防御和敏捷
+            "shield": None,
+            "head": None,
+            "armor": None,
+            "hand": None,
+            "foot": None,
             "accessory": None
         }
         self.money = 20 # 当前资金
         self.combos = [] # 玩家选择的组合（atk, cp）
-        # self.spells = [] # 玩家选择的法术（matk, mp）
+        # self.spells = []
 
         self.active_quests = []
         self.completed_quests = []
@@ -92,7 +92,7 @@ class Player(combat.Battler):
 
     def view_item_detail(self, item):
         if item:
-            print("\n==== 物品详情 ====")
+            print("\n======= 物品详情 =======")
             print(item.get_detailed_info())
         else:
             print("未选择任何物品")
