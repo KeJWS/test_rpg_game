@@ -244,7 +244,7 @@ class Equipment(Item):
         return info
 
     def clone(self, amount):
-        return Equipment(self.name, self.description, amount, self.individual_value, self.object_type, self.stat_change_list, self.combo)
+        return Equipment(self.name, self.description, amount, self.individual_value, self.object_type, self.stat_change_list, self.combo, self.ascii_art)
 
 class Potion(Item):
     def __init__(self, name, description, amount, individual_value, object_type, stat, amount_to_change) -> None:

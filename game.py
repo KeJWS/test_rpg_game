@@ -1,7 +1,7 @@
 import sys
 import random
 
-import combat, text, player, items, events
+import combat, text, player, items, events, map
 from test.clear_screen import enter_clear_screen, clear_screen
 import test.fx
 import data.event_text
@@ -30,6 +30,28 @@ def inventory_selections(player):
         enter_clear_screen()
         text.inventory_menu()
 
+def map_menu(player):
+    print(map.world_map.get_current_region_info())
+    print("\n可前往地区:")
+    print(map.world_map.list_avaliable_regions())
+    print("\n请选择要前往的地区 (输入数字) 或按 'q' 返回:")
+
+    option = input("> ").lower()
+    if option == "q":
+        return
+
+    try:
+        idx = int(option) - 1
+        if 0 <= idx < len(map.world_map.regions):
+            region_key = list(map.world_map.regions.keys())[idx]
+            map.world_map.change_region(region_key)
+            print(f"\n你已经抵达 {map.world_map.current_region.name}")
+            print(map.world_map.current_region.description)
+        else:
+            print("无效的选择")
+    except ValueError:
+        print("请输入有效的数字")
+
 ### 主游戏循环 ###
 def play(p=None):
     from extensions.give_initial_items import give_initial_items, apply_class_bonuses
@@ -44,19 +66,22 @@ def play(p=None):
     game_loop(p)
 
 def game_loop(p):
-    event_chances = (65, 20, 15)  # 战斗、商店、治疗的概率
+    print(map.world_map.get_current_region_info())
+    enter_clear_screen()
+    event_chances = (50, 20, 15)  # 战斗、商店、治疗的概率
     while p.alive:
         text.play_menu()
         match input("> ").lower():
-            case "w": clear_screen(); generate_event(p, *event_chances); enter_clear_screen()
+            case "w": clear_screen(); map.world_map.generate_random_event(p, *event_chances); enter_clear_screen()
             case "s": clear_screen(); text.show_stats(p); enter_clear_screen()
             case "a": clear_screen(); p.assign_aptitude_points(); enter_clear_screen()
             case "i": clear_screen(); text.inventory_menu(); p.inventory.show_inventory(); inventory_selections(p)
+            case "m": clear_screen(); map_menu(p); enter_clear_screen()
             case "lr": clear_screen(); events.life_recovery_crystal(p); enter_clear_screen()
             case "se": clear_screen(); text.show_equipment_info(p); enter_clear_screen()
             case "sk": clear_screen(); text.show_skills(p); enter_clear_screen()
             case "q": clear_screen(); p.show_quests(); enter_clear_screen()
-            case "b": clear_screen(); events.random_combat.effect(p); enter_clear_screen()
+            case "d": clear_screen(); generate_event(p); enter_clear_screen()
             case "sg":
                 clear_screen()
                 text.save_load_menu()
@@ -86,7 +111,7 @@ def game_loop(p):
         enter_clear_screen()
         play(p)
 
-def generate_event(my_player, combat_chance, shop_chance, heal_chance):
+def generate_event(my_player, combat_chance=50, shop_chance=0, heal_chance=15):
     event_list = random.choices(events.event_type_list, weights=(combat_chance, shop_chance, heal_chance), k=1)
     event = random.choice(event_list[0])
     event.effect(my_player)

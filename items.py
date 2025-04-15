@@ -3,7 +3,7 @@ import csv, ast
 from functools import lru_cache
 
 @lru_cache(maxsize=1)
-def load_ascii_art_library(filepath="data/ascii_art.txt"):
+def load_ascii_art_library(filepath="data/ascii_art_equipment.txt"):
     ascii_art_dict = {}
     current_key = None
     current_lines = []

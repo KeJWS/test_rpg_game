@@ -23,7 +23,6 @@ def play_menu():
         "   A  - Aptitude\n"
         "   I  - Inventory\n"
         "   Q  - Quests\n"
-        "   B  - Battle\n"
         "   Lr - Life recovery\n"
         "   Se - Show equipment\n"
         "   Sk - Show skills\n"
