@@ -85,7 +85,7 @@ class Shop_event(Event):
                 elif option == "ua":
                     player.unequip_all()
                 elif option == "si":
-                    interface(player.inventory).show_inventory(); enter_clear_screen()
+                    vendor.inventory.show_inventory_item(); enter_clear_screen()
                 text.shop_menu(player)
                 option = input("> ").lower()
         print(self.exit)

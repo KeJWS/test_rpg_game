@@ -73,3 +73,6 @@ class Inventory:
         summary = f"\n物品总数: {self.get_total_item_count()} | 总价值: {self.total_worth}G"
         return table + summary
 
+    def show_inventory_item(self):
+        for index, item in enumerate(self.items, start=1):
+            print(f"{index} - {item.show_info()}")

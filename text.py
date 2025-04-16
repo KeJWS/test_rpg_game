@@ -94,6 +94,7 @@ def inventory_menu():
         "       U  - Use an item\n"
         "       D  - Drop an item\n"
         "       E  - Equip an item\n"
+        "       C  - Compare\n"
         "       Ua - Unequip all\n"
         "       Vi - View item\n"
         "       Q  - Quit\n"

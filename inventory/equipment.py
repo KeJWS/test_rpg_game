@@ -49,7 +49,7 @@ class Equipment(Item):
         effective_stats = {}
         durability_factor = max(0.1, self.durability / self.max_durability)
         for stat, base in self.base_stats.items():
-            upgrade_bonus = base * 0.2 * self.level
+            upgrade_bonus = max(1, base * 0.2 * self.level)
             value = int((base + upgrade_bonus) * durability_factor)
             effective_stats[stat] = value
         return effective_stats
@@ -112,9 +112,9 @@ class Equipment(Item):
             other_val = other_stats.get(stat, 0)
             diff = my_val - other_val
             if diff > 0:
-                comparison.append(f"{stat}: {my_val} (+{diff})")
+                comparison.append(f"{stat}: {my_val} +({diff})")
             elif diff < 0:
-                comparison.append(f"{stat}: {my_val} (+{diff})")
+                comparison.append(f"{stat}: {my_val} +({diff})")
             else:
                 comparison.append(f"{stat}: {my_val} (=)")
 

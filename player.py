@@ -6,6 +6,8 @@ import inventory
 import test.fx as fx
 from inventory.interface import Inventory_interface as interface
 
+from inventory import utils
+
 class Player(combat.Battler):
     def __init__(self, name) -> None:
         self.class_name = ""

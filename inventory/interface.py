@@ -101,10 +101,12 @@ class Inventory_interface:
         equip1 = utils.select_item_from_list(equipments)
         if not equip1:
             return
+        clear_screen()
         print("选择第二件装备:")
         equip2 = utils.select_item_from_list(equipments)
         if not equip2:
             return
+        clear_screen()
         print(equip1.compare_with(equip2))
 
     def upgrade_equipment(self):
