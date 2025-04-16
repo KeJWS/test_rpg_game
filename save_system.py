@@ -99,7 +99,6 @@ def dict_to_player(player_dict):
     player.is_defending = player_dict["is_defending"]
     player.alive = player_dict["alive"]
     player.money = player_dict["money"]
-    player.completed_quests = player_dict["completed_quests"]
 
     player.inventory.items = []
 

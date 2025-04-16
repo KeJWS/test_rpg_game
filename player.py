@@ -87,8 +87,6 @@ class Player(combat.Battler):
         else:
             if equipment != None:
                 print(f"{equipment.name} 无法装备")
-        text.inventory_menu()
-        self.inventory.show_inventory()
 
     def view_item_detail(self, item):
         if item:
@@ -115,8 +113,6 @@ class Player(combat.Battler):
         usable_items = [inventory.Potion, inventory.Grimoire, inventory.Jewel]
         if type(item) in usable_items:
             item.activate(self)
-        text.inventory_menu()
-        self.inventory.show_inventory()
 
     def add_exp(self, exp):
         exp_value = (exp + self.stats["luk"]) * EXPERIENCE_RATE

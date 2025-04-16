@@ -1,76 +1,116 @@
+import random
+
 import test.fx as fx
+from test.clear_screen import clear_screen
 
 class Inventory():
     def __init__(self) -> None:
         self.items = []
 
+    @property
+    def total_worth(self):
+        total_worth = sum(item.amount * item.individual_value for item in self.items)
+        return total_worth
+
+    def get_total_item_count(self) -> int:
+        return sum(item.amount for item in self.items)
+
     def show_inventory(self):
-        print(f"总价值: {self.total_worth}")
+        print(f"物品数: {self.get_total_item_count()} | 价值: {self.total_worth}G")
         for index, item in enumerate(self.items, start=1):
             print(f"{index} - {item.show_info()}")
 
     def drop_item(self):
         print("\n丢掉什么? ['0' 退出]")
         self.show_inventory()
-        i = int(input("> "))
-        if i == 0:
-            print("关闭背包...")
-        elif i <= len(self.items):
-            item = self.items[i-1]
-            item.drop()
-            if item.amount <= 0:
-                self.items.pop(i-1)
-            print('现在你的背包如下：')
-            self.show_inventory()
+        try:
+            i = int(input("> "))
+            if i == 0:
+                print("关闭背包...")
+                return
+            elif 1 <= i <= len(self.items):
+                item = self.items[i-1]
+                item.drop()
+                if item.amount <= 0:
+                    self.items.pop(i-1)
+                clear_screen()
+                print('当前背包:')
+                self.show_inventory()
+            else:
+                print("无效的选择!")
+        except ValueError:
+            print("请输入有效数字!")
 
     def sell_item(self):
+        if not self.items:
+            print("背包是空的，没有可出售的物品")
+            return 0
         print("\n出售什么? ['0' 退出]")
         self.show_inventory()
-        i = int(input("> "))
-        if i == 0:
-            print("关闭背包...")
-            return 0
-        elif i <= len(self.items):
-            item = self.items[i-1]
-            money_for_item, amount_to_sell = item.sell()
-            self.decrease_item_amount(item, amount_to_sell)
-            return money_for_item
-        else:
-            print("关闭背包...")
+        try:
+            i = int(input("> "))
+            if i == 0:
+                print("关闭背包...")
+                return 0
+            elif 1 <= i <= len(self.items):
+                item = self.items[i-1]
+                money_for_item, amount_to_sell = item.sell()
+                self.decrease_item_amount(item, amount_to_sell)
+                return money_for_item
+            else:
+                print("无效的选择!")
+                return 0
+        except ValueError:
+            print("请输入有效数字!")
             return 0
 
     def equip_item(self):
-        print("\n装备什么? ['0' 退出]")
-        self.show_inventory()
-        i = int(input("> "))
-        if i == 0:
-            print("关闭背包...")
+        equipments = [item for item in self.items if isinstance(item, Equipment)]
+        if not equipments:
+            print("背包中没有可装备的物品")
             return None
-        elif i <= len(self.items):
-            item = self.items[i-1]
-            if isinstance(item, Equipment):
-                return item
-            else:
-                print("选择一个可装备的物品")
+        print("\n装备什么? ['0' 退出]")
+        for index, item in enumerate(equipments, start=1):
+            print(f"{index}. {item.show_info()}")
+        try:
+            i = int(input("> "))
+            if i == 0:
+                print("关闭背包...")
                 return None
+            elif 1 <= i <= len(equipments):
+                return equipments[i-1]
+            else:
+                print("无效的选择!")
+                return None
+        except ValueError:
+            print("请输入有效数字!")
+            return None
 
     def use_item(self):
-        print("\n使用什么? ['0' 退出]")
-        self.show_inventory()
-        i = int(input("> "))
-        if i == 0:
-            print("关闭背包...")
+        consumables = [item for item in self.items if item.object_type == "consumable"]
+        if not consumables:
+            print("背包中没有可使用的物品")
             return None
-        elif i <= len(self.items):
-            item = self.items[i-1]
-            if item.object_type == "consumable":
+        print("\n使用什么? ['0' 退出]")
+        for index, item in enumerate(consumables, start=1):
+            print(f"{index}. {item.show_info()}")
+        try:
+            i = int(input("> "))
+            if i == 0:
+                print("关闭背包...")
+                return None
+            elif 1 <= i <= len(consumables):
+                item = consumables[i-1]
                 item.amount -= 1
                 if item.amount <= 0:
                     self.items.pop(i-1)
                 return item
             else:
-                print("选择一个消耗品")
+                print("无效的选择!")
                 return None
+        except ValueError:
+            print("请输入有效数字!")
+            return None
 
     def decrease_item_amount(self, item, amount):
         for actual_item in self.items:
@@ -78,20 +118,16 @@ class Inventory():
                 actual_item.amount -= amount
                 if actual_item.amount <= 0:
                     self.items.remove(actual_item)
+                break
 
     def add_item(self, item):
         item.add_to_inventory_player(self)
 
-    @property
-    def total_worth(self):
-        total_worth = sum(item.amount * item.individual_value for item in self.items)
-        return total_worth
-
     def view_item(self):
         if not self.items:
-            print("背包为空。")
+            print("背包为空")
             return None
-        print("选择一个物品查看详情：")
+        print("选择一个物品查看详情:")
         self.show_inventory()
         while True:
             choice = input("输入编号 (或 0 取消):")
@@ -160,6 +196,7 @@ class Item():
                 self.amount -= amount_to_buy
                 item_for_player.add_to_inventory_player(player.inventory)
                 player.money -= price
+                print(f"💰: {player.money}")
         elif self.amount == 1 and self.individual_value <= player.money:
             item_for_player = self.clone(1)
             item_for_player.add_to_inventory_player(player.inventory)
@@ -188,7 +225,7 @@ class Item():
             inventory.items.append(self)
 
     def show_info(self):
-        return f"[x{self.amount}] {self.name} ({self.object_type}) - {self.individual_value}"
+        return f"[x{self.amount}] {self.name} ({self.object_type}) - {self.individual_value}G"
 
     def get_detailed_info(self):
         info = f"名称: {self.name}\n"
@@ -196,17 +233,17 @@ class Item():
         info += f"价值: {fx.YELLO}{self.individual_value}G{fx.END}\n"
         info += f"描述: {self.description}\n"
         info += f"数量: x{self.amount}\n"
-
         return info
 
 class Equipment(Item):
     def __init__(self, name, description, amount, individual_value, object_type, stat_change_list, combo, ascii_art):
         super().__init__(name, description, amount, individual_value, object_type)
+        self.base_stats = stat_change_list.copy()
         self.stat_change_list = stat_change_list
         self.combo = combo
         self.durability = 100  # 耐久度
         self.max_durability = 100
-        self.level = 0  # 装备等级
+        self.level = 0
         self.ascii_art = ascii_art or ""
 
     def show_ascii_art(self):
@@ -233,18 +270,53 @@ class Equipment(Item):
         info = super().get_detailed_info()
         ascii_art = self.show_ascii_art()
         info += fx.cyan(f"{ascii_art}\n")
-        info += f"装备等级: +{self.level}\n"
-        info += f"耐久度: {self.durability}/{self.max_durability}\n"
+        info += f"耐久: {self.durability}/{self.max_durability} [等级: +{self.level}]\n"
         info += "属性加成:\n"
-
-        for stat, value in self.stat_change_list.items():
+        for stat, value in self.get_effective_stats().items():
             sign = "+" if value >= 0 else ""
             info += f"  {fx.GREEN}{stat}: {sign}{value}{fx.END}\n"
-
         return info
 
+    def get_effective_stats(self):
+        effective_stats = {}
+        durability_factor = max(0.1, self.durability / self.max_durability)
+        for stat, base in self.base_stats.items():
+            upgrade_bonus = base * 0.2 * self.level
+            value = int((base + upgrade_bonus) * durability_factor)
+            effective_stats[stat] = value
+        return effective_stats
+
+    def degrade_durability(self, amount: int = 1) -> bool:
+        self.durability = max(0, self.durability - amount)
+        if self.durability <= 0:
+            print(f"{fx.RED}警告: {self.name} 已损坏，需要修理!{fx.END}")
+            return False
+        return True
+
+    def repair(self, amount: int = None) -> None:
+        if amount is None:
+            self.durability = self.max_durability
+            print(f"{self.name} 已完全修复")
+        else:
+            self.durability = min(self.durability + amount, self.max_durability)
+            print(f"{self.name} 修复了 {amount} 点耐久度")
+
+    def upgrade(self):
+        print(f"尝试强化 {self.name}...")
+        success_rate = max(100 - self.level * 15, 20)
+        if random.randint(1, 100) <= success_rate:
+            self.level += 1
+            print(f"强化成功! {self.name} 现在是 +{self.level} 等级")
+        else:
+            degrade = random.randint(5, 15)
+            self.degrade_durability(degrade)
+            print(f"强化失败, 耐久度降低 {degrade}")
+
     def clone(self, amount):
-        return Equipment(self.name, self.description, amount, self.individual_value, self.object_type, self.stat_change_list, self.combo, self.ascii_art)
+        new_eq = Equipment(self.name, self.description, amount, self.individual_value, self.object_type, self.base_stats.copy(), self.combo, self.ascii_art)
+        new_eq.level = 0
+        new_eq.durability = self.durability
+        return new_eq
 
 class Potion(Item):
     def __init__(self, name, description, amount, individual_value, object_type, stat, amount_to_change) -> None:
