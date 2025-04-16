@@ -1,7 +1,10 @@
 import combat
 import random
-import text, extensions.shops as shops, items, enemies, quest
+import inventory.interface
+import text, extensions.shops as shops, items, enemies
 from test.clear_screen import enter_clear_screen
+
+from inventory import Inventory_interface as interface
 
 import data.event_text as event_text
 
@@ -76,13 +79,13 @@ class Shop_event(Event):
                 if option == "b":
                     player.buy_from_vendor(vendor)
                 elif option == "s":
-                    player.money += player.inventory.sell_item()
+                    player.money += interface(player.inventory).sell_item()
                 elif option == "t":
                     print(self.talk)
                 elif option == "ua":
                     player.unequip_all()
                 elif option == "si":
-                    player.inventory.show_inventory(); enter_clear_screen()
+                    interface(player.inventory).show_inventory(); enter_clear_screen()
                 text.shop_menu(player)
                 option = input("> ").lower()
         print(self.exit)

@@ -1,0 +1,7 @@
+/inventory/
+├── __init__.py
+├── inventory.py     # 背包类
+├── item.py          # Item, Potion, Grimoire, Jewel
+├── equipment.py     # 装备类
+├── interface.py     # 背包交互界面
+├── utils.py         # 实用功能

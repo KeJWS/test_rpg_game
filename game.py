@@ -6,6 +6,8 @@ from test.clear_screen import enter_clear_screen, clear_screen
 import test.fx
 import data.event_text
 
+from inventory import Inventory_interface as interface
+
 from save_system import save_game, get_save_list, load_game
 
 
@@ -24,11 +26,11 @@ def title_screen_selections():
 def inventory_selections(player):
     while (option := input("> ").lower()) != "q":
         match option:
-            case "u": clear_screen(); player.use_item(player.inventory.use_item())
-            case "d": clear_screen(); player.inventory.drop_item()
-            case "e": clear_screen(); player.equip_item(player.inventory.equip_item())
+            case "u": clear_screen(); player.use_item(interface(player.inventory).use_item())
+            case "d": clear_screen(); interface(player.inventory).drop_item()
+            case "e": clear_screen(); player.equip_item(interface(player.inventory).equip_item())
             case "ua": clear_screen(); player.unequip_all()
-            case "vi": clear_screen(); player.view_item_detail(player.inventory.view_item())
+            case "vi": clear_screen(); player.view_item_detail(interface(player.inventory).view_item())
         enter_clear_screen()
         text.inventory_menu()
 
@@ -56,7 +58,7 @@ def game_loop(p):
             case "w": clear_screen(); map.world_map.generate_random_event(p, *event_chances); enter_clear_screen()
             case "s": clear_screen(); text.show_stats(p); enter_clear_screen()
             case "a": clear_screen(); p.assign_aptitude_points(); enter_clear_screen()
-            case "i": clear_screen(); text.inventory_menu(); p.inventory.show_inventory(); inventory_selections(p)
+            case "i": clear_screen(); text.inventory_menu(); interface(p.inventory).show_inventory(); inventory_selections(p)
             case "m": clear_screen(); text.map_menu(p); enter_clear_screen()
             case "lr": clear_screen(); events.life_recovery_crystal(p); enter_clear_screen()
             case "se": clear_screen(); text.show_equipment_info(p); enter_clear_screen()

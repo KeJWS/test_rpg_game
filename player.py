@@ -1,7 +1,10 @@
-import  text, combat, inventory
 from data.constants import EXPERIENCE_RATE, MONEY_MULTIPLIER
 
+import text, combat
+import inventory
+
 import test.fx as fx
+from inventory.interface import Inventory_interface as interface
 
 class Player(combat.Battler):
     def __init__(self, name) -> None:
@@ -101,7 +104,7 @@ class Player(combat.Battler):
                 print(f"- 已卸下 {equipment.name}")
                 for stat, value in equipment.stat_change_list.items():
                     self.stats[stat] -= value
-                    print(f"  {stat} -{value}")
+                    print(fx.red(f"  {stat} -{value}"))
                 if equipment.combo and equipment.combo in self.combos:
                     self.combos.remove(equipment.combo)
                     print(f"  不再可用连招: {equipment.combo.name}")
@@ -182,14 +185,14 @@ class Player(combat.Battler):
 
     def buy_from_vendor(self, vendor):
         text.shop_buy(self)
-        vendor.inventory.show_inventory()
+        interface(vendor.inventory).show_inventory()
         i = int(input("> "))
         while i != 0:
             if i <= len(vendor.inventory.items) and i > 0:
                 vendor.inventory.items[i-1].buy(self)
                 if vendor.inventory.items[i-1].amount <= 0:
                     vendor.inventory.items.pop(i-1)
-                vendor.inventory.show_inventory()
+                interface(vendor.inventory).show_inventory()
                 i = int(input("> "))
 
     def add_combo_points(self, points):
