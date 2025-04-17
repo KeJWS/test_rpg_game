@@ -2,7 +2,13 @@ import csv, ast
 from collections import defaultdict
 from functools import lru_cache
 
+from data.constants import DEBUG
+
 import inventory, skills
+
+def debug_print(*args, **kwargs):
+    if DEBUG:
+        print("[DEBUG]", *args, **kwargs)
 
 # ASCII 图库加载
 @lru_cache(maxsize=1)
@@ -24,6 +30,7 @@ def load_ascii_art_library(filepath="data/ascii_art_equipment.txt"):
             elif current_key:
                 current_lines.append(line)
 
+    debug_print(f"加载 ASCII 艺术资源，共加载 {len(ascii_art_dict)} 项")
     return ascii_art_dict
 
 # 装备数据加载
@@ -48,6 +55,8 @@ def load_equipment_from_csv(filepath="data/equipments.csv"):
 
             eq = inventory.Equipment(name_zh, description, amount, individual_value, object_type, stat_change_list, combo_object, ascii_art, level, tags)
             equipment_dict[name] = eq
+
+        debug_print(f"从 CSV 加载装备数据，共加载 {len(equipment_dict)} 项装备")
         return equipment_dict
 
 equipment_data = load_equipment_from_csv()
@@ -63,6 +72,8 @@ def filter_equipment_by(level=None, object_type=None, tags=None, match_all_tags=
             result = [eq for eq in result if all(tag in eq.tags for tag in tags)]
         else:
             result = [eq for eq in result if any(tag in eq.tags for tag in tags)]
+
+    debug_print(f"筛选装备: 等级={level}, 类型={object_type}, 标签={tags}, 匹配所有标签={match_all_tags} -> {len(result)} 个结果")
     return list(result)
 
 jack_weapon_shop_set = filter_equipment_by(level=2, object_type="weapon", tags=["weapon"])
@@ -131,3 +142,8 @@ itz_magic_item_set = [
     equipment_data["ring_of_magic"],
     mat_small_gems,
 ]
+
+debug_print(f"Jack 的武器商店物品数: {len(jack_weapon_shop_set)}")
+debug_print(f"anna 的护甲商店物品数: {len(anna_armor_shop_set)}")
+debug_print(f"Rik 的护甲商店物品数: {len(rik_armor_shop_item_set)}")
+debug_print(f"itz 的魔法商店物品数: {len(itz_magic_item_set)}")

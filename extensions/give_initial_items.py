@@ -6,7 +6,7 @@ import test.fx as fx
 
 def give_initial_items(my_player):
     option = str(input("> "))
-    while option not in ["1", "2", "3", "4"]:
+    while option not in ["1", "2", "3", "4", "5"]:
         option = str(input("> "))
 
     items.mp_potion.add_to_inventory_player(my_player.inventory)
@@ -33,6 +33,12 @@ def give_initial_items(my_player):
         items.equipment_data["leather_armor"].add_to_inventory_player(my_player.inventory)
         items.crit_gems.add_to_inventory_player(my_player.inventory)
         my_player.class_name = "弓箭手"
+    elif option == "5":
+        items.basic_equipments["rusty_sword"].add_to_inventory_player(my_player.inventory)
+        items.basic_equipments["novice_armor"].add_to_inventory_player(my_player.inventory)
+        items.equipment_data["wooden_shield"].add_to_inventory_player(my_player.inventory)
+        items.grimoires[1].add_to_inventory_player(my_player.inventory)
+        my_player.class_name = "圣骑士"
 
     enter_clear_screen()
     print(f"\n你选择了 {my_player.class_name} 职业")
@@ -44,6 +50,7 @@ def apply_class_bonuses(my_player):
         "盗贼": {"agi": 5, "crit": 1, "luk": 3},
         "法师": {"max_mp": 30, "mat": 5, "mdf": 2},
         "弓箭手": {"atk": 3, "agi": 1, "crit": 2},
+        "圣骑士": {"atk": 2, "def": 3, "mat": 2},
     }
 
     if my_player.class_name in class_bonuses:

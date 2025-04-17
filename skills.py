@@ -150,6 +150,17 @@ class Recovery_combo(Combo):
             elif self.stat == "mp":
                 target.recover_mp(self.amount_to_change)
 
+class Damage_combo(Combo):
+    def __init__(self, name, description, power, cost, is_targeted, default_target) -> None:
+        super().__init__(name, description, cost, is_targeted, default_target)
+        self.power = power
+
+    def effect(self, caster, target):
+        if self.check_cp(caster):
+            base_dmg = self.power + (caster.stats["atk"]*2.7 - target.stats["def"]*0.8 + caster.stats["luk"])
+            dmg = round(base_dmg * random.uniform(0.8, 1.2))
+            target.take_dmg(dmg)
+
 ##### 增益与减益状态 #####
 
 class Buff_debuff():
@@ -196,6 +207,7 @@ spell_fire_spirit_summoning = Summon_spell("召唤火精灵", "召唤一个火�
 combo_slash1 = Slash_combo("斩击连击 I", "连续攻击敌人3次", 3, True, None, 3)
 combo_slash2 = Slash_combo("斩击连击 II", "连续攻击敌人4次", 3, True, None, 4)
 combo_armor_breaker1 = Armor_breaking_combo("破甲 I", "破坏敌人护甲", 2, True, None, -0.3)
+combo_armor_breaker2 = Armor_breaking_combo("破甲 II", "破坏敌人护甲", 3, True, None, -0.5)
 combo_vampire_stab1 = Vampirism_combo("吸血之刺 I", "吸取敌人生命", 2, True, None, 0.35)
 combo_vampire_stab2 = Vampirism_combo("吸血之刺 II", "吸取敌人大量生命", 2, True, None, 0.5)
 combo_meditation1 = Recovery_combo("冥想 I", "恢复少量魔法", 1, "mp", 30, False, "self")
@@ -204,5 +216,7 @@ combo_meditation2 = Recovery_combo("冥想 II", "恢复大量魔法", 2, "mp", 7
 enhance_weapon = Buff_debuff_spell("蓄力", "临时提升攻击力", 0, 0, False, "self", "atk", 0.25, 2)
 weakened_defense = Buff_debuff_spell("破防", "降低防御力", 0, 0, False, "self", "def", -0.5, 2)
 
-combo_quickSshooting = Slash_combo('快速连射 I', '快速射击敌人两次', 2, True, None, 2)
-combo_quickSshooting2 = Slash_combo('快速连射 II', '快速射击敌人三次', 2, True, None, 3)
+combo_quickSshooting1 = Slash_combo("快速连射 I", "快速射击敌人两次", 2, True, None, 2)
+combo_quickSshooting2 = Slash_combo("快速连射 II", "快速射击敌人三次", 2, True, None, 3)
+
+combo_power_slash1 = Damage_combo("力量斩 I", "蓄力一击，造成较高伤害", 130, 3, True, None)

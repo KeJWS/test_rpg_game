@@ -42,7 +42,7 @@ def show_stats(player):
         f"      ATK: {player.stats['atk']}        DEF: {player.stats['def']}\n"
         f"      MAT: {player.stats['mat']}        MDF: {player.stats['mdf']}\n"
         f"      AGI: {player.stats['agi']}        CRT: {player.stats['crit']}%\n"
-        f"      Anti CRT: {player.stats['anti_crit']}\n"
+        f"      LUK: {player.stats['luk']}        Anti CRT: {player.stats['anti_crit']}\n"
         f"----------------------------------\n"
         f"  APTITUDES\n"
         f"----------------------------------\n"
@@ -68,9 +68,9 @@ def show_equipment_info(player):
 
     for equipment in player.equipment:
         if player.equipment[equipment] is not None:
-            print(f"    {player.equipment[equipment].show_info()}")
+            print(f"    {player.equipment[equipment].show_info()}\n")
         else:
-            print(f"    ---None---")
+            print(f"    ---None---\n")
 
 def show_aptitudes(player):
     display_aptitudes = (

@@ -7,9 +7,9 @@ import test.fx
 import data.event_text
 
 from inventory import Inventory_interface as interface
-
 from save_system import save_game, get_save_list, load_game
 
+from tools import dev_tools
 
 # *标题菜单*
 def title_screen_selections():
@@ -65,6 +65,11 @@ def game_loop(p):
             case "se": clear_screen(); text.show_equipment_info(p); enter_clear_screen()
             case "sk": clear_screen(); text.show_skills(p); enter_clear_screen()
             case "q": clear_screen(); text.show_all_quests(p); enter_clear_screen()
+            case "hdc":
+                clear_screen()
+                command = input("> ")
+                dev_tools.handle_debug_command(command, p.inventory)
+                enter_clear_screen()
             case "sg":
                 clear_screen()
                 text.save_load_menu()

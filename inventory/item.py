@@ -115,7 +115,7 @@ class Potion(Item):
             caster.recover_mp(self.amount_to_change)
 
     def clone(self, amount):
-        return Potion(self.name, self.description, amount, self.individual_value, self.stat, self.amount_to_change)
+        return Potion(self.name, self.description, amount, self.individual_value, self.object_type, self.stat, self.amount_to_change)
 
 class Grimoire(Item):
     def __init__(self, name, description, amount, individual_value, object_type, spell) -> None:
@@ -135,7 +135,7 @@ class Grimoire(Item):
             caster.spells.append(self.spell)
 
     def clone(self, amount):
-        return Grimoire(self.name, self.description, amount, self.individual_value, self.spell)
+        return Grimoire(self.name, self.description, amount, self.individual_value, self.object_type, self.spell)
 
 class Jewel(Item):
     def __init__(self, name, description, amount, individual_value, object_type, stat, amount_to_change) -> None:
@@ -150,4 +150,4 @@ class Jewel(Item):
             print(f"{self.stat} 增加了 {self.amount_to_change} 点")
 
     def clone(self, amount):
-        return Jewel(self.name, self.description, amount, self.individual_value, self.stat, self.amount_to_change)
+        return Jewel(self.name, self.description, amount, self.individual_value, self.object_type, self.stat, self.amount_to_change)
