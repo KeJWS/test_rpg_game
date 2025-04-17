@@ -11,26 +11,26 @@ def give_initial_items(my_player):
 
     items.mp_potion.add_to_inventory_player(my_player.inventory)
     items.hp_potion.add_to_inventory_player(my_player.inventory)
-    my_player.add_money(100)
+    my_player.add_money(120)
 
     if option == "1":
-        items.basic_weapons["rusty_sword"].add_to_inventory_player(my_player.inventory)
-        items.novice_armor.add_to_inventory_player(my_player.inventory)
+        items.basic_equipments["rusty_sword"].add_to_inventory_player(my_player.inventory)
+        items.basic_equipments["novice_armor"].add_to_inventory_player(my_player.inventory)
         items.atk_gems.add_to_inventory_player(my_player.inventory)
         my_player.class_name = "战士"
     elif option == "2":
-        items.basic_weapons["broken_dagger"].add_to_inventory_player(my_player.inventory)
-        items.novice_armor.add_to_inventory_player(my_player.inventory)
+        items.basic_equipments["broken_dagger"].add_to_inventory_player(my_player.inventory)
+        items.basic_equipments["novice_armor"].add_to_inventory_player(my_player.inventory)
         items.agi_gems.add_to_inventory_player(my_player.inventory)
         my_player.class_name = "盗贼"
     elif option == "3":
-        items.basic_weapons["old_staff"].add_to_inventory_player(my_player.inventory)
-        items.old_robes.add_to_inventory_player(my_player.inventory)
+        items.basic_equipments["old_staff"].add_to_inventory_player(my_player.inventory)
+        items.basic_equipments["old_robes"].add_to_inventory_player(my_player.inventory)
         items.grimoires[0].add_to_inventory_player(my_player.inventory)
         my_player.class_name = "法师"
     elif option == "4":
-        items.basic_weapons["wood_bow"].add_to_inventory_player(my_player.inventory)
-        items.leather_armor.add_to_inventory_player(my_player.inventory)
+        items.basic_equipments["wood_bow"].add_to_inventory_player(my_player.inventory)
+        items.equipment_data["leather_armor"].add_to_inventory_player(my_player.inventory)
         items.crit_gems.add_to_inventory_player(my_player.inventory)
         my_player.class_name = "弓箭手"
 

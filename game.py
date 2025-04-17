@@ -32,7 +32,6 @@ def inventory_selections(player):
             case "c": clear_screen(); interface(player.inventory).compare_equipment()
             case "ua": clear_screen(); player.unequip_all()
             case "vi": clear_screen(); player.view_item_detail(interface(player.inventory).view_item())
-            case "si": clear_screen(); player.inventory.show_inventory_item()
         enter_clear_screen()
         text.inventory_menu()
 

@@ -78,7 +78,7 @@ class World_map:
         fight_against_slime_quest = quest.Quest("史莱姆狩猎", 
                                              event_text.quest_fight_against_slime_text, 
                                              event_text.shop_fight_against_slime_text, 
-                                             120, 120, items.long_bow, fight_against_slime_combat, 9)
+                                             120, 120, items.equipment_data["long_bow"], fight_against_slime_combat, 9)
         forest = Region(
             name="雾林",
             description="一片神秘的森林, 低级怪物在这里游荡。适合初学者冒险, \n不过要小心这里的森林守卫者",

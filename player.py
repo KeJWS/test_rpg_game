@@ -23,7 +23,7 @@ class Player(combat.Battler):
             "agi": 10,
             "luk": 10, # 幸运影响伤害, 经验获得量, 逃跑概率
             "crit": 3, # 影响暴击倍率
-            "anti_crit": 5
+            "anti_crit": 3
         }
 
         super().__init__(name, stats)
@@ -50,7 +50,7 @@ class Player(combat.Battler):
             "foot": None,
             "accessory": None
         }
-        self.money = 20 # 当前资金
+        self.money = 0 # 当前资金
         self.combos = [] # 玩家选择的组合（atk, cp）
         # self.spells = []
 

@@ -4,14 +4,16 @@ import test.fx as fx
 from inventory.item import Item
 
 class Equipment(Item):
-    def __init__(self, name, description, amount, individual_value, object_type, stat_change_list, combo, ascii_art):
+    def __init__(self, name, description, amount, individual_value, object_type, stat_change_list, combo, ascii_art, level, tags):
         super().__init__(name, description, amount, individual_value, object_type)
         self.base_stats = stat_change_list.copy()
         self.stat_change_list = stat_change_list
         self.combo = combo
+        self.level = level
+        self.tags = tags or []
         self.durability = 100  # 耐久度
         self.max_durability = 100
-        self.level = 0
+        self.enhancement_level = 0
         self.ascii_art = ascii_art or ""
 
     def show_ascii_art(self):
@@ -38,7 +40,7 @@ class Equipment(Item):
         info = super().get_detailed_info()
         ascii_art = self.show_ascii_art()
         info += fx.cyan(f"{ascii_art}\n")
-        info += f"耐久: {self.durability}/{self.max_durability} [等级: +{self.level}]\n"
+        info += f"耐久: {self.durability}/{self.max_durability} [强化等级: +{self.enhancement_level}]\n"
         info += "属性加成:\n"
         for stat, value in self.get_effective_stats().items():
             sign = "+" if value >= 0 else ""
@@ -49,7 +51,7 @@ class Equipment(Item):
         effective_stats = {}
         durability_factor = max(0.1, self.durability / self.max_durability)
         for stat, base in self.base_stats.items():
-            upgrade_bonus = max(1, base * 0.2 * self.level)
+            upgrade_bonus = max(1, base * 0.2 * self.enhancement_level)
             value = int((base + upgrade_bonus) * durability_factor)
             effective_stats[stat] = value
         return effective_stats
@@ -71,12 +73,12 @@ class Equipment(Item):
 
     def upgrade(self):
         print(f"尝试强化 {self.name}...")
-        success_rate = max(100 - self.level * 15, 20)
+        success_rate = max(100 - self.enhancement_level * 15, 20)
         roll = random.randint(1, 100)
 
         if roll <= success_rate:
-            self.level += 1
-            print(f"强化成功! {self.name} 现在是 +{self.level} 等级")
+            self.enhancement_level += 1
+            print(f"强化成功! {self.name} 现在是 +{self.enhancement_level} 等级")
             return True
 
         else:
@@ -86,9 +88,9 @@ class Equipment(Item):
                 self.degrade_durability(degrade)
                 print(f"强化失败, 耐久度降低 {degrade}")
             elif failure_type <= 19:
-                if self.level > 0:
-                    self.level -= 1
-                    print(f"{fx.RED}强化严重失败! {self.name} 降级到 +{self.level}{fx.END}")
+                if self.enhancement_level > 0:
+                    self.enhancement_level -= 1
+                    print(f"{fx.RED}强化严重失败! {self.name} 降级到 +{self.enhancement_level}{fx.END}")
                 else:
                     degrade = random.randint(10, 25)
                     self.degrade_durability(degrade)
@@ -121,7 +123,8 @@ class Equipment(Item):
         return f"比较 {self.name} vs {other_equipment.name}:\n" + "\n".join(comparison)
 
     def clone(self, amount):
-        new_eq = Equipment(self.name, self.description, amount, self.individual_value, self.object_type, self.base_stats.copy(), self.combo, self.ascii_art)
-        new_eq.level = 0
+        new_eq = Equipment(self.name, self.description, amount, self.individual_value, self.object_type, self.base_stats.copy(), 
+                           self.combo, self.ascii_art, self.level, self.tags.copy())
+        new_eq.enhancement_level = 0
         new_eq.durability = self.durability
         return new_eq

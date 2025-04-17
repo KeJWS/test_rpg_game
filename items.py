@@ -1,4 +1,5 @@
 import csv, ast
+from collections import defaultdict
 from functools import lru_cache
 
 import inventory, skills
@@ -35,80 +36,58 @@ def load_equipment_from_csv(filepath="data/equipments.csv"):
             name = row["name"]
             name_zh = row["name_zh"]
             description = row["description"]
-            amount = int(row["amount"])
+            amount = int(row["amount"]) if row["amount"].strip() else 1
             individual_value = int(row["individual_value"])
             object_type = row["object_type"]
             stat_change_list = ast.literal_eval(row["stat_change_list"])
             combo_object = getattr(skills, row["combo"], None)
 
             ascii_art = ascii_art_dict.get(name, "")
+            level = int(row["level"]) if row["level"].strip() else 1
+            tags = row.get("tags", "").split(",") if row.get("tags") else []
 
-            eq = inventory.Equipment(name_zh, description, amount, individual_value, object_type, stat_change_list, combo_object, ascii_art)
+            eq = inventory.Equipment(name_zh, description, amount, individual_value, object_type, stat_change_list, combo_object, ascii_art, level, tags)
             equipment_dict[name] = eq
         return equipment_dict
 
 equipment_data = load_equipment_from_csv()
 
-# *-> 初始武器
-basic_weapons = {
+def filter_equipment_by(level=None, object_type=None, tags=None, match_all_tags=False):
+    result = equipment_data.values()
+    if level is not None:
+        result = [eq for eq in result if eq.level == level]
+    if object_type:
+        result = [eq for eq in result if eq.object_type == object_type]
+    if tags:
+        if match_all_tags:
+            result = [eq for eq in result if all(tag in eq.tags for tag in tags)]
+        else:
+            result = [eq for eq in result if any(tag in eq.tags for tag in tags)]
+    return list(result)
+
+jack_weapon_shop_set = filter_equipment_by(level=2, object_type="weapon", tags=["weapon"])
+
+anna_armor_shop_set = filter_equipment_by(level=2, tags=["armor", "shield", "head", "hand", "foot", "accessory"])
+
+rik_armor_shop_item_set = filter_equipment_by(level=3, object_type="weapon", tags=["weapon"])
+rik_armor_shop_item_set.extend(jack_weapon_shop_set)
+rik_armor_shop_item_set.extend(filter_equipment_by(level=2, object_type="armor", tags=["armor"]))
+rik_armor_shop_item_set.extend(filter_equipment_by(level=3, object_type="armor", tags=["armor"]))
+
+jack_weapon_shop_set.append(equipment_data["war_hammer"])
+rik_armor_shop_item_set.append(equipment_data["bronze_shield"])
+
+# *-> 初始装备
+basic_equipments = {
     "rusty_sword": equipment_data["rusty_sword"],
     "broken_dagger": equipment_data["broken_dagger"],
     "old_staff": equipment_data["old_staff"],
     "wood_bow": equipment_data["wood_bow"],
+    "novice_armor": equipment_data["novice_armor"],
+    "old_robes": equipment_data["old_robes"],
 }
 
-# *-> 初始护甲
-novice_armor = equipment_data["novice_armor"]
-old_robes = equipment_data["old_robes"]
-
-# *-> 基本武器
-long_sword = equipment_data["long_sword"]
-dagger = equipment_data["dagger"]
-staff = equipment_data["staff"]
-
-# *-> 基础护甲
-cloth_armor = equipment_data["cloth_armor"]
-leather_armor = equipment_data["leather_armor"]
-bronze_armor = equipment_data["bronze_armor"]
-student_robes = equipment_data["student_robes"]
-
-# *-> 基础护盾
-wooden_shield = equipment_data["wooden_shield"]
-
-# *-> 基础头盔
-straw_hat = equipment_data["straw_hat"]
-
-# *-> 基础护手
-gloves_wraps = equipment_data["gloves_wraps"]
-
-# *-> 基础护足
-footrags = equipment_data["footrags"]
-
-# *-> 基础饰品
-copper_ring = equipment_data["copper_ring"]
-
-# *-> 高级武器
-war_hammer = equipment_data["war_hammer"]
-zweihander = equipment_data["zweihander"]
-sage_staff = equipment_data["sage_staff"]
-sai = equipment_data["sai"]
-long_bow = equipment_data["long_bow"]
-
-# *-> 高级装甲
-iron_armor = equipment_data["iron_armor"]
-sage_tunic = equipment_data["sage_tunic"]
-thief_armor = equipment_data["thief_armor"]
-
-# *-> 高级护盾
-bronze_shield = equipment_data["bronze_shield"]
-
-# -> 高级头盔
-
-# -> 高级护手
-
-# -> 高级护足
-
-# -> 高级饰品
+jack_weapon_shop_set.append(basic_equipments["wood_bow"])
 
 # 消耗品
 hp_potion = inventory.Potion("生命药水", "恢复70点生命值的药水", 1, 25, "consumable", "hp", 70)
@@ -140,49 +119,15 @@ grimoires = [
 ]
 
 # 商店物品套装
-rik_armor_shop_item_set = [
-    long_sword,
-    dagger,
-    war_hammer,
-    iron_armor,
-    zweihander,
-    cloth_armor,
-    leather_armor,
-    bronze_armor,
-    sai,
-    thief_armor,
-    wooden_shield,
-    bronze_shield,
-    long_bow,
-]
-
 itz_magic_item_set = [
-    staff,
-    cloth_armor,
+    equipment_data["staff"],
+    equipment_data["cloth_armor"],
     hp_potion,
     mp_potion,
-    sage_tunic,
-    sage_staff,
-    student_robes,
+    equipment_data["sage_tunic"],
+    equipment_data["sage_staff"],
+    equipment_data["student_robes"],
     *grimoires[:6],
+    equipment_data["ring_of_magic"],
     mat_small_gems,
-]
-
-anna_armor_shop_set = [
-    cloth_armor,
-    leather_armor,
-    bronze_armor,
-    student_robes,
-    wooden_shield,
-    straw_hat,
-    gloves_wraps,
-    footrags,
-    copper_ring,
-]
-
-jack_weapon_shop_set = [
-    basic_weapons["wood_bow"],
-    long_sword,
-    dagger,
-    war_hammer,
 ]
