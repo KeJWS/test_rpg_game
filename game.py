@@ -7,9 +7,10 @@ import test.fx
 import data.event_text
 
 from inventory import Inventory_interface as interface
-from save_system import save_game, get_save_list, load_game
 
 from tools import dev_tools
+from tools import command_parser as cp
+
 
 # *标题菜单*
 def title_screen_selections():
@@ -30,8 +31,6 @@ def inventory_selections(player):
             case "d": clear_screen(); interface(player.inventory).drop_item()
             case "e": clear_screen(); player.equip_item(interface(player.inventory).equip_item())
             case "c": clear_screen(); interface(player.inventory).compare_equipment()
-            case "ua": clear_screen(); player.unequip_all()
-            case "vi": clear_screen(); player.view_item_detail(interface(player.inventory).view_item())
         enter_clear_screen()
         text.inventory_menu()
 
@@ -55,41 +54,17 @@ def game_loop(p):
     event_chances = (65, 20, 15)  # 战斗、商店、治疗的概率
     while p.alive:
         text.play_menu()
-        match input("> ").lower():
+        match cp.handle_command(input("> "), p):
             case "w": clear_screen(); map.world_map.generate_random_event(p, *event_chances); enter_clear_screen()
             case "s": clear_screen(); text.show_stats(p); enter_clear_screen()
             case "a": clear_screen(); p.assign_aptitude_points(); enter_clear_screen()
             case "i": clear_screen(); text.inventory_menu(); interface(p.inventory).show_inventory(); inventory_selections(p)
             case "m": clear_screen(); text.map_menu(p); enter_clear_screen()
-            case "lr": clear_screen(); events.life_recovery_crystal(p); enter_clear_screen()
-            case "se": clear_screen(); text.show_equipment_info(p); enter_clear_screen()
-            case "sk": clear_screen(); text.show_skills(p); enter_clear_screen()
             case "q": clear_screen(); text.show_all_quests(p); enter_clear_screen()
             case "hdc":
                 clear_screen()
                 command = input("> ")
                 dev_tools.handle_debug_command(command, p.inventory)
-                enter_clear_screen()
-            case "sg":
-                clear_screen()
-                text.save_load_menu()
-                save_option = input("> ").lower()
-                if save_option == "s":
-                    save_name = input("输入存档名 (留空使用默认名称): ")
-                    if not save_name.strip():
-                        save_name = None
-                    p.unequip_all()
-                    save_metadata = save_game(p, save_name)
-                    print(f"游戏已保存: {save_metadata['name']}")
-                elif save_option == "l":
-                    saves = get_save_list()
-                    text.display_save_list(saves)
-                    save_index = int(input("> "))
-                    if save_index > 0 and save_index <= len(saves):
-                        loaded_player = load_game(saves[save_index-1]['name'])
-                        if loaded_player:
-                            p = loaded_player
-                            print(f"游戏已加载: {loaded_player.name} (等级: {loaded_player.level}, 职业: {loaded_player.class_name})")
                 enter_clear_screen()
             case _: clear_screen(); print("请输入有效命令")
 

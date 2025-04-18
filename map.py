@@ -12,7 +12,7 @@ import data.event_text as event_text
 class Region:
     name: str
     description: str
-    danger_level: int # 影响敌人等级和数量
+    danger_level: int
     possible_enemies: Dict[str, Tuple[int, int]]
     shop_events: List[events.Shop_event]
     heal_events: List[events.Healing_event]

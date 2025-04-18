@@ -24,10 +24,6 @@ def play_menu():
         "   I  - Inventory\n"
         "   Q  - Quests\n"
         "   M  - Map\n"
-        "   Lr - Life recovery\n"
-        "   Se - Show equipment\n"
-        "   Sk - Show skills\n"
-        "   Sg - Save game\n"
         "----------------------------------\n"
     )
     print(display_content)
@@ -94,9 +90,6 @@ def inventory_menu():
         "       U  - Use an item\n"
         "       D  - Drop an item\n"
         "       E  - Equip an item\n"
-        "       C  - Compare\n"
-        "       Ua - Unequip all\n"
-        "       Vi - View item\n"
         "       Q  - Quit\n"
         "================================================="
     )
