@@ -100,7 +100,7 @@ def handle_pi_command(tokens, player):
         "-E": lambda: (clear_screen(), player.equip_item(interface(inv).equip_item())),
         "-C": lambda: (clear_screen(), interface(inv).compare_equipment()),
         "-ua": lambda: (clear_screen(), player.unequip_all()),
-        "-vi": lambda: (clear_screen(), player.view_item_detail(interface(inv).view_item())),
+        "-vi": screen_wrapped(lambda: player.view_item_detail(interface(inv).view_item())),
         "-show": screen_wrapped(lambda: inv.show_inventory_item()),
         "--help": lambda: show_help("p.i"),
         "--give-all": lambda: (debug.handle_debug_command("give-all", inv), enter_clear_screen()),

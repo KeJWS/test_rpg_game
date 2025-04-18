@@ -71,3 +71,6 @@ id,name,name_zh,description,amount,individual_value,object_type,stat_change_list
 70,-> 高阶护足,Lv4,,,0,foot,{},,,
 71,boots_of_haste,迅捷之靴,大幅提升速度的魔法靴,,1090,foot,"{'agi': 33, 'def': -5, 'mdf': -5}",,4,
 72,iron_greaves,铁护腿,铁制护腿，保护下肢,,640,foot,"{'def': 13, 'agi': -5}",,4,
+54,-> 高阶饰品,Lv4,,,0,accessory,{},,,
+,wolf_king_proof,狼王之证,击杀狼王的证明,,1305,accessory,"{'atk': 12, 'def': 8, 'mat': 8, 'mdf': 8, 'luk': -10}",,4,
+,wolf_king_dream,狼王梦,狼的世界里，没有永远的敌人，也没有永远的朋友，只有永远的利益。,,1950,accessory,"{'atk': 12, 'def': 12, 'mat': 10, 'mdf': 12, 'agi': 13, 'luk': -15}",,4,

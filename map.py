@@ -56,11 +56,17 @@ class World_map:
         forest = self._create_forest(ascii_art_dict)
         town = self._create_town(ascii_art_dict)
         mountain = self._create_mountain(ascii_art_dict)
+        redflame_canyon = self._create_redflame_canyon(ascii_art_dict)
+        snowlands = self._create_snowlands(ascii_art_dict)
+        forgotten_ruins = self._create_forgotten_ruins(ascii_art_dict)
 
         self.regions = {
             "town": town,
             "forest": forest,
             "mountain": mountain,
+            "redflame canyon": redflame_canyon,
+            "snowlands": snowlands,
+            "forgotten ruins": forgotten_ruins,
         }
 
         self.current_region = self.regions["town"]
@@ -71,8 +77,8 @@ class World_map:
             "imp": (1, 5),
             "forest_spider": (2, 7),
             "poison_frog": (2, 9),
-            "giant_slime": (4, 100),
-            "shadow_wolf": (5, 12),
+            "giant_slime": (4, 23),
+            "shadow_wolf": (8, 16),
         }
         fight_against_slime_combat = events.Fixed_combat_event("史莱姆狩猎", enemies.enemy_list_fight_against_slime)
         fight_against_slime_quest = quest.Quest("史莱姆狩猎", 
@@ -112,23 +118,75 @@ class World_map:
                                           event_text.quest_caesarus_bandit_text, 
                                           event_text.shop_quest_caesarus_bandits, 
                                           150, 150, None, caesarus_bandit_combat, 5)
+        wolf_king_combat = events.Fixed_combat_event("夜行狼王", enemies.enemy_list_fight_against_wolf_king)
+        wolf_king_quest = quest.Quest("夜行狼王", 
+                                          event_text.quest_fight_against_wolf_king_text, 
+                                          event_text.shop_fight_against_wolf_king_text, 
+                                          350, 700, items.equipment_data["wolf_king_proof"], wolf_king_combat, 13)
         mountain_enemies = {
             "golem": (1, 7),
             "skeleton": (3, 10),
-            "bandit": (4, 100)
+            "bandit": (4, 12),
+            "wild_boar": (6, 15),
+            "wolf": (8, 22),
         }
         mountain = Region(
             name="龙脊山",
-            description="危险的山脉地带，强盗和山地怪物出没。",
+            description="危险的山脉地带, 强盗和山地怪物出没。",
             danger_level=2,
             possible_enemies=mountain_enemies,
             shop_events=[events.shop_rik_armor],
             heal_events=[events.heal_medussa_statue],
             special_events=[],
-            quests=[caesarus_bandit_quest],
+            quests=[caesarus_bandit_quest, wolf_king_quest],
             ascii_art=ascii_art_dict.get("龙脊山", "")
         )
         return mountain
+
+    def _create_redflame_canyon(self, ascii_art_dict):
+        fire_canyon_enemies = {}
+        redflame_canyon = Region(
+            name="赤焰峡谷",
+            description="灼热干裂的峡谷, 有火元素和岩浆魔物出没。高温会持续削弱你的体力, 谨慎前行。",
+            danger_level=3,
+            possible_enemies=fire_canyon_enemies,
+            shop_events=[],
+            heal_events=[],
+            special_events=[],
+            quests=[],
+            ascii_art=ascii_art_dict.get("赤焰峡谷", "")
+        )
+        return redflame_canyon
+
+    def _create_snowlands(self, ascii_art_dict):
+        snowland_enemies = {}
+        snowlands = Region(
+            name="雪之边境",
+            description="一望无际的雪原, 雪怪和冰霜精灵在这片冰天雪地中游荡。\n风雪会干扰视线, 也会影响技能释放。",
+            danger_level=3,
+            possible_enemies=snowland_enemies,
+            shop_events=[],
+            heal_events=[],
+            special_events=[],
+            quests=[],
+            ascii_art=ascii_art_dict.get("雪之边境", "")
+        )
+        return snowlands
+
+    def _create_forgotten_ruins(self, ascii_art_dict):
+        ruins_enemies = {}
+        forgotten_ruins = Region(
+            name="遗忘遗迹",
+            description="一座尘封千年的古老遗迹, 据说隐藏着古代文明的魔导科技。\n机关重重, 还有被封印的魔像在此守卫。",
+            danger_level=4,
+            possible_enemies=ruins_enemies,
+            shop_events=[],
+            heal_events=[],
+            special_events=[],
+            quests=[],
+            ascii_art=ascii_art_dict.get("遗忘遗迹", "")
+        )
+        return forgotten_ruins
 
     def unclock_region(self, region_name):
         """解锁指定地区"""
@@ -165,7 +223,7 @@ class World_map:
     def show_region_quests(self, player):
         """显示当前地区的任务情况"""
         if not self.current_region:
-            print("未知地区，无法查看任务")
+            print("未知地区, 无法查看任务")
             return
 
         available_quests = self.current_region.available_quests(player)
