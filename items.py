@@ -1,14 +1,19 @@
-import csv, ast
-from collections import defaultdict
+import inspect
+import os
+from datetime import datetime
 from functools import lru_cache
 
+import csv, ast
 from data.constants import DEBUG
-
 import inventory, skills
 
 def debug_print(*args, **kwargs):
     if DEBUG:
-        print("[DEBUG]", *args, **kwargs)
+        frame = inspect.currentframe().f_back
+        filename = os.path.basename(frame.f_code.co_filename)
+        lineno = frame.f_lineno
+        timestamp = datetime.now().strftime("%H:%M:%S")
+        print(f"[DEBUG {timestamp} {filename}:{lineno}]", *args, **kwargs)
 
 # ASCII 图库加载
 @lru_cache(maxsize=1)

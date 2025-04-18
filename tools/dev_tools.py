@@ -1,12 +1,21 @@
 from items import equipment_data, hp_potion, mp_potion, atk_small_gems, mat_small_gems, agi_small_gems, crit_small_gems
 from items import atk_gems, mat_gems, agi_gems, crit_gems, grimoires
 from inventory import Equipment, Potion, Jewel, Grimoire
-
+import combat
 from data.constants import DEBUG
+import text
+import json
+import os
+from datetime import datetime
+import inspect
 
 def debug_print(*args, **kwargs):
     if DEBUG:
-        print("[DEBUG]", *args, **kwargs)
+        frame = inspect.currentframe().f_back
+        filename = os.path.basename(frame.f_code.co_filename)
+        lineno = frame.f_lineno
+        timestamp = datetime.now().strftime("%H:%M:%S")
+        print(f"[DEBUG {timestamp} {filename}:{lineno}]", *args, **kwargs)
 
 def spawn_item(inventory_instance, item_name, quantity=1):
     # 查找装备

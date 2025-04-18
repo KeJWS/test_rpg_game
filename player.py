@@ -196,6 +196,8 @@ class Player(combat.Battler):
                     vendor.inventory.items.pop(i-1)
                 interface(vendor.inventory).show_inventory()
                 i = int(input("> "))
+            else:
+                break
 
     def add_combo_points(self, points):
         self.combo_points += points
