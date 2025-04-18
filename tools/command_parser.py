@@ -1,11 +1,11 @@
 from inventory import Inventory_interface as interface
-from test.clear_screen import clear_screen, enter_clear_screen
-from test.clear_screen import screen_wrapped
+from test.clear_screen import clear_screen, enter_clear_screen, screen_wrapped
 from tools import dev_tools as debug
 
 from data.constants import DEBUG
 import events, text, combat
 from extensions import shops 
+from enemies import enemy_data
 
 import data.debug_help
 
@@ -24,7 +24,7 @@ def show_help(topic=None):
 def handle_command(command: str, player):
     tokens = command.strip().split()
     if not tokens:
-        print("请输入命令（输入 p --help 查看帮助）")
+        show_help()
         enter_clear_screen()
         return
 
@@ -34,29 +34,26 @@ def handle_command(command: str, player):
         main, sub = main.split(".", 1)
 
     if main == "p":
-        if sub is None:
-            handle_p_command(tokens, player)
-        elif sub == "i":
-            handle_pi_command(tokens, player)
-        elif sub == "gold":
-            if tokens[1].isdigit() and DEBUG:
-                amount = int(tokens[1])
-                player.add_money(amount)
-                enter_clear_screen()
-        elif sub == "exp":
-            if tokens[1].isdigit() and DEBUG:
-                amount = int(tokens[1])
-                player.add_exp(amount)
-                enter_clear_screen()
-        else:
-            debug.debug_print(f"未知 p 命令模块: {main}")
-            enter_clear_screen()
-            return command
+        match sub:
+            case None: handle_p_command(tokens, player)
+            case "i": handle_pi_command(tokens, player)
+            case "gold": player.add_money(int(tokens[1])) if tokens[1].isdigit() and DEBUG else None; enter_clear_screen()
+            case "exp": player.add_exp(int(tokens[1])) if tokens[1].isdigit() and DEBUG else None; enter_clear_screen()
+            case "ap": player.aptitude_points += int(tokens[1]) if tokens[1].isdigit() and DEBUG else None; enter_clear_screen()
+            case _: debug.debug_print(f"未知 p 命令模块: {main}"); enter_clear_screen(); return command
 
     elif main in SHOP_DICT and DEBUG:
         if sub == "i":
             handle_shop_command(main, SHOP_DICT[main], tokens, player)
 
+    elif main == "a" and sub == "d":
+        if len(tokens) >= 3 and tokens[1] == "-db":
+            enemy_name = tokens[2]
+            if enemy_name in enemy_data:
+                enemy = enemy_data[enemy_name].clone()
+                clear_screen()
+                text.display_battle_stats(player, enemy)
+                enter_clear_screen()
     else:
         if DEBUG:
             debug.debug_print(f"未知命令模块: {tokens[0]}")
@@ -64,7 +61,7 @@ def handle_command(command: str, player):
         return command
 
 def handle_shop_command(shop_name, shop_data, tokens, player):
-    if tokens[1] == "--buy":
+    if tokens[1] == "-buy":
         clear_screen()
         vendor = shops.Shop(shop_data.item_set)
         player.buy_from_vendor(vendor)
@@ -104,10 +101,12 @@ def handle_pi_command(tokens, player):
         "-C": lambda: (clear_screen(), interface(inv).compare_equipment()),
         "-ua": lambda: (clear_screen(), player.unequip_all()),
         "-vi": lambda: (clear_screen(), player.view_item_detail(interface(inv).view_item())),
-        "-si": screen_wrapped(lambda: inv.show_inventory_item()),
+        "-show": screen_wrapped(lambda: inv.show_inventory_item()),
         "--help": lambda: show_help("p.i"),
         "--give-all": lambda: (debug.handle_debug_command("give-all", inv), enter_clear_screen()),
         "-spawn": screen_wrapped(lambda: handle_spawn_item_command(tokens, player)),
+        "-sort": screen_wrapped(lambda: inv.sort_items()),
+        "-count": screen_wrapped(lambda: text.backpack_item_stats(inv)),
     }
 
     if len(tokens) == 1:

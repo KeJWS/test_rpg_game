@@ -1,3 +1,5 @@
+import math
+
 import test.fx as fx
 
 def title_screen():
@@ -96,16 +98,29 @@ def inventory_menu():
 
 def combat_menu(player, allies, enemies):
     print("-------------------------------------------------")
-    print(f"{player.name} - {fx.RED}HP: {player.stats['hp']}/{player.stats['max_hp']}{fx.END} - MP: {player.stats['mp']}/{player.stats['max_mp']} - CP: {player.combo_points}")
+    print(f"【{player.name}】 Lv.{getattr(player, 'level', '?')} - CP: {player.combo_points}")
+    print("┏━━━━━━━━━━━━━━━━━━━━┓")
+    print("┃"+fx.red(create_bar(player.stats['hp'], player.stats['max_hp']))+"┃"+fx.red(f" HP: {player.stats['hp']}/{player.stats['max_hp']}"))
+    print("┗━━━━━━━━━━━━━━━━━━━━┛")
+    print("┏━━━━━━━━━━━━━━━━━━━━┓")
+    print("┃"+fx.blue(create_bar(player.stats['mp'], player.stats['max_mp']))+"┃"+fx.blue(f" MP: {player.stats['mp']}/{player.stats['max_mp']}"))
+    print("┗━━━━━━━━━━━━━━━━━━━━┛")
     for ally in allies:
         if ally != player:
-            print(f"{ally.name} - {fx.RED}HP: {ally.stats['hp']}/{ally.stats['max_hp']}{fx.END}")
+            print(f"【{ally.name}】 Lv.{getattr(ally, 'level', '?')}")
+            print(create_bar(ally.stats['hp'], ally.stats['max_hp']))
+            print("┏━━━━━━━━━━━━━━━━━━━━┓")
+            print("┃"+fx.yellow(create_bar(player.stats['hp'], player.stats['max_hp']))+"┃"+fx.yellow(f" HP: {ally.stats['hp']}/{ally.stats['max_hp']}"))
+            print("┗━━━━━━━━━━━━━━━━━━━━┛")
     for enemy in enemies:
-        print(f"{enemy.name} - {fx.GREEN}HP: {enemy.stats['hp']}/{enemy.stats['max_hp']}{fx.END}")
+        print(f"【{enemy.name}】 Lv.{getattr(enemy, 'level', '?')}")
+        print("┏━━━━━━━━━━━━━━━━━━━━┓")
+        print("┃"+fx.green(create_bar(enemy.stats['hp'], enemy.stats['max_hp']))+"┃"+fx.green(f" HP: {enemy.stats['hp']}/{enemy.stats['max_hp']}"))
+        print("┗━━━━━━━━━━━━━━━━━━━━┛")
     print("-------------------------------------------------")
-    print("             A - Attack  C - Combos")
-    print("             S - Spells  D - Defense             ")
-    print("             E - Escape")
+    print("         A - Attack  C - Combos")
+    print("         S - Spells  D - Defense             ")
+    print("         E - Escape")
     print("-------------------------------------------------")
 
 def spell_menu(player):
@@ -132,25 +147,25 @@ def select_objective(target):
 
 def shop_menu(player):
     display_shop_menu_text = (
-        "----------------------------------\n"
+        "=================================================\n"
         f"          SHOP - 💰: {player.money}\n"
-        "----------------------------------\n"
+        "-------------------------------------------------\n"
         "           B  - Buy Items\n"
         "           S  - Sell Items\n"
         "           T  - Talk\n"
         "           Ua - Unequip all\n"
         "           Si - Show inventory\n"
         "           E  - Exit\n"
-        "----------------------------------\n"
+        "-------------------------------------------------\n"
     )
     print(display_shop_menu_text)
 
 def shop_buy(player):
     display_shop_buy = (
-        "----------------------------------\n"
+        "=================================================\n"
         f"          SHOP - 💰: {player.money}\n"
         "           ['0' to Quit]\n"
-        "----------------------------------\n"
+        "-------------------------------------------------\n"
     )
     print(display_shop_buy)
 
@@ -303,3 +318,59 @@ def debug_show_stats(player):
     print(f"暴击倍率: {player.stats['crit']}")
     print(f"抗暴击: {player.stats['anti_crit']}")
     print(f"\n可用能力点: {player.aptitude_points}")
+
+def backpack_item_stats(inv):
+    print("=== 背包物品统计 ===")
+    item_counts = {'Equipment': 0, 'Potion': 0, 'Jewel': 0, 'Grimoire': 0, 'Other': 0}
+    for item in inv.items:
+        item_type = type(item).__name__
+        if item_type in item_counts:
+            item_counts[item_type] += item.amount
+        else:
+            item_counts['Other'] += item.amount
+    
+    total_items = sum(item_counts.values())
+    print(f"装备: {item_counts['Equipment']} 件")
+    print(f"药水: {item_counts['Potion']} 瓶")
+    print(f"宝石: {item_counts['Jewel']} 个")
+    print(f"魔法书: {item_counts['Grimoire']} 本")
+    print(f"其他物品: {item_counts['Other']} 个")
+    print(f"\n总计: {total_items} 件物品")
+
+def create_bar(value, max_value, width=20, char="█", empty_char="░"):
+    """创建一个文本进度条"""
+    if max_value <= 0:
+        return empty_char * width
+
+    fill_width = int(width * (value / max_value))
+    return char * fill_width + empty_char * (width - fill_width)
+
+def display_battle_stats(attacker, defender):
+    from data.constants import DEBUG
+    """显示两个战斗者的对比状态"""
+    if not DEBUG:
+        return
+
+    atk_def_ratio = attacker.stats["atk"] / max(1, defender.stats["def"])
+    mat_mdf_ratio = attacker.stats["mat"] / max(1, defender.stats["mdf"])
+    speed_diff = attacker.stats["agi"] - defender.stats["agi"]
+
+    print("\n====== 战斗状态分析 ======")
+    print(f"【{attacker.name}】 Lv.{getattr(attacker, 'level', '?')}")
+    print(f"HP: {attacker.stats['hp']}/{attacker.stats['max_hp']} ")
+    print(f"MP: {attacker.stats['mp']}/{attacker.stats['max_mp']} ")
+    print(f"\n【{defender.name}】 Lv.{getattr(defender, 'level', '?')}")
+    print(f"HP: {defender.stats['hp']}/{defender.stats['max_hp']} ")
+
+    print("\n----- 数值对比 -----")
+    print(f"物理攻防比: {atk_def_ratio:.2f}x " + ("(优势)" if atk_def_ratio > 1 else "(劣势)"))
+    print(f"魔法攻防比: {mat_mdf_ratio:.2f}x " + ("(优势)" if mat_mdf_ratio > 1 else "(劣势)"))
+    print(f"速度差: {speed_diff:+d} " + ("(更快)" if speed_diff > 0 else "(更慢)" if speed_diff < 0 else "(相同)"))
+
+    est_phys_dmg = max(1, attacker.stats["atk"]*4 - defender.stats["def"]*2.5)
+    est_mag_dmg = max(1, attacker.stats["mat"]*3 - defender.stats["mdf"]*1.5)
+
+    print(f"\n预估每回合物理伤害: {est_phys_dmg:.1f}")
+    print(f"预估每回合魔法伤害: {est_mag_dmg:.1f}")
+    print(f"预估击杀回合数: {math.ceil(defender.stats['hp'] / max(est_phys_dmg, est_mag_dmg))}")
+    print("========================\n")

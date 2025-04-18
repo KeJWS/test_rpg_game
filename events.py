@@ -166,14 +166,18 @@ Event.add_event_to_event_list = add_event_to_event_list
 
 # 事件实例
 random_combat = Random_combat_event("随机战斗")
-shop_rik_armor = Shop_event("里克的盔甲店", False, event_text.rik_armor_shop_encounter, event_text.rik_armor_shop_enter, event_text.rik_armor_shop_talk, event_text.rik_armor_shop_exit, items.rik_armor_shop_item_set)
-shop_itz_magic = Shop_event("伊兹的魔法店", False, event_text.itz_magic_encounter, event_text.itz_magic_enter, event_text.itz_magic_talk, event_text.itz_magic_exit, items.itz_magic_item_set)
+shop_rik_armor = Shop_event("里克的盔甲店", False, event_text.rik_armor_shop_encounter, event_text.rik_armor_shop_enter, \
+                            event_text.rik_armor_shop_talk, event_text.rik_armor_shop_exit, items.rik_armor_shop_item_set)
+shop_itz_magic = Shop_event("伊兹的魔法店", False, event_text.itz_magic_encounter, event_text.itz_magic_enter, event_text.itz_magic_talk, \
+                            event_text.itz_magic_exit, items.itz_magic_item_set)
 heal_medussa_statue = Healing_event("美杜莎雕像", event_text.medussa_statue_encounter, event_text.medussa_statue_success,
                                     event_text.medussa_statue_fail, event_text.medussa_statue_refuse, 70, False, 90)
 inn_event = Inn_event("客栈", event_text.inn_event_encounter, event_text.inn_event_success, event_text.inn_event_fail, event_text.inn_event_refuse, 120, 20)
 
-shop_anna_armor = Shop_event("安娜的防具店", False, event_text.anna_armor_shop_encounter, event_text.anna_armor_shop_enter, event_text.anna_armor_shop_talk, event_text.anna_armor_shop_exit, items.anna_armor_shop_set)
-shop_jack_weapon = Shop_event("杰克的武器店", False, event_text.jack_weapon_shop_encounter, event_text.jack_weapon_shop_enter, event_text.jack_weapon_shop_talk, event_text.jack_weapon_shop_exit, items.jack_weapon_shop_set)
+shop_anna_armor = Shop_event("安娜的防具店", False, event_text.anna_armor_shop_encounter, event_text.anna_armor_shop_enter, \
+                             event_text.anna_armor_shop_talk, event_text.anna_armor_shop_exit, items.anna_armor_shop_set)
+shop_jack_weapon = Shop_event("杰克的武器店", False, event_text.jack_weapon_shop_encounter, event_text.jack_weapon_shop_enter, \
+                              event_text.jack_weapon_shop_talk, event_text.jack_weapon_shop_exit, items.jack_weapon_shop_set)
 
 # 事件分类
 combat_event_list = [random_combat]

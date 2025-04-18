@@ -54,12 +54,12 @@ def game_loop(p):
     while p.alive:
         text.play_menu()
         match cp.handle_command(input("> "), p):
-            case "w": clear_screen(); map.world_map.generate_random_event(p, *event_chances)
-            case "s": clear_screen(); text.show_stats(p)
-            case "a": clear_screen(); p.assign_aptitude_points()
+            case "w": clear_screen(); map.world_map.generate_random_event(p, *event_chances); enter_clear_screen()
+            case "s": clear_screen(); text.show_stats(p); enter_clear_screen()
+            case "a": clear_screen(); p.assign_aptitude_points(); enter_clear_screen()
             case "i": clear_screen(); text.inventory_menu(); interface(p.inventory).show_inventory(); inventory_selections(p)
-            case "m": clear_screen(); text.map_menu(p)
-            case "q": clear_screen(); text.show_all_quests(p)
+            case "m": clear_screen(); text.map_menu(p); enter_clear_screen()
+            case "q": clear_screen(); text.show_all_quests(p); enter_clear_screen()
             case "sl":
                 clear_screen()
                 if not DEBUG:
@@ -84,7 +84,6 @@ def game_loop(p):
                             print(f"游戏已加载: {loaded_player.name} (等级: {loaded_player.level}, 职业: {loaded_player.class_name})")
                 enter_clear_screen()
             case _: clear_screen(); print("请输入有效命令")
-        enter_clear_screen()
 
     choice = input("是否要转生? (y/n): ")
     if choice.lower() == "y":
