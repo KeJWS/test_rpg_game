@@ -1,4 +1,3 @@
-
 import time, sys
 
 BOLD_UNDERLINED = "\033[1;4m"

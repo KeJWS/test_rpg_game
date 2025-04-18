@@ -9,13 +9,15 @@ import os
 from datetime import datetime
 import inspect
 
+import test.fx as fx
+
 def debug_print(*args, **kwargs):
     if DEBUG:
         frame = inspect.currentframe().f_back
         filename = os.path.basename(frame.f_code.co_filename)
         lineno = frame.f_lineno
         timestamp = datetime.now().strftime("%H:%M:%S")
-        print(f"[DEBUG {timestamp} {filename}:{lineno}]", *args, **kwargs)
+        print(f"{fx.CYAN}[DEBUG {timestamp} {filename}:{lineno}]{fx.END}", *args, **kwargs)
 
 def spawn_item(inventory_instance, item_name, quantity=1):
     # 查找装备
@@ -81,7 +83,7 @@ def handle_debug_command(command, inventory_instance):
         item_name = parts[1]
         quantity = int(parts[2]) if len(parts) > 2 else 1
         spawn_item(inventory_instance, item_name, quantity)
-    elif command == "give_all":
+    elif command == "give-all":
         spawn_all_items(inventory_instance)
     elif command == "bag":
         debug_show_inventory(inventory_instance)

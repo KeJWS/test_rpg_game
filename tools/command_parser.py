@@ -1,18 +1,25 @@
 from inventory import Inventory_interface as interface
 from test.clear_screen import clear_screen, enter_clear_screen
-from tools.save_system import save_game, get_save_list, load_game
+from test.clear_screen import screen_wrapped
 from tools import dev_tools as debug
 
 from data.constants import DEBUG
-import events, text
+import events, text, combat
 from extensions import shops 
 
 import data.debug_help
 
+SHOP_DICT = {
+    "jack": events.shop_jack_weapon,
+    "anna": events.shop_anna_armor,
+    "rik": events.shop_rik_armor,
+    "itz": events.shop_itz_magic
+}
+
+@screen_wrapped
 def show_help(topic=None):
     command_docs = data.debug_help.command_docs
     print(command_docs.get(topic, command_docs["default"]))
-    enter_clear_screen()
 
 def handle_command(command: str, player):
     tokens = command.strip().split()
@@ -25,13 +32,6 @@ def handle_command(command: str, player):
     sub = None
     if "." in main:
         main, sub = main.split(".", 1)
-
-    shop_dict = {
-        "jack": events.shop_jack_weapon,
-        "anna": events.shop_anna_armor,
-        "rik": events.shop_rik_armor,
-        "itz": events.shop_itz_magic
-    }
 
     if main == "p":
         if sub is None:
@@ -53,34 +53,15 @@ def handle_command(command: str, player):
             enter_clear_screen()
             return command
 
-    elif main in shop_dict and DEBUG:
+    elif main in SHOP_DICT and DEBUG:
         if sub == "i":
-            handle_shop_command(main, shop_dict[main], tokens, player)
+            handle_shop_command(main, SHOP_DICT[main], tokens, player)
 
     else:
-        debug.debug_print(f"未知命令模块: {tokens[0]}")
-        enter_clear_screen()
+        if DEBUG:
+            debug.debug_print(f"未知命令模块: {tokens[0]}")
+            enter_clear_screen()
         return command
-
-def handle_save_load(player):
-    text.save_load_menu()
-    save_option = input("> ").lower()
-    if save_option == "s":
-        save_name = input("输入存档名 (留空使用默认名称): ").strip() or None
-        player.unequip_all()
-        save_metadata = save_game(player, save_name)
-        print(f"游戏已保存: {save_metadata['name']}")
-    elif save_option == "l":
-        saves = get_save_list()
-        text.display_save_list(saves)
-        save_index = int(input("> "))
-        if 0 < save_index <= len(saves):
-            loaded_player = load_game(saves[save_index-1]['name'])
-            if loaded_player:
-                print(f"游戏已加载: {loaded_player.name} (等级: {loaded_player.level}, 职业: {loaded_player.class_name})")
-                return loaded_player
-    enter_clear_screen()
-    return player
 
 def handle_shop_command(shop_name, shop_data, tokens, player):
     if tokens[1] == "--buy":
@@ -93,11 +74,14 @@ def handle_p_command(tokens, player):
         "-hp": lambda: print(f"HP: {player.stats['hp']}/{player.stats['max_hp']}"),
         "-mp": lambda: print(f"MP: {player.stats['mp']}/{player.stats['max_mp']}"),
         "-gold": lambda: print(f"💰: {player.gold}"),
-        "-lr": lambda: (clear_screen(), events.life_recovery_crystal(player), enter_clear_screen()),
-        "-se": lambda: (clear_screen(), text.show_equipment_info(player), enter_clear_screen()),
-        "-sk": lambda: (clear_screen(), text.show_skills(player), enter_clear_screen()),
-        "--bag": lambda: (debug.handle_debug_command("bag", player.inventory), enter_clear_screen()),
-        "-sg": lambda: handle_save_load(player),
+        "-lr": screen_wrapped(lambda: events.life_recovery_crystal(player)),
+        "-se": screen_wrapped(lambda: text.show_equipment_info(player)),
+        "-sk": screen_wrapped(lambda: text.show_skills(player)),
+        "-stats": screen_wrapped(lambda: text.debug_show_stats(player)),
+        "-bag": lambda: (debug.handle_debug_command("bag", player.inventory), enter_clear_screen()),
+        "-heal": screen_wrapped(lambda: combat.fully_heal(player) if DEBUG else None),
+        "-mana": screen_wrapped(lambda: combat.fully_recover_mp(player) if DEBUG else None),
+        "-level": screen_wrapped(lambda: handle_level_command(tokens, player)),
     }
 
     if len(tokens) == 1 or tokens[1] == "--help":
@@ -114,19 +98,22 @@ def handle_p_command(tokens, player):
 def handle_pi_command(tokens, player):
     inv = player.inventory
     subcommand_map = {
-        "-u": lambda: (clear_screen(), player.use_item(interface(inv).use_item())),
-        "-d": lambda: (clear_screen(), interface(inv).drop_item()),
-        "-e": lambda: (clear_screen(), player.equip_item(interface(inv).equip_item())),
+        "-U": lambda: (clear_screen(), player.use_item(interface(inv).use_item())),
+        "-D": lambda: (clear_screen(), interface(inv).drop_item()),
+        "-E": lambda: (clear_screen(), player.equip_item(interface(inv).equip_item())),
+        "-C": lambda: (clear_screen(), interface(inv).compare_equipment()),
         "-ua": lambda: (clear_screen(), player.unequip_all()),
-        "-c": lambda: (clear_screen(), interface(inv).compare_equipment()),
         "-vi": lambda: (clear_screen(), player.view_item_detail(interface(inv).view_item())),
-        "-si": lambda: (clear_screen(), inv.show_inventory_item()),
+        "-si": screen_wrapped(lambda: inv.show_inventory_item()),
         "--help": lambda: show_help("p.i"),
-        "--give_all": lambda: (debug.handle_debug_command("give_all", inv), enter_clear_screen()),
+        "--give-all": lambda: (debug.handle_debug_command("give-all", inv), enter_clear_screen()),
+        "-spawn": screen_wrapped(lambda: handle_spawn_item_command(tokens, player)),
     }
 
-    if len(tokens) == 1 or tokens[1] == "--help":
-        show_help("p.i")
+    if len(tokens) == 1:
+        clear_screen()
+        inv.show_inventory_item()
+        enter_clear_screen()
         return
 
     func = subcommand_map.get(tokens[1])
@@ -135,3 +122,19 @@ def handle_pi_command(tokens, player):
     else:
         debug.debug_print(f"未知的 p.i 玩家指令: {tokens[1]}")
         show_help("p.i")
+
+def handle_level_command(tokens, player):
+    if not DEBUG:
+        return
+    if len(tokens) > 2 and tokens[2].isdigit():
+        target_level = int(tokens[2])
+        current_level = player.level
+        if target_level > current_level:
+            for _ in range(target_level - current_level):
+                player.add_exp(player.xp_to_next_level)
+
+def handle_spawn_item_command(tokens, player):
+    if len(tokens) >= 3:
+        item_name = tokens[2]
+        quantity = int(tokens[3]) if len(tokens) > 3 and tokens[3].isdigit() else 1
+        debug.spawn_item(player.inventory, item_name, quantity)

@@ -46,6 +46,8 @@ def player_to_dict(player):
             item_dict["stat_change_list"] = item.stat_change_list
             item_dict["combo"] = item.combo.name if hasattr(item.combo, "name") else str(item.combo)
             item_dict["ascii_art"] = item.ascii_art
+            item_dict["level"] = item.level
+            item_dict["tags"] = item.tags
         elif item.__class__.__name__ == "Potion":
             item_dict["stat"] = item.stat
             item_dict["amount_to_change"] = item.amount_to_change
@@ -81,7 +83,7 @@ def dict_to_player(player_dict):
         "吸血之刺 II": skills.combo_vampire_stab2,
         "冥想 I": skills.combo_meditation1,
         "冥想 II": skills.combo_meditation2,
-        "快速连射 I": skills.combo_quickSshooting,
+        "快速连射 I": skills.combo_quickSshooting1,
         "快速连射 II": skills.combo_quickSshooting2,
 
 
@@ -115,6 +117,8 @@ def dict_to_player(player_dict):
                 item_dict["stat_change_list"],
                 combo_obj,
                 item_dict["ascii_art"],
+                item_dict["level"],
+                item_dict["tags"],
             )
         elif item_dict["type"] == "Potion":
             item = inventory.Potion(

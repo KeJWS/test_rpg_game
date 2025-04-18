@@ -284,11 +284,11 @@ def check_if_dead(allies, enemies, battlers):
 
 def fully_heal(target):
     target.stats["hp"] = target.stats["max_hp"]
-    typewriter(f"{target.name} 的生命完全恢复了")
+    battle_log(f"{target.name} 的生命完全恢复了", "info")
 
 def fully_recover_mp(target):
     target.stats["mp"] = target.stats["max_mp"]
-    typewriter(f"{target.name} 的魔法完全恢复了")
+    battle_log(f"{target.name} 的魔法完全恢复了", "info")
 
 def recover_hp_and_mp(target, percent):
     target.stats["hp"] = min(target.stats["max_hp"], target.stats["hp"] + int(target.stats["max_hp"] * percent))

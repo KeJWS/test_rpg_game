@@ -18,12 +18,12 @@ def help_menu():
 def play_menu():
     display_content = (
         "----------------------------------\n"
-        "   W  - Walk\n"
-        "   S  - See stats\n"
-        "   A  - Aptitude\n"
-        "   I  - Inventory\n"
-        "   Q  - Quests\n"
-        "   M  - Map\n"
+        "   W - Walk\n"
+        "   S - See stats\n"
+        "   A - Aptitude\n"
+        "   I - Inventory\n"
+        "   Q - Quests\n"
+        "   M - Map\n"
         "----------------------------------\n"
     )
     print(display_content)
@@ -37,8 +37,7 @@ def show_stats(player):
         f"      {fx.RED}HP: {player.stats['hp']}/{player.stats['max_hp']}{fx.END}    {fx.BLUE}MP: {player.stats['mp']}/{player.stats['max_mp']}{fx.END}\n"
         f"      ATK: {player.stats['atk']}        DEF: {player.stats['def']}\n"
         f"      MAT: {player.stats['mat']}        MDF: {player.stats['mdf']}\n"
-        f"      AGI: {player.stats['agi']}        CRT: {player.stats['crit']}%\n"
-        f"      LUK: {player.stats['luk']}        Anti CRT: {player.stats['anti_crit']}\n"
+        f"      AGI: {player.stats['agi']}        LUK: {player.stats['luk']}\n"  
         f"----------------------------------\n"
         f"  APTITUDES\n"
         f"----------------------------------\n"
@@ -244,8 +243,8 @@ def show_all_quests(player):
             pass
 
 def get_quest_region(quest_obj):
-    import map
     """查找任务所在地区"""
+    import map
     for region_name, region in map.world_map.regions.items():
         if quest_obj in region.quests:
             return region.name
@@ -286,3 +285,21 @@ def map_menu(player):
                 print("无效的选择")
         except ValueError:
             print("请输入有效的命令")
+
+def debug_show_stats(player):
+    print(f"===== {player.name} 的详细数据 =====")
+    print(f"等级: {player.level} ({player.xp}/{player.xp_to_next_level} XP)")
+    print(f"职业: {player.class_name}")
+    print(f"金钱: {player.money} 枚硬币")
+    print(f"\n生命值: {player.stats['hp']}/{player.stats['max_hp']}")
+    print(f"魔法值: {player.stats['mp']}/{player.stats['max_mp']}")
+    print(f"\n--- 战斗属性 ---")
+    print(f"攻击力: {player.stats['atk']}")
+    print(f"防御力: {player.stats['def']}")
+    print(f"魔法攻击: {player.stats['mat']}")
+    print(f"魔法防御: {player.stats['mdf']}")
+    print(f"敏捷: {player.stats['agi']}")
+    print(f"幸运: {player.stats['luk']}")
+    print(f"暴击倍率: {player.stats['crit']}")
+    print(f"抗暴击: {player.stats['anti_crit']}")
+    print(f"\n可用能力点: {player.aptitude_points}")
