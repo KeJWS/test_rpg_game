@@ -1,0 +1,12 @@
+/data/
+├── __init__.py
+├── ascii_art_equipment.txt     # 装备 ascii 艺术
+├── ascii_art_map.txt           # 地图 ascii 艺术
+├── constants.py                # 常量
+├── debug_help.py               # debug 命令帮助文字
+├── enemies.csv                 # 敌人数据文件
+├── equipments.csv              # 装备数据文件
+├── event_text.py               # 事件文本
+├── extended_enemies.csv        # 扩展敌人数据文件
+├── monsters.csv                # 随机敌人数据文件
+├── monsters.yaml               # 生成随机敌人权重数据文件

@@ -3,34 +3,42 @@ import math
 from test.clear_screen import clear_screen
 import test.fx as fx
 
+
+# *title_ui
 def title_screen():
     display_content = (
         "-----------------------\n"
         "     Text RPG Game     \n"
         "-----------------------\n"
-        "       1 - Play        \n"
-        "       2 - Help        \n"
-        "       3 - Quit        \n"
+        "       1 - Play\n"
+        "       2 - About\n"
+        "       3 - Quit\n"
         "-----------------------\n"
     )
     print(display_content)
 
 def help_menu():
-    print("233...")
+    print("    游戏作者: kwo, 以及 GPT(可能还是他功劳大些)。\n\
+参考项目: Python-Text-Turn-Based-RPG \n\
+还有玩的开心, 以及学的开心。\n\
+部分不懂的见 Git 标签: 最后的注释 \n\
+好了, 你可以再次启动了。")
 
 def play_menu():
     display_content = (
         "----------------------------------\n"
-        "   W - Walk\n"
-        "   S - See stats\n"
-        "   A - Aptitude\n"
-        "   I - Inventory\n"
-        "   Q - Quests\n"
-        "   M - Map\n"
+        "       W - Walk\n"
+        "       S - See stats\n"
+        "       A - Aptitude\n"
+        "       I - Inventory\n"
+        "       Q - Quests\n"
+        "       M - Map\n"
         "----------------------------------\n"
     )
     print(display_content)
 
+
+# *player_ui
 def show_stats(player):
     stats_template = (
         f"==================================\n"
@@ -57,7 +65,6 @@ def show_stats(player):
             print(f"    {equipment}: {player.equipment[equipment].name}")
         else:
             print(f"    {equipment}:")
-    print("==================================")
 
 def show_equipment_info(player):
     print("=================================================")
@@ -97,54 +104,69 @@ def inventory_menu():
     fx.divider()
     print(display_inventory)
 
+def show_skills(player):
+    print("========== Spell Skills ==========")
+    if player.spells:
+        for spell in player.spells:
+            print(f"• {spell.name} - {spell.description} ({fx.GREEN}MP: {spell.cost}, Power: {spell.power}{fx.END})")
+    else:
+        print("暂无法术")
+    print("\n========== Combo Skills ==========")
+    if player.combos:
+        for combo in player.combos:
+            print(f"• {combo.name} - {combo.description} ({fx.YELLO}CP: {combo.cost}{fx.END})")
+    else:
+        print("暂无连招")
+
+
+# *combat_ui
 def combat_menu(player, allies, enemies):
-    print("-------------------------------------------------")
+    print("=================================================")
     print(f"【{player.name}】 Lv.{getattr(player, 'level', '?')} - CP: {player.combo_points}")
-    print("┏━━━━━━━━━━━━━━━━━━━━┓")
-    print("┃"+fx.red(create_bar(player.stats['hp'], player.stats['max_hp']))+"┃"+fx.red(f" HP: {player.stats['hp']}/{player.stats['max_hp']}"))
-    print("┗━━━━━━━━━━━━━━━━━━━━┛")
-    print("┏━━━━━━━━━━━━━━━━━━━━┓")
-    print("┃"+fx.blue(create_bar(player.stats['mp'], player.stats['max_mp']))+"┃"+fx.blue(f" MP: {player.stats['mp']}/{player.stats['max_mp']}"))
-    print("┗━━━━━━━━━━━━━━━━━━━━┛")
+    print_status_bar("HP", player.stats['hp'], player.stats['max_hp'], fx.red)
+    print_status_bar("MP", player.stats['mp'], player.stats['max_mp'], fx.blue)
     for ally in allies:
         if ally != player:
             print(f"【{ally.name}】 Lv.{getattr(ally, 'level', '?')}")
-            print("┏━━━━━━━━━━━━━━━━━━━━┓")
-            print("┃"+fx.yellow(create_bar(player.stats['hp'], player.stats['max_hp']))+"┃"+fx.yellow(f" HP: {ally.stats['hp']}/{ally.stats['max_hp']}"))
-            print("┗━━━━━━━━━━━━━━━━━━━━┛")
+            print_status_bar("HP", ally.stats['hp'], ally.stats['max_hp'], fx.yellow)
     for enemy in enemies:
         print(f"【{enemy.name}】 Lv.{getattr(enemy, 'level', '?')}")
-        print("┏━━━━━━━━━━━━━━━━━━━━┓")
-        print("┃"+fx.green(create_bar(enemy.stats['hp'], enemy.stats['max_hp']))+"┃"+fx.green(f" HP: {enemy.stats['hp']}/{enemy.stats['max_hp']}"))
-        print("┗━━━━━━━━━━━━━━━━━━━━┛")
+        print_status_bar("HP", enemy.stats['hp'], enemy.stats['max_hp'], fx.green)
     print("-------------------------------------------------")
     print("         A - Attack  C - Combos")
     print("         S - Spells  D - Defense             ")
     print("         E - Escape")
     print("-------------------------------------------------")
 
+def print_status_bar(label, current, max_value, color_func):
+    print("┌────────────────────┐")
+    print(f"│{color_func(create_bar(current, max_value))}│{color_func(f' {label}: {current}/{max_value}')}")
+    print("└────────────────────┘")
+
 def spell_menu(player):
-    print("-------------------------------------------------")
+    print("=================================================")
     print("             SPELLS ['0' to Quit]")
     print("-------------------------------------------------")
     for index, spell in enumerate(player.spells, start=1):
         print(str(f"{index} - {spell.name} - {spell.cost}"))
 
 def combo_menu(player):
-    print("-------------------------------------------------")
+    print("=================================================")
     print("             COMBOS ['0' to Quit]")
     print("-------------------------------------------------")
     for index, combo in enumerate(player.combos, start=1):
         print(str(f"{index} - {combo.name} - {combo.cost}"))
 
 def select_objective(target):
-    print("-------------------------------------------------")
+    print("=================================================")
     print("             Select an objective:")
     print("-------------------------------------------------")
     for index, t in enumerate(target, start=1):
-        print(f"{index} - {t.name} - HP: \033[32m{t.stats['hp']}/{t.stats['max_hp']}\033[0m")
+        print(f"{index} - {t.name} - HP: {fx.GREEN}{t.stats['hp']}/{t.stats['max_hp']}{fx.END}")
     print("-------------------------------------------------")
 
+
+# *shop_ui
 def shop_menu(player):
     display_shop_menu_text = (
         "=================================================\n"
@@ -169,34 +191,19 @@ def shop_buy(player):
     print(display_shop_buy)
     fx.divider()
 
-
-def show_skills(player):
-    print("======= 法术技能 =======")
-    if player.spells:
-        for spell in player.spells:
-            print(f"• {spell.name} - {spell.description} ({fx.GREEN}MP: {spell.cost}, Power: {spell.power}{fx.END})")
-    else:
-        print("暂无法术")
-
-    print("\n======= 组合技能 =======")
-    if player.combos:
-        for combo in player.combos:
-            print(f"• {combo.name} - {combo.description} ({fx.YELLO}CP: {combo.cost}{fx.END})")
-    else:
-        print("暂无连招")
-
-
 def enter_shop(name):
-    from data.event_text import rik_armor_shop_encounter, itz_magic_encounter
-    if name == "里克的盔甲店":
-        print(rik_armor_shop_encounter)
-    elif name == "伊兹的魔法店":
-        print(itz_magic_encounter)
+    import data.event_text as ev
+    match name:
+        case "里克的盔甲店": print(ev.rik_armor_shop_encounter)
+        case "伊兹的魔法店": print(ev.itz_magic_encounter)
+        case "安娜的防具店": print(ev.anna_armor_shop_encounter)
+        case "杰克的武器店": print(ev.jack_weapon_shop_encounter)
+
 
 def save_load_menu():
     display_content = (
         "----------------------------------\n"
-        "           S - Save game           \n"
+        "           S - Save game\n"
         "           L - Load game\n"
         "           R - Return\n"
         "----------------------------------\n"
@@ -217,8 +224,7 @@ def display_save_list(saves):
     print("----------------------------------")
 
 def display_status_effects(battlers):
-    import test.fx as fx
-    print(fx.bright_cyan("=== 状态效果 ==="))
+    print(fx.bright_cyan("==== Status effect ===="))
     for battler in battlers:
         if battler.buffs_and_debuffs:
             print(fx.cyan(f"{battler.name} 的状态: "))
@@ -228,8 +234,10 @@ def display_status_effects(battlers):
                 print(f" - {effect.name}(剩余 {turns} 回合){warn}")
         else:
             print(f"{battler.name} 没有任何状态效果")
-    print(fx.bright_cyan("================"))
+    print(fx.bright_cyan("======================="))
 
+
+# *quest_ui
 def show_all_quests(player):
     print(fx.bright_cyan("\n======= 任务列表 ======="))
     if player.active_quests:
@@ -257,6 +265,8 @@ def show_all_quests(player):
         except ValueError:
             pass
 
+
+# *map_ui
 def get_quest_region(quest_obj):
     """查找任务所在地区"""
     import map
@@ -269,7 +279,6 @@ def map_menu(player):
     import map
     print(map.world_map.get_current_region_info())
     available_quests = map.world_map.show_region_quests(player)
-
     print("\n可前往地区:")
     print(map.world_map.list_available_regions())
     print("\n1-N. 前往对应编号的地区\nq. 返回主菜单")
@@ -302,23 +311,27 @@ def map_menu(player):
         except ValueError:
             print("请输入有效的命令")
 
+
 def debug_show_stats(player):
-    print(f"===== {player.name} 的详细数据 =====")
-    print(f"等级: {player.level} ({player.xp}/{player.xp_to_next_level} XP)")
-    print(f"职业: {player.class_name}")
-    print(f"金钱: {player.money} 枚硬币")
-    print(f"\n生命值: {player.stats['hp']}/{player.stats['max_hp']}")
-    print(f"魔法值: {player.stats['mp']}/{player.stats['max_mp']}")
-    print(f"\n--- 战斗属性 ---")
-    print(f"攻击力: {player.stats['atk']}")
-    print(f"防御力: {player.stats['def']}")
-    print(f"魔法攻击: {player.stats['mat']}")
-    print(f"魔法防御: {player.stats['mdf']}")
-    print(f"敏捷: {player.stats['agi']}")
-    print(f"幸运: {player.stats['luk']}")
-    print(f"暴击倍率: {player.stats['crit']}")
-    print(f"抗暴击: {player.stats['anti_crit']}")
-    print(f"\n可用能力点: {player.aptitude_points}")
+    display_stats = (
+        f"===== {player.name} 的详细数据 =====\n"
+        f"等级: {player.level} ({player.xp}/{player.xp_to_next_level} XP)\n"
+        f"职业: {player.class_name}\n"
+        f"金钱: {player.money} 枚硬币\n"
+        f"生命值: {player.stats['hp']}/{player.stats['max_hp']}\n"
+        f"魔法值: {player.stats['mp']}/{player.stats['max_mp']}\n"
+        f"\n--- 战斗属性 ---\n"
+        f"攻击力: {player.stats['atk']}\n"
+        f"防御力: {player.stats['def']}\n"
+        f"魔法攻击: {player.stats['mat']}\n"
+        f"魔法防御: {player.stats['mdf']}\n"
+        f"敏捷: {player.stats['agi']}\n"
+        f"幸运: {player.stats['luk']}\n"
+        f"暴击倍率: {player.stats['crit']}\n"
+        f"抗暴击: {player.stats['anti_crit']}\n"
+        f"\n可用能力点: {player.aptitude_points}\n"
+    )
+    print(display_stats)
 
 def backpack_item_stats(inv):
     print("=== 背包物品统计 ===")
@@ -329,7 +342,7 @@ def backpack_item_stats(inv):
             item_counts[item_type] += item.amount
         else:
             item_counts['Other'] += item.amount
-    
+
     total_items = sum(item_counts.values())
     print(f"装备: {item_counts['Equipment']} 件")
     print(f"药水: {item_counts['Potion']} 瓶")

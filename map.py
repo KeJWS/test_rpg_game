@@ -1,10 +1,9 @@
 import random
 from dataclasses import dataclass
 from typing import List, Dict, Tuple, Optional
-
-import enemies, events, items, quest
 from copy import deepcopy
 
+import enemies, events, items, quest
 import test.fx as fx
 import data.event_text as event_text
 

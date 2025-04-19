@@ -5,7 +5,6 @@ import inventory
 
 import test.fx as fx
 from inventory.interface import Inventory_interface as interface
-
 from inventory import utils
 
 class Player(combat.Battler):

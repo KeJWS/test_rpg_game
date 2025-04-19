@@ -1,7 +1,7 @@
 import math, random, time
 import text
 from test.fx import dot_loading, typewriter, battle_log
-from copy import deepcopy
+
 import test.fx as fx
 
 class Battler():
@@ -93,17 +93,6 @@ class Battler():
         self.stats["hp"] = min(self.stats["hp"] + amount, self.stats["max_hp"])
         typewriter(fx.green(f"{self.name} 治愈了 {amount}HP"))
 
-class Enemy(Battler):
-    def __init__(self, name, stats, xp_reward, gold_reward) -> None:
-        super().__init__(name, stats)
-        self.xp_reward = xp_reward
-        self.gold_reward = gold_reward
-        self.original_stats = stats.copy()
-
-    def clone(self):
-        new_stats = self.original_stats.copy()
-        return Enemy(self.name, new_stats, self.xp_reward, self.gold_reward)
-
 def combat(my_player, enemies):
     from player import Player
     from skills import enhance_weapon
@@ -115,7 +104,7 @@ def combat(my_player, enemies):
     enemy_exp = 0
     enemy_money = 0
 
-    print("=================================================")
+    print("-------------------------------------------------")
     for enemy in enemies:
         typewriter(f"野生的 {enemy.name} 出现了!")
         enemy_exp += enemy.xp_reward
@@ -304,26 +293,3 @@ def get_valid_input(prompt, valid_range, cast_func=str):
         except:
             pass
         print("请输入有效选项")
-
-def create_enemy_group(level, possible_enemies, enemy_quantity_for_level):
-    from enemies import enemy_data
-
-    enemies_to_appear = []
-    for enemy in possible_enemies:
-        low_level, high_level = possible_enemies[enemy]
-        if low_level <= level <= high_level:
-            enemies_to_appear.append(enemy)
-
-    max_enemies = 1
-    for max_level in enemy_quantity_for_level:
-        if level < max_level:
-            max_enemies = enemy_quantity_for_level[max_level]
-            break
-
-    enemy_group = []
-    # 选择 x 个敌人，x 是 1 到 max_enemies 之间的随机数
-    for _ in range(random.randint(1, max_enemies)):
-        enemy_id = random.choice(enemies_to_appear)
-        enemy_instance = deepcopy(enemy_data[enemy_id])
-        enemy_group.append(enemy_instance)
-    return enemy_group

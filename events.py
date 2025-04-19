@@ -1,11 +1,11 @@
-import combat
 import random
+
+import combat
 import inventory.interface
 import text, extensions.shops as shops, items, enemies
 from test.clear_screen import enter_clear_screen
 
 from inventory import Inventory_interface as interface
-
 import data.event_text as event_text
 
 # 处理事件（遭遇敌人、商店、治疗场所......）
@@ -44,7 +44,7 @@ class Random_combat_event(Event):
         }
 
     def effect(self, player):
-        enemy_group = combat.create_enemy_group(player.level, enemies.possible_enemies, self.enemy_quantity_for_level)
+        enemy_group = enemies.create_enemy_group(player.level, enemies.possible_enemies, self.enemy_quantity_for_level)
         combat.combat(player, enemy_group)
 
 class Fixed_combat_event(Event):

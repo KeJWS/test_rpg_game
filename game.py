@@ -7,9 +7,9 @@ import test.fx
 import data.event_text
 
 from data.constants import DEBUG
-
 from inventory import Inventory_interface as interface
 from tools import command_parser as cp
+
 
 # *标题菜单*
 def title_screen_selections():
@@ -18,8 +18,8 @@ def title_screen_selections():
         print("请输入有效命令")
     match option:
         case "1": clear_screen(); play()
-        case "2": text.help_menu()
-        case "3":sys.exit()
+        case "2": text.help_menu(); enter_clear_screen()
+        case "3": enter_clear_screen(); sys.exit()
 
 
 # *背包菜单*

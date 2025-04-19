@@ -129,8 +129,8 @@ grimoire_data = [
     ("魔法书：神圣祝福", "古老教会的祝文，可恢复目标生命，带来圣光的治愈。", 1, 120, skills.spell_divine_blessing),
     ("魔法书：增强武器", "魔法附魔术式，可短时间内强化武器的攻击力。", 1, 120, skills.spell_enhance_weapon),
     ("魔法书: 地狱火", "中级火焰咒文，召唤烈焰吞噬所有敌人。", 1, 210, skills.spell_inferno),
-    ("唤灵书: 骷髅召唤", "记载亡灵召唤术，可呼唤骷髅战士为你作战。", 1, 175, skills.spell_skeleton_summoning),
-    ("唤灵书: 火精灵", "源自炎之古国的召唤术，召唤火焰元素协助作战。", 1, 275, skills.spell_fire_spirit_summoning),
+    ("唤灵书: 骷髅召唤", "记载亡灵召唤术，可呼唤骷髅战士为你作战。", 1, 195, skills.spell_skeleton_summoning),
+    ("唤灵书: 火精灵", "源自炎之古国的召唤术，召唤火焰元素协助作战。", 1, 325, skills.spell_fire_spirit_summoning),
 ]
 
 grimoires = [
@@ -153,6 +153,6 @@ itz_magic_item_set = [
 ]
 
 debug_print(f"Jack 的武器商店物品数: {len(jack_weapon_shop_set)}")
-debug_print(f"anna 的护甲商店物品数: {len(anna_armor_shop_set)}")
+debug_print(f"Anna 的护甲商店物品数: {len(anna_armor_shop_set)}")
 debug_print(f"Rik 的护甲商店物品数: {len(rik_armor_shop_item_set)}")
-debug_print(f"itz 的魔法商店物品数: {len(itz_magic_item_set)}")
+debug_print(f"Itz 的魔法商店物品数: {len(itz_magic_item_set)}")

@@ -27,7 +27,7 @@ p.i 玩家背包相关命令:
   -sort         整理背包物品
   -count        统计背包物品数量
   --give-all    全物品[debug]
-  -spawn        刷出指定物品 (用法: p.i -spawn item_name quantity)
+  -spawn        刷出指定物品 (用法: p.i -spawn item_name quantity)[debug]
 """,
     "a.d": """
 a.d 攻防相关命令
