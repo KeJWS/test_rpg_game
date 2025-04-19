@@ -6,18 +6,15 @@ import test.fx as fx
 
 def give_initial_items(my_player):
     option = str(input("> "))
-    while option not in ["1", "2", "3", "4", "5"]:
+    while option not in ["1", "2", "3", "4", "5", "6", ""]:
         option = str(input("> "))
 
+    my_player.add_money(120)
     items.mp_potion.add_to_inventory_player(my_player.inventory)
     items.hp_potion.add_to_inventory_player(my_player.inventory)
-    my_player.add_money(120)
 
     if option == "1":
-        items.basic_equipments["rusty_sword"].add_to_inventory_player(my_player.inventory)
-        items.basic_equipments["novice_armor"].add_to_inventory_player(my_player.inventory)
-        items.atk_gems.add_to_inventory_player(my_player.inventory)
-        my_player.class_name = "战士"
+        default_selection_warrior(my_player)
     elif option == "2":
         items.basic_equipments["broken_dagger"].add_to_inventory_player(my_player.inventory)
         items.basic_equipments["novice_armor"].add_to_inventory_player(my_player.inventory)
@@ -39,18 +36,27 @@ def give_initial_items(my_player):
         items.equipment_data["wooden_shield"].add_to_inventory_player(my_player.inventory)
         items.grimoires[1].add_to_inventory_player(my_player.inventory)
         my_player.class_name = "圣骑士"
+    elif option == "6":
+        items.basic_equipments["old_staff"].add_to_inventory_player(my_player.inventory)
+        items.basic_equipments["old_robes"].add_to_inventory_player(my_player.inventory)
+        items.grimoires[4].add_to_inventory_player(my_player.inventory)
+        my_player.class_name = "死灵法师"
+    else:
+        default_selection_warrior(my_player)
 
     enter_clear_screen()
     print(f"\n你选择了 {my_player.class_name} 职业")
 
 def apply_class_bonuses(my_player):
+    from combat import recover_hp_and_mp
     """根据职业给予初始属性加成"""
     class_bonuses = {
-        "战士": {"max_hp": 50, "atk": 3, "def": 2},
+        "战士": {"max_hp": 50, "atk": 3, "def": 3},
         "盗贼": {"agi": 5, "crit": 1, "luk": 3},
-        "法师": {"max_mp": 30, "mat": 5, "mdf": 2},
+        "法师": {"max_mp": 25, "mat": 5, "mdf": 2},
         "弓箭手": {"atk": 3, "agi": 1, "crit": 2},
-        "圣骑士": {"atk": 2, "def": 3, "mat": 2},
+        "圣骑士": {"atk": 5, "def": 3, "mat": 5, "agi": -3},
+        "死灵法师": {"max_mp": 60, "mat": 7, "def": -5, "max_hp": -70},
     }
 
     if my_player.class_name in class_bonuses:
@@ -59,3 +65,12 @@ def apply_class_bonuses(my_player):
             my_player.stats[stat] += value
             if value > 0:
                 print(fx.cyan(f"{stat} +{value}"))
+            else:
+                print(fx.red(f"{stat} -{abs(value)}"))
+        recover_hp_and_mp(my_player, 1)
+
+def default_selection_warrior(my_player):
+    items.basic_equipments["rusty_sword"].add_to_inventory_player(my_player.inventory)
+    items.basic_equipments["novice_armor"].add_to_inventory_player(my_player.inventory)
+    items.atk_gems.add_to_inventory_player(my_player.inventory)
+    my_player.class_name = "战士"

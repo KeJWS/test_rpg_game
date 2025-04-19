@@ -293,7 +293,7 @@ def fully_recover_mp(target):
 def recover_hp_and_mp(target, percent):
     target.stats["hp"] = min(target.stats["max_hp"], target.stats["hp"] + int(target.stats["max_hp"] * percent))
     target.stats["mp"] = min(target.stats["max_mp"], target.stats["mp"] + int(target.stats["max_mp"] * percent))
-    typewriter(f"\n恢复了 {percent*100}% 生命值和魔法")
+    battle_log(f"\n恢复了 {percent*100}% 生命值和魔法", "heal")
 
 def get_valid_input(prompt, valid_range, cast_func=str):
     while True:

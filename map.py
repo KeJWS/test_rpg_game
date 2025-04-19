@@ -56,17 +56,17 @@ class World_map:
         forest = self._create_forest(ascii_art_dict)
         town = self._create_town(ascii_art_dict)
         mountain = self._create_mountain(ascii_art_dict)
-        redflame_canyon = self._create_redflame_canyon(ascii_art_dict)
-        snowlands = self._create_snowlands(ascii_art_dict)
-        forgotten_ruins = self._create_forgotten_ruins(ascii_art_dict)
+        # redflame_canyon = self._create_redflame_canyon(ascii_art_dict)
+        # snowlands = self._create_snowlands(ascii_art_dict)
+        # forgotten_ruins = self._create_forgotten_ruins(ascii_art_dict)
 
         self.regions = {
             "town": town,
             "forest": forest,
             "mountain": mountain,
-            "redflame canyon": redflame_canyon,
-            "snowlands": snowlands,
-            "forgotten ruins": forgotten_ruins,
+            # "redflame canyon": redflame_canyon,
+            # "snowlands": snowlands,
+            # "forgotten ruins": forgotten_ruins,
         }
 
         self.current_region = self.regions["town"]
@@ -81,10 +81,16 @@ class World_map:
             "shadow_wolf": (8, 16),
         }
         fight_against_slime_combat = events.Fixed_combat_event("史莱姆狩猎", enemies.enemy_list_fight_against_slime)
-        fight_against_slime_quest = quest.Quest("史莱姆狩猎", 
-                                             event_text.quest_fight_against_slime_text, 
-                                             event_text.shop_fight_against_slime_text, 
-                                             120, 120, items.equipment_data["long_bow"], fight_against_slime_combat, 9)
+        fight_against_slime_quest = quest.Quest("史莱姆狩猎",
+                                             event_text.quest_fight_against_slime_text,
+                                             event_text.shop_fight_against_slime_text,
+                                             50, 50, items.equipment_data["zweihander"], fight_against_slime_combat, 3)
+
+        fight_against_slime_king_combat = events.Fixed_combat_event("史莱姆之王", enemies.enemy_list_fight_against_slime_king)
+        fight_against_slime_king_quest = quest.Quest("史莱姆之王", 
+                                             event_text.quest_fight_against_slime_king_text, 
+                                             event_text.shop_fight_against_slime_king_text, 
+                                             170, 230, items.equipment_data["long_bow"], fight_against_slime_king_combat, 9)
         forest = Region(
             name="雾林",
             description="一片神秘的森林, 低级怪物在这里游荡。适合初学者冒险, \n不过要小心这里的森林守卫者",
@@ -93,7 +99,7 @@ class World_map:
             shop_events=[events.shop_itz_magic],
             heal_events=[events.heal_medussa_statue],
             special_events=[],
-            quests=[fight_against_slime_quest],
+            quests=[fight_against_slime_quest, fight_against_slime_king_quest],
             ascii_art=ascii_art_dict.get("雾林", "")
         )
         return forest
@@ -118,6 +124,7 @@ class World_map:
                                           event_text.quest_caesarus_bandit_text, 
                                           event_text.shop_quest_caesarus_bandits, 
                                           150, 150, None, caesarus_bandit_combat, 5)
+
         wolf_king_combat = events.Fixed_combat_event("夜行狼王", enemies.enemy_list_fight_against_wolf_king)
         wolf_king_quest = quest.Quest("夜行狼王", 
                                           event_text.quest_fight_against_wolf_king_text, 
@@ -206,8 +213,8 @@ class World_map:
         """获取当前地区的信息"""
         if self.current_region:
             return (
-                f"{fx.GREEN}\n{self.current_region.ascii_art}{fx.END}\n"
-                f"当前位置: {self.current_region.name}\n"
+                f"\n{fx.GREEN}{self.current_region.ascii_art}{fx.END}\n"
+                f"\n当前位置: {self.current_region.name}\n"
                 f"危险等级: {'★ ' * self.current_region.danger_level}\n"
                 f"{self.current_region.description}"
             )

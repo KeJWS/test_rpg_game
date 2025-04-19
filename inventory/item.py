@@ -147,7 +147,7 @@ class Jewel(Item):
         print(f"{caster.name} 使用了一个 {self.name}")
         if self.stat in caster.stats:
             caster.stats[self.stat] += self.amount_to_change
-            print(f"{self.stat} 增加了 {self.amount_to_change} 点")
+            fx.typewriter(fx.yellow(f"{self.stat} 增加了 {self.amount_to_change} 点"))
 
     def clone(self, amount):
         return Jewel(self.name, self.description, amount, self.individual_value, self.object_type, self.stat, self.amount_to_change)

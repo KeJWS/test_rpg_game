@@ -85,8 +85,6 @@ def dict_to_player(player_dict):
         "冥想 II": skills.combo_meditation2,
         "快速连射 I": skills.combo_quickSshooting1,
         "快速连射 II": skills.combo_quickSshooting2,
-
-
     }
 
     player = Player(player_dict["name"])

@@ -34,7 +34,7 @@
    git clone https://github.com/KeJWS/test_rpg_game.git
    cd test_rpg_game# Python Text RPG
 
-2. 确保已安装 Python 3.6 或更高版本。
+2. 建议安装 Python 3.12 或更高版本。
 
 3. 运行主程序：
    ```bash
@@ -43,6 +43,8 @@
 4. 根据提示选择操作，体验回合制战斗。
 
 ## 截图预览
+
+![alt text](img/234.png)
 
 ![alt text](img/233.png)
 

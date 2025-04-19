@@ -201,8 +201,8 @@ spell_fire_ball = Damage_spell("火球术", "向单个敌人发射一颗火球",
 spell_divine_blessing = Recovery_spell("神圣祝福", "治疗单个目标", 60, 50, "hp", True, None)
 spell_enhance_weapon = Buff_debuff_spell("强化武器", "提升攻击力", 0, 32, False, "self", "atk", 0.5, 3)
 spell_inferno = Damage_spell("地狱火", "对所有敌人造成伤害", 50, 55, False, "all_enemies")
-spell_skeleton_summoning = Summon_spell("召唤骷髅", "召唤一个骷髅战士", 0, 37, False, "allies", allies.Summoned_skeleton)
-spell_fire_spirit_summoning = Summon_spell("召唤火精灵", "召唤一个火精灵", 0, 68, False, "allies", allies.Summoned_fire_spirit)
+spell_skeleton_summoning = Summon_spell("召唤骷髅", "召唤一个骷髅战士", 0, 42, False, "allies", allies.Summoned_skeleton)
+spell_fire_spirit_summoning = Summon_spell("召唤火精灵", "召唤一个火精灵", 0, 78, False, "allies", allies.Summoned_fire_spirit)
 
 combo_slash1 = Slash_combo("斩击连击 I", "连续攻击敌人3次", 3, True, None, 3)
 combo_slash2 = Slash_combo("斩击连击 II", "连续攻击敌人4次", 3, True, None, 4)

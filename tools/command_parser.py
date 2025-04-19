@@ -25,7 +25,6 @@ def handle_command(command: str, player):
     tokens = command.strip().split()
     if not tokens:
         show_help()
-        enter_clear_screen()
         return
 
     main = tokens[0]
@@ -95,11 +94,11 @@ def handle_p_command(tokens, player):
 def handle_pi_command(tokens, player):
     inv = player.inventory
     subcommand_map = {
-        "-U": lambda: (clear_screen(), player.use_item(interface(inv).use_item())),
-        "-D": lambda: (clear_screen(), interface(inv).drop_item()),
-        "-E": lambda: (clear_screen(), player.equip_item(interface(inv).equip_item())),
-        "-C": lambda: (clear_screen(), interface(inv).compare_equipment()),
-        "-ua": lambda: (clear_screen(), player.unequip_all()),
+        "-U": screen_wrapped(lambda: player.use_item(interface(inv).use_item())),
+        "-D": screen_wrapped(lambda: interface(inv).drop_item()),
+        "-E": screen_wrapped(lambda: player.equip_item(interface(inv).equip_item())),
+        "-C": screen_wrapped(lambda: interface(inv).compare_equipment()),
+        "-ua": screen_wrapped(lambda: player.unequip_all()),
         "-vi": screen_wrapped(lambda: player.view_item_detail(interface(inv).view_item())),
         "-show": screen_wrapped(lambda: inv.show_inventory_item()),
         "--help": lambda: show_help("p.i"),

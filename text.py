@@ -1,5 +1,6 @@
 import math
 
+from test.clear_screen import clear_screen
 import test.fx as fx
 
 def title_screen():
@@ -61,13 +62,13 @@ def show_stats(player):
 def show_equipment_info(player):
     print("=================================================")
     print("  EQUIPMENT")
-    print("-------------------------------------------------")
+    fx.divider()
 
     for equipment in player.equipment:
         if player.equipment[equipment] is not None:
             print(f"    {player.equipment[equipment].show_info()}\n")
         else:
-            print(f"    ---None---\n")
+            print(f"    ---{equipment}---\n")
 
 def show_aptitudes(player):
     display_aptitudes = (
@@ -87,13 +88,13 @@ def show_aptitudes(player):
 
 def inventory_menu():
     display_inventory = (
-        "-------------------------------------------------\n"
         "       U  - Use an item\n"
         "       D  - Drop an item\n"
         "       E  - Equip an item\n"
         "       Q  - Quit\n"
         "================================================="
     )
+    fx.divider()
     print(display_inventory)
 
 def combat_menu(player, allies, enemies):
@@ -108,7 +109,6 @@ def combat_menu(player, allies, enemies):
     for ally in allies:
         if ally != player:
             print(f"【{ally.name}】 Lv.{getattr(ally, 'level', '?')}")
-            print(create_bar(ally.stats['hp'], ally.stats['max_hp']))
             print("┏━━━━━━━━━━━━━━━━━━━━┓")
             print("┃"+fx.yellow(create_bar(player.stats['hp'], player.stats['max_hp']))+"┃"+fx.yellow(f" HP: {ally.stats['hp']}/{ally.stats['max_hp']}"))
             print("┗━━━━━━━━━━━━━━━━━━━━┛")
@@ -155,19 +155,19 @@ def shop_menu(player):
         "           T  - Talk\n"
         "           Ua - Unequip all\n"
         "           Si - Show inventory\n"
-        "           E  - Exit\n"
-        "-------------------------------------------------\n"
+        "           E  - Exit"
     )
     print(display_shop_menu_text)
+    fx.divider()
 
 def shop_buy(player):
     display_shop_buy = (
         "=================================================\n"
         f"          SHOP - 💰: {player.money}\n"
-        "           ['0' to Quit]\n"
-        "-------------------------------------------------\n"
+        "           ['0' to Quit]"
     )
     print(display_shop_buy)
+    fx.divider()
 
 
 def show_skills(player):
@@ -294,7 +294,8 @@ def map_menu(player):
             if 0 <= idx < len(map.world_map.regions):
                 region_key = list(map.world_map.regions.keys())[idx]
                 map.world_map.change_region(region_key)
-                print(f"\n你已经抵达 {map.world_map.current_region.name}")
+                clear_screen()
+                print(f"\n你已经抵达 {map.world_map.current_region.name}\n")
                 print(map.world_map.current_region.description)
             else:
                 print("无效的选择")

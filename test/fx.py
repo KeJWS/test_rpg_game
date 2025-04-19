@@ -59,7 +59,7 @@ def slow_print(text, delay=0.02):
     print()
 
 def divider():
-    print(color("-" * 40, "90"))
+    print(color("-" * 49, "90"))
 
 def battle_log(message, style=""):
     match style:

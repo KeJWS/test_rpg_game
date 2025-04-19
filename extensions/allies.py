@@ -10,7 +10,7 @@ class Summoned_skeleton(combat.Battler):
             "mp": 30,
             "max_mp": 30,
             "atk": 17,
-            "def": 10,
+            "def": 7,
             "mat": 3,
             "mdf": 5,
             "agi": 10,
@@ -23,8 +23,8 @@ class Summoned_skeleton(combat.Battler):
 class Summoned_fire_spirit(combat.Battler):
     def __init__(self) -> None:
         stats = {
-            "max_hp": 550,
-            "hp": 550,
+            "max_hp": 510,
+            "hp": 510,
             "mp": 70,
             "max_mp": 70,
             "atk": 15,

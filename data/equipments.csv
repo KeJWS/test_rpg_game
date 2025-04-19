@@ -23,7 +23,7 @@ id,name,name_zh,description,amount,individual_value,object_type,stat_change_list
 22,-> 基础护手,Lv2,,,0,hand,{},,,
 23,gloves_wraps,绑手带,一条长长的绑在手部、提供稍许防护与其他用途的棉布条,,25,hand,"{'atk': 1, 'def': 1}",,2,hand
 24,-> 基础护足,Lv2,,,0,foot,{},,,
-25,footrags,裹脚,裹在脚上的布条,,17,foot,{'def': 1},,2,foot
+25,footrags,裹脚,裹在脚上的布条,,17,foot,"{'def': 1, 'agi': -1}",,2,foot
 26,-> 基础饰品,Lv2,,,0,accessory,{},,,
 27,copper_ring,铜戒指,普通的铜制戒指，提供些许幸运属性,,33,accessory,{'luk': 3},,2,accessory
 28,-> 高级武器,Lv3,,,0,weapon,{},,,
@@ -32,9 +32,9 @@ id,name,name_zh,description,amount,individual_value,object_type,stat_change_list
 31,sage_staff,智者法杖,增强智力的法杖，适合强大的魔法师,,145,weapon,"{'max_mp': 15, 'mat': 12}",combo_meditation2,3,magic
 32,sai,三叉戟,一把威力强大的三叉戟，常被海军使用,,135,weapon,"{'atk': 10, 'crit': 5, 'agi': 3}",combo_slash1,3,weapon
 33,long_bow,长弓,一把远程射击的长弓，适合熟练的弓箭手,,175,weapon,"{'atk': 10, 'crit': 12}",combo_quickSshooting1,3,weapon
-34,hunting_knife,猎刀,猎人常用的刀具，这种单刃带鞘的小刀专用于切削、剥皮等用途，而不是战斗,,163,weapon,"{'atk': 8, 'crit': 10, 'agi': 6}",combo_vampire_stab2,3,
 35,battle_axe,战斧,双刃战斧，可造成致命伤害,,237,weapon,"{'atk': 17, 'crit': 5, 'agi': -1}",combo_armor_breaker2,3,
 36,sword_bronze,青铜剑,一把青铜剑的仿制品。它是把还可以的武器，但无法与真正的剑相比,,195,weapon,"{'atk': 13, 'agi': 3}",combo_power_slash1,3,
+,caesarus_sword,凯撒鲁斯的剑,,,453,weapon,{'atk': 17},combo_power_slash1,3,
 37,-> 高级装甲,Lv3,,,0,armor,{},,,
 38,iron_armor,粗制铁甲,粗铁打造的铁制护甲,,190,armor,"{'max_hp': 25, 'def': 10}",,3,armor
 39,sage_tunic,智者上衣,一件适合智者的长上衣，增强法术效果,,225,armor,"{'max_mp': 20, 'def': 5, 'mdf': 7}",,3,magic
@@ -43,6 +43,7 @@ id,name,name_zh,description,amount,individual_value,object_type,stat_change_list
 42,armor_blarmor,鞣制皮甲,一件经过化学鞣制硬化的厚实皮甲。轻巧而耐用,,365,armor,"{'max_hp': 15, 'def': 12, 'agi': 3}",,3,
 43,-> 高级护盾,Lv3,,,0,shield,{},,,
 44,bronze_shield,青铜盾,青铜制成的坚固盾牌,,183,shield,"{'def': 6, 'mdf': 3, 'agi': -1}",,3,shield
+34,hunting_knife,猎刀,猎人常用的刀具，这种单刃带鞘的小刀专用于切削、剥皮等用途，而不是战斗,,263,shield,"{'atk': 7, 'crit': 2, 'agi': 3}",,3,
 45,-> 高级头盔,Lv3,,,0,head,{},,,
 46,leather_helmet,皮帽,用动物皮革制成的头盔,,227,head,{'def': 5},,3,
 47,helmet_bronze,青铜头盔,一顶坚固的整体成型的封闭式青铜头盔，在眼部有个开口,,345,head,"{'def': 12, 'agi': -2}",,3,
@@ -57,12 +58,17 @@ id,name,name_zh,description,amount,individual_value,object_type,stat_change_list
 56,ring_of_magic,魔力之戒,增强佩戴者魔法力的魔法戒指,,345,accessory,"{'mat': 12, 'max_mp': 15}",combo_meditation1,3,
 57,ring_of_luck, 幸运之戒,增强佩戴者幸运的魔法戒指,,300,accessory,{'luk': 15},,3,
 58,-> 高阶武器,Lv4,,,0,weapon,{},,,
-59,broadsword,阔剑,一种早期的现代剑，在16到18世纪的西方被广泛使用,,610,weapon,"{'atk': 25, 'agi': 3}",combo_power_slash1,4,
+59,broad_sword,阔剑,一种早期的现代剑，在16到18世纪的西方被广泛使用,,610,weapon,"{'atk': 25, 'agi': 3}",combo_power_slash1,4,
 60,rapier,迅捷剑,很适合绅士与剑士使用的武器，轻盈而迅捷，可以适用于各种战斗,,720,weapon,"{'atk': 21, 'agi': 9, 'crit': 5}",combo_slash2,4,
+,reflex_bow,复合弓（轻）,一把用木头、角和筋使用传统工艺制成的弓。它的拉力还可以,,782,weapon,"{'atk': 19, 'crit': 7}",combo_quickSshooting1,4,
+0,mira_bow,米拉的弓,,,1035,weapon,"{'atk': 23, 'crit': 15}",combo_quickSshooting1,4,
+,magic_bow,魔法长弓,,,950,weapon,"{'atk': 17, 'crit': 3, 'mat': 12}",combo_quickSshooting1,4,
 61,-> 高础护甲,Lv4,,,0,armor,{},,,
 62,armor_lightplate,板甲,一套哥特式全身板甲,,1120,armor,"{'max_hp': 30, 'def': 35, 'agi': -7, 'anti_crit': -5}",,4,
 63,iron_breastplate,铁制胸甲,全铁打造的坚固护甲,,900,armor,"{'max_hp': 50, 'def': 25, 'mdf': 10, 'agi': -3}",,4,
+,wolf_leather_armor,狼王皮甲,,,1347,armor,"{'max_hp': 30, 'def': 17, 'mdf': 12, 'agi': 5}",,4,
 64,-> 高阶护盾,Lv4,,,0,shield,{},,,
+,,米拉的狩猎刀,,,1375,shield,"{'atk': 13, 'crit': 5, 'agi': 7}",combo_vampire_stab2,4,
 65,-> 高阶头盔,Lv4,,,0,head,{},,,
 66,iron_helmet,铁头盔,坚固的金属头盔,,750,head,"{'def': 17, 'agi': -3}",,4,
 67,-> 高阶护手,Lv4,,,0,hand,{},,,
@@ -73,4 +79,3 @@ id,name,name_zh,description,amount,individual_value,object_type,stat_change_list
 72,iron_greaves,铁护腿,铁制护腿，保护下肢,,640,foot,"{'def': 13, 'agi': -5}",,4,
 54,-> 高阶饰品,Lv4,,,0,accessory,{},,,
 ,wolf_king_proof,狼王之证,击杀狼王的证明,,1305,accessory,"{'atk': 12, 'def': 8, 'mat': 8, 'mdf': 8, 'luk': -10}",,4,
-,wolf_king_dream,狼王梦,狼的世界里，没有永远的敌人，也没有永远的朋友，只有永远的利益。,,1950,accessory,"{'atk': 12, 'def': 12, 'mat': 10, 'mdf': 12, 'agi': 13, 'luk': -15}",,4,

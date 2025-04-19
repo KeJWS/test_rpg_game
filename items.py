@@ -35,6 +35,7 @@ def load_ascii_art_library(filepath="data/ascii_art_equipment.txt"):
             elif current_key:
                 current_lines.append(line)
 
+    print()
     debug_print(f"加载 ASCII 艺术资源，共加载 {len(ascii_art_dict)} 项")
     return ascii_art_dict
 
@@ -106,8 +107,11 @@ basic_equipments = {
 jack_weapon_shop_set.append(basic_equipments["wood_bow"])
 
 # 消耗品
-hp_potion = inventory.Potion("生命药水", "恢复70点生命值的药水", 1, 25, "consumable", "hp", 70)
-mp_potion = inventory.Potion("法力药水", "恢复40点法力值的药水", 1, 25, "consumable", "mp", 40)
+hp_potion = inventory.Potion("生命药水 I", "恢复少量生命值的药水", 1, 25, "consumable", "hp", 70)
+mp_potion = inventory.Potion("法力药水 I", "恢复少量法力值的药水", 1, 25, "consumable", "mp", 35)
+
+hp_potion2 = inventory.Potion("生命药水 II", "恢复少量生命值的药水", 1, 55, "consumable", "hp", 170)
+mp_potion2 = inventory.Potion("法力药水 II", "恢复少量法力值的药水", 1, 60, "consumable", "mp", 80)
 
 atk_small_gems = inventory.Jewel("攻击小宝石", "提升3点攻击力的宝石", 1, 150, "consumable", "atk", 3)
 mat_small_gems = inventory.Jewel("魔攻小宝石", "提升3点魔法攻击力的宝石", 1, 150, "consumable", "mat", 3)
@@ -125,8 +129,8 @@ grimoire_data = [
     ("魔法书：神圣祝福", "古老教会的祝文，可恢复目标生命，带来圣光的治愈。", 1, 120, skills.spell_divine_blessing),
     ("魔法书：增强武器", "魔法附魔术式，可短时间内强化武器的攻击力。", 1, 120, skills.spell_enhance_weapon),
     ("魔法书: 地狱火", "中级火焰咒文，召唤烈焰吞噬所有敌人。", 1, 210, skills.spell_inferno),
-    ("唤灵书: 骷髅召唤", "记载亡灵召唤术，可呼唤骷髅战士为你作战。", 1, 170, skills.spell_skeleton_summoning),
-    ("唤灵书: 火精灵", "源自炎之古国的召唤术，召唤火焰元素协助作战。", 1, 215, skills.spell_fire_spirit_summoning),
+    ("唤灵书: 骷髅召唤", "记载亡灵召唤术，可呼唤骷髅战士为你作战。", 1, 175, skills.spell_skeleton_summoning),
+    ("唤灵书: 火精灵", "源自炎之古国的召唤术，召唤火焰元素协助作战。", 1, 275, skills.spell_fire_spirit_summoning),
 ]
 
 grimoires = [
