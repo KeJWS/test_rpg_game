@@ -44,9 +44,11 @@
 
 ## 截图预览
 
+![alt text](img/233.png)
+
 ![alt text](img/234.png)
 
-![alt text](img/233.png)
+![alt text](img/235.png)
 
 ## 贡献指南
 

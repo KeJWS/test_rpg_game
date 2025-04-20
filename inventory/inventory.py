@@ -1,4 +1,7 @@
-from inventory import utils
+from rich.table import Table
+from rich.text import Text
+from rich.panel import Panel
+from rich import box
 
 from inventory.equipment import Equipment
 
@@ -55,30 +58,39 @@ class Inventory:
         return self.get_items_by_type("consumable")
 
     def get_formatted_inventory_table(self):
-        """返回格式化的库存表格字符串"""
+        """返回格式化的库存表格"""
         if not self.items:
-            return "背包是空的"
-        headers = ["编号", "名称", "类型", "数量", "单价"]
-        data = []
+            return Text("背包是空的", style="dim")
+    
+        table = Table(
+            show_header=True,
+            header_style="bold magenta",
+            box=box.SIMPLE_HEAVY,
+        )
+    
+        table.add_column("编号", justify="center", style="cyan", no_wrap=True)
+        table.add_column("名称", style="bold cyan")
+        table.add_column("类型", style="green")
+        table.add_column("数量", justify="right", style="white")
+        table.add_column("单价", justify="right", style="yellow")
+    
         for i, item in enumerate(self.items, 1):
-            data.append([
-                i,
+            table.add_row(
+                str(i),
                 item.name,
                 str(item.object_type),
                 f"x{item.amount}",
-                f"{item.individual_value}G",
-            ])
-
-        table = utils.format_table(headers, data)
-        summary = f"\n物品总数: {self.get_total_item_count()} | 总价值: {self.total_worth}G"
-        return table + summary
-
-    def show_inventory_item(self):
-        for index, item in enumerate(self.items, start=1):
-            print(f"{index} - {item.show_info()}")
-
-    def sort_items(self):
-        """整理背包物品，按类型和名称排序"""
-        self.items.sort(key=lambda item: (type(item).__name__, item.name))
-        print("背包已整理完成")
-        return True
+                f"{item.individual_value}G"
+            )
+    
+        summary_text = Text()
+        summary_text.append(f"\n物品总数: ", style="bold white")
+        summary_text.append(f"{self.get_total_item_count()}", style="bold green")
+        summary_text.append(" | 总价值: ", style="bold white")
+        summary_text.append(f"{self.total_worth}G", style="bold yellow")
+    
+        return Panel.fit(
+            table,
+            subtitle="['0' 关闭背包]",
+            border_style="bold green"
+        ), summary_text

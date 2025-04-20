@@ -16,7 +16,7 @@ def select_item_from_list(item_list, prompt="选择一个物品:", allow_exit=Tr
         print("没有可选择的物品")
         return None
 
-    print(f"\n{prompt} {['', '[\'0\' 退出]'][allow_exit]}")
+    print(f"\n{prompt} {['', '[输入 0 退出]'][allow_exit]}")
     for index, item in enumerate(item_list, start=1):
         print(f"{index}. {item.show_info()}")
 
@@ -30,17 +30,3 @@ def select_item_from_list(item_list, prompt="选择一个物品:", allow_exit=Tr
             if 1 <= choice_num <= len(item_list):
                 return item_list[choice_num - 1]
         print("无效输入")
-
-def format_table(headers, data, widths=None):
-    """将数据格式化为具有一致列宽的表格"""
-    if not widths:
-        widths = [max(len(str(row[i])) for row in [headers] + data) + 2 for i in range(len(headers))]
-
-    header_row = "".join(f"{headers[i]:<{widths[i]}}" for i in range(len(headers)))
-    separator = "".join("-" * width for width in widths)
-
-    rows = [header_row, separator]
-    for row in data:
-        rows.append("".join(f"{str(row[i]):<{widths[i]}}" for i in range(len(row))))
-
-    return "\n".join(rows)

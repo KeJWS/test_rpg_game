@@ -10,6 +10,8 @@ from data.constants import DEBUG
 from inventory import Inventory_interface as interface
 from tools import command_parser as cp
 
+from rich.console import Console
+console = Console()
 
 # *标题菜单*
 def title_screen_selections():
@@ -63,7 +65,7 @@ def play(p=None):
     from extensions.give_initial_items import give_initial_items, apply_class_bonuses
     if p is None:
         p = player.Player("Test Player")
-        print(data.event_text.initial_event_text)
+        console.print(data.event_text.initial_event_text())
         give_initial_items(p)
         print(test.fx.yellow("\n[ 记得在库存 > 装备物品中装备这些物品 ]"))
     print()

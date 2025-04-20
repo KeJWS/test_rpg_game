@@ -11,6 +11,7 @@ import test.fx as fx
 
 console = Console()
 
+
 # *title_ui
 def title_screen():
     pannel = Panel.fit(
@@ -45,7 +46,7 @@ def show_stats(player):
     table.add_column("Value", justify="left")
     table.add_row("LV", f"{player.level}")
     table.add_row("EXP", f"{player.xp}/{player.xp_to_next_level}")
-    table.add_row("Money", f"{player.money} 💰")
+    table.add_row("Money", f"[yellow]{player.money}[/yellow] 💰")
     table.add_row("HP", f"[green]{player.stats['hp']}[/green]/[green]{player.stats['max_hp']}[/green]")
     table.add_row("MP", f"[blue]{player.stats['mp']}[/blue]/[blue]{player.stats['max_mp']}[/blue]")
     table.add_row("ATK / DEF", f"{player.stats['atk']} / {player.stats['def']}")
@@ -88,20 +89,21 @@ def show_equipment_info(player):
             print(f"    ---{equipment}---\n")
 
 def show_aptitudes(player):
-    display_aptitudes = (
-        f"==================================\n"
-        f"  POINTS: {player.aptitude_points}\n"
-        f"  SELECT AN APTITUDE\n"
-        f"----------------------------------\n"
-        f"      1 - STR (Current: {player.aptitudes['str']})\n"
-        f"      2 - DEX (Current: {player.aptitudes['dex']})\n"
-        f"      3 - INT (Current: {player.aptitudes['int']})\n"
-        f"      4 - WIS (Current: {player.aptitudes['wis']})\n"
-        f"      5 - CONST (Current: {player.aptitudes['const']})\n"
-        f"      Q - Quit menu\n"
-        f"----------------------------------\n"
+    pannel = Panel.fit(
+        Text(
+        f"\n1 - STR (Current: {player.aptitudes['str']})\n"
+        f"2 - DEX (Current: {player.aptitudes['dex']})\n"
+        f"3 - INT (Current: {player.aptitudes['int']})\n"
+        f"4 - WIS (Current: {player.aptitudes['wis']})\n"
+        f"5 - CONST (Current: {player.aptitudes['const']})\n"
+        f"Q - Quit menu\n",
+        justify="left"
+        ),
+        title="Select an aptitude",
+        subtitle=f"Point: {player.aptitude_points}",
+        border_style="bold green"
     )
-    print(display_aptitudes)
+    console.print(pannel)
 
 def show_skills(player):
     spell_table = Table(title="Spells", box=box.SIMPLE)
@@ -169,25 +171,19 @@ def select_objective(target):
     print("             Select an objective:")
     print("-------------------------------------------------")
     for index, t in enumerate(target, start=1):
-        print(f"{index} - {t.name} - HP: {fx.GREEN}{t.stats['hp']}/{t.stats['max_hp']}{fx.END}")
+        print(f"{index} - {t.name} - HP: {fx.RED}{t.stats['hp']}/{t.stats['max_hp']}{fx.END}")
     print("-------------------------------------------------")
 
 
 # *shop_ui
 def shop_menu(player):
-    display_shop_menu_text = (
-        "=================================================\n"
-        f"          SHOP - 💰: {player.money}\n"
-        "-------------------------------------------------\n"
-        "           B  - Buy Items\n"
-        "           S  - Sell Items\n"
-        "           T  - Talk\n"
-        "           Ua - Unequip all\n"
-        "           Si - Show inventory\n"
-        "           E  - Exit"
+    pannel = Panel.fit(
+        Text("\nB - Buy Items\nS - Sell Items\nT - Talk\nUa - Unequip all\nSi - Show inventory\nE - Exit\n", justify="left"),
+        title="Use letter keys to select",
+        subtitle=f"SHOP - 💰: {player.money}",
+        border_style="bold green",
     )
-    print(display_shop_menu_text)
-    fx.divider()
+    console.print(pannel)
 
 def shop_buy(player):
     display_shop_buy = (
@@ -320,25 +316,22 @@ def map_menu(player):
 
 
 def debug_show_stats(player):
-    display_stats = (
-        f"===== {player.name} 的详细数据 =====\n"
-        f"等级: {player.level} ({player.xp}/{player.xp_to_next_level} XP)\n"
-        f"职业: {player.class_name}\n"
-        f"金钱: {player.money} 枚硬币\n"
-        f"生命值: {player.stats['hp']}/{player.stats['max_hp']}\n"
-        f"魔法值: {player.stats['mp']}/{player.stats['max_mp']}\n"
-        f"\n--- 战斗属性 ---\n"
-        f"攻击力: {player.stats['atk']}\n"
-        f"防御力: {player.stats['def']}\n"
-        f"魔法攻击: {player.stats['mat']}\n"
-        f"魔法防御: {player.stats['mdf']}\n"
-        f"敏捷: {player.stats['agi']}\n"
-        f"幸运: {player.stats['luk']}\n"
-        f"暴击倍率: {player.stats['crit']}\n"
-        f"抗暴击: {player.stats['anti_crit']}\n"
-        f"\n可用能力点: {player.aptitude_points}\n"
-    )
-    print(display_stats)
+    table = Table(title=f"[bold]{player.name}[/bold] 状态", box=box.ROUNDED)
+    table.add_column("属性", style="bold cyan")
+    table.add_column("数值", style="bold white")
+    table.add_row("等级", str(player.level))
+    table.add_row("经验", f"{player.xp}/{player.xp_to_next_level}")
+    table.add_row("职业", f"{player.class_name}")
+    table.add_row("金钱", f"[yellow]{player.money}G[/yellow]")
+    table.add_row("HP", f"[green]{player.stats["hp"]}/{player.stats["max_hp"]}[/green]")
+    table.add_row("MP", f"[blue]{player.stats["mp"]}/{player.stats["max_mp"]}[/blue]")
+    table.add_row("攻击 / 防御", f"{player.stats['atk']} / {player.stats['def']}")
+    table.add_row("魔攻 / 魔防", f"{player.stats['mat']} / {player.stats['mdf']}")
+    table.add_row("敏捷 / 幸运", f"{player.stats['agi']} / {player.stats['luk']}")
+    table.add_row("暴击", str(player.stats["crit"]))
+    table.add_row("抗暴击", str(player.stats["anti_crit"]))
+    table.add_row("能力点", str(player.aptitude_points))
+    console.print(table)
 
 def backpack_item_stats(inv):
     print("=== 背包物品统计 ===")
@@ -357,14 +350,6 @@ def backpack_item_stats(inv):
     print(f"魔法书: {item_counts['Grimoire']} 本")
     print(f"其他物品: {item_counts['Other']} 个")
     print(f"\n总计: {total_items} 件物品")
-
-def create_bar(value, max_value, width=20, char="█", empty_char="░"):
-    """创建一个文本进度条"""
-    if max_value <= 0:
-        return empty_char * width
-
-    fill_width = int(width * (value / max_value))
-    return char * fill_width + empty_char * (width - fill_width)
 
 def display_battle_stats(attacker, defender):
     from data.constants import DEBUG

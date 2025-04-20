@@ -224,4 +224,4 @@ class Player(combat.Battler):
                 q.status = "Not Active"
 
         print(fx.cyan(f"你以 Lv.{self.level} 重生，保留了 {self.money} 金币和背包物品!"))
-        self.inventory.show_inventory_item()
+        interface(self.inventory).show_inventory();

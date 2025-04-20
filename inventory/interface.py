@@ -3,13 +3,18 @@ from test.clear_screen import clear_screen
 import inventory.utils as utils
 from inventory.equipment import Equipment
 
+from rich.console import Console
+console = Console()
+
 class Inventory_interface:
     def __init__(self, inventory):
         self.inventory = inventory
 
     def show_inventory(self):
         print(f"{fx.BOLD_UNDERLINED}背包内容:{fx.END}")
-        print(self.inventory.get_formatted_inventory_table())
+        table_panel, summary_text = self.inventory.get_formatted_inventory_table()
+        console.print(table_panel)
+        console.print(summary_text)
 
     def drop_item(self):
         if not self.inventory.items:
