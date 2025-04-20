@@ -1,10 +1,9 @@
+import math
 from rich.console import Console
 from rich.table import Table
 from rich.panel import Panel
 from rich.text import Text
 from rich import box
-
-import math
 
 from test.clear_screen import clear_screen
 import test.fx as fx

@@ -100,7 +100,6 @@ def combat(my_player, enemies):
     allies = [my_player]
     battlers = define_battlers(allies, enemies) # 参与战斗的单位（盟友 + 敌人）
 
-    # 统计敌人掉落的经验值和金钱
     enemy_exp = 0
     enemy_money = 0
 
@@ -160,7 +159,7 @@ def combat(my_player, enemies):
                         check_if_dead(allies, enemies, battlers)
                 else:
                     if len(allies) > 0:
-                        # 目前敌人只会进行普通攻击，未来可扩展为完整的AI逻辑
+                        # 目前敌人只会进行普通攻击
                         random_ally = random.choice(allies)
                         battler.normal_attack(random_ally)
                         check_if_dead(allies, enemies, battlers)
@@ -172,10 +171,8 @@ def combat(my_player, enemies):
     if my_player.alive:
         # 移除所有增益和减益效果
         check_turns_buffs_and_debuffs(my_player, True)
-        # 给予玩家经验值和金钱奖励
         my_player.add_exp(enemy_exp)
         my_player.add_money(enemy_money)
-        # 重置连招点数
         my_player.combo_points = 0
         recover_hp_and_mp(my_player, 0.25)
         return False

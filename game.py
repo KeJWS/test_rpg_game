@@ -36,6 +36,7 @@ def inventory_selections(player):
         text.inventory_menu()
 
 
+# *存档相关*
 def save_load_game(player):
     if not DEBUG:
         return

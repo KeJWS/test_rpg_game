@@ -55,6 +55,7 @@ class World_map:
         forest = self._create_forest(ascii_art_dict)
         town = self._create_town(ascii_art_dict)
         mountain = self._create_mountain(ascii_art_dict)
+        swap = self._create_swamp_herbalist(ascii_art_dict)
         # redflame_canyon = self._create_redflame_canyon(ascii_art_dict)
         # snowlands = self._create_snowlands(ascii_art_dict)
         # forgotten_ruins = self._create_forgotten_ruins(ascii_art_dict)
@@ -63,6 +64,7 @@ class World_map:
             "town": town,
             "forest": forest,
             "mountain": mountain,
+            "swap": swap,
             # "redflame canyon": redflame_canyon,
             # "snowlands": snowlands,
             # "forgotten ruins": forgotten_ruins,
@@ -95,7 +97,7 @@ class World_map:
             description="一片神秘的森林, 低级怪物在这里游荡。适合初学者冒险, \n不过要小心这里的森林守卫者",
             danger_level=1,
             possible_enemies=forest_enemies,
-            shop_events=[events.shop_itz_magic],
+            shop_events=[],
             heal_events=[events.heal_medussa_statue],
             special_events=[],
             quests=[fight_against_slime_quest, fight_against_slime_king_quest],
@@ -148,6 +150,25 @@ class World_map:
             ascii_art=ascii_art_dict.get("龙脊山", "")
         )
         return mountain
+
+    def _create_swamp_herbalist(self, ascii_art_dict):
+        swamp_enemies = {
+            "forest_spider": (1, 7),
+            "poison_frog": (1, 9),
+            "giant_slime": (3, 15),
+        }
+        swamp = Region(
+            name="迷雾沼泽",
+            description="一片危险的沼泽地带，充满毒气和致命的生物。地面松软，行动困难。",
+            danger_level=3,
+            possible_enemies=swamp_enemies,
+            shop_events=[events.shop_itz_magic],
+            heal_events=[events.heal_medussa_statue],
+            special_events=[],
+            quests=[],
+            ascii_art=ascii_art_dict.get("迷雾沼泽", "")
+        )
+        return swamp
 
     def _create_redflame_canyon(self, ascii_art_dict):
         fire_canyon_enemies = {}

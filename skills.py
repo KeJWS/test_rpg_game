@@ -204,8 +204,8 @@ spell_inferno = Damage_spell("地狱火", "对所有敌人造成伤害", 50, 55,
 spell_skeleton_summoning = Summon_spell("召唤骷髅", "召唤一个骷髅战士", 0, 42, False, "allies", allies.Summoned_skeleton)
 spell_fire_spirit_summoning = Summon_spell("召唤火精灵", "召唤一个火精灵", 0, 78, False, "allies", allies.Summoned_fire_spirit)
 
-combo_slash1 = Slash_combo("斩击连击 I", "连续攻击敌人3次", 3, True, None, 3)
-combo_slash2 = Slash_combo("斩击连击 II", "连续攻击敌人4次", 3, True, None, 4)
+combo_slash1 = Slash_combo("斩击连击 I", "连续攻击敌人2次", 3, True, None, 2)
+combo_slash2 = Slash_combo("斩击连击 II", "连续攻击敌人3次", 3, True, None, 3)
 combo_armor_breaker1 = Armor_breaking_combo("破甲 I", "破坏敌人护甲", 2, True, None, -0.3)
 combo_armor_breaker2 = Armor_breaking_combo("破甲 II", "破坏敌人护甲", 3, True, None, -0.5)
 combo_vampire_stab1 = Vampirism_combo("吸血之刺 I", "吸取敌人生命", 2, True, None, 0.35)

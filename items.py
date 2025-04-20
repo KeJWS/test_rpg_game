@@ -145,6 +145,7 @@ itz_magic_item_set = [
     equipment_data["sage_tunic"],
     equipment_data["sage_staff"],
     equipment_data["student_robes"],
+    equipment_data["mana_charm"],
     *grimoires[:6],
     equipment_data["ring_of_magic"],
     mat_small_gems,

@@ -67,9 +67,9 @@ def handle_shop_command(shop_name, shop_data, tokens, player):
 
 def handle_p_command(tokens, player):
     subcommand_map = {
-        "-hp": lambda: print(f"HP: {player.stats['hp']}/{player.stats['max_hp']}"),
-        "-mp": lambda: print(f"MP: {player.stats['mp']}/{player.stats['max_mp']}"),
-        "-gold": lambda: print(f"💰: {player.gold}"),
+        "-hp": screen_wrapped(lambda: print(f"HP: {player.stats['hp']}/{player.stats['max_hp']}")),
+        "-mp": screen_wrapped(lambda: print(f"MP: {player.stats['mp']}/{player.stats['max_mp']}")),
+        "-gold": screen_wrapped(lambda: print(f"💰: {player.money}")),
         "-lr": screen_wrapped(lambda: events.life_recovery_crystal(player)),
         "-se": screen_wrapped(lambda: text.show_equipment_info(player)),
         "-sk": screen_wrapped(lambda: text.show_skills(player)),
