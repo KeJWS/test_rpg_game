@@ -1,10 +1,26 @@
 import random
+import ascii_magic
+import os
+
+from rich.console import Console
 
 import test.fx as fx
 from inventory.item import Item
 
+console = Console()
+
+DEFAULT_EQUIPMENT_IMAGES = {
+    "weapon": "data/equipments/default_weapon.png",
+    "armor": "data/equipments/default_armor.png",
+    "shield": "data/equipments/default_shield.png",
+    "head": "data/equipments/default_head.png",
+    "hand": "data/equipments/default_hand.png",
+    "foot": "data/equipments/default_foot.png",
+    "accessory": "data/equipments/default_accessory.png",
+}
+
 class Equipment(Item):
-    def __init__(self, name, description, amount, individual_value, object_type, stat_change_list, combo, ascii_art, level, tags):
+    def __init__(self, name, description, amount, individual_value, object_type, stat_change_list, combo, level, tags, image_path):
         super().__init__(name, description, amount, individual_value, object_type)
         self.base_stats = stat_change_list.copy()
         self.stat_change_list = stat_change_list
@@ -14,10 +30,15 @@ class Equipment(Item):
         self.durability = 100  # 耐久度
         self.max_durability = 100
         self.enhancement_level = 0
-        self.ascii_art = ascii_art or ""
+        default_path = DEFAULT_EQUIPMENT_IMAGES.get(object_type, "data/equipments/default_unknown.png")
+        self.image_path = image_path or default_path
 
-    def show_ascii_art(self):
-        return self.ascii_art
+    def display_image_as_ascii(self):
+        if not self.image_path or not os.path.exists(self.image_path):
+            return "[图片缺失]"
+        art = ascii_magic.AsciiArt.from_image(self.image_path)
+        ascii_str = art.to_ascii(columns=32)
+        return ascii_str
 
     def show_info(self):
         combo_name = fx.yellow(self.combo.name) if self.combo else ""
@@ -38,8 +59,8 @@ class Equipment(Item):
 
     def get_detailed_info(self):
         info = super().get_detailed_info()
-        ascii_art = self.show_ascii_art()
-        info += fx.cyan(f"{ascii_art}\n")
+        ascii_art = self.display_image_as_ascii()
+        info += f"{ascii_art}\n"
         info += f"耐久: {self.durability}/{self.max_durability} [强化等级: +{self.enhancement_level}]\n"
         info += "属性加成:\n"
         for stat, value in self.get_effective_stats().items():
@@ -124,7 +145,7 @@ class Equipment(Item):
 
     def clone(self, amount):
         new_eq = Equipment(self.name, self.description, amount, self.individual_value, self.object_type, self.base_stats.copy(), 
-                           self.combo, self.ascii_art, self.level, self.tags.copy())
+                           self.combo, self.level, self.tags.copy(), self.image_path)
         new_eq.enhancement_level = 0
         new_eq.durability = self.durability
         return new_eq

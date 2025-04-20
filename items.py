@@ -17,7 +17,7 @@ def debug_print(*args, **kwargs):
 
 # ASCII 图库加载
 @lru_cache(maxsize=1)
-def load_ascii_art_library(filepath="data/ascii_art_equipment.txt"):
+def load_ascii_art_library(filepath):
     ascii_art_dict = {}
     current_key = None
     current_lines = []
@@ -35,14 +35,12 @@ def load_ascii_art_library(filepath="data/ascii_art_equipment.txt"):
             elif current_key:
                 current_lines.append(line)
 
-    print()
     debug_print(f"加载 ASCII 艺术资源，共加载 {len(ascii_art_dict)} 项")
     return ascii_art_dict
 
 # 装备数据加载
 def load_equipment_from_csv(filepath="data/equipments.csv"):
     equipment_dict = {}
-    ascii_art_dict = load_ascii_art_library()
     with open(filepath, newline='', encoding='utf-8') as csvfile:
         reader = csv.DictReader(csvfile)
         for row in reader:
@@ -55,11 +53,11 @@ def load_equipment_from_csv(filepath="data/equipments.csv"):
             stat_change_list = ast.literal_eval(row["stat_change_list"])
             combo_object = getattr(skills, row["combo"], None)
 
-            ascii_art = ascii_art_dict.get(name, "")
+            image_path = row["image_path"]
             level = int(row["level"]) if row["level"].strip() else 1
             tags = row.get("tags", "").split(",") if row.get("tags") else []
 
-            eq = inventory.Equipment(name_zh, description, amount, individual_value, object_type, stat_change_list, combo_object, ascii_art, level, tags)
+            eq = inventory.Equipment(name_zh, description, amount, individual_value, object_type, stat_change_list, combo_object, level, tags, image_path)
             equipment_dict[name] = eq
 
         debug_print(f"从 CSV 加载装备数据，共加载 {len(equipment_dict)} 项装备")

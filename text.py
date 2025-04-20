@@ -1,21 +1,25 @@
+from rich.console import Console
+from rich.table import Table
+from rich.panel import Panel
+from rich.text import Text
+from rich import box
+
 import math
 
 from test.clear_screen import clear_screen
 import test.fx as fx
 
+console = Console()
 
 # *title_ui
 def title_screen():
-    display_content = (
-        "-----------------------\n"
-        "     Text RPG Game     \n"
-        "-----------------------\n"
-        "       1 - Play\n"
-        "       2 - About\n"
-        "       3 - Quit\n"
-        "-----------------------\n"
+    pannel = Panel.fit(
+        Text("\nText RPG Game\n\n1 - Play\n2 - About\n3 - Quit\n", justify="center"),
+        title="Use number keys to select",
+        subtitle="welcome",
+        border_style="bold green",
     )
-    print(display_content)
+    console.print(pannel)
 
 def help_menu():
     print("    游戏作者: kwo, 以及 GPT(可能还是他功劳大些)。\n\
@@ -25,46 +29,52 @@ def help_menu():
 好了, 你可以再次启动了。")
 
 def play_menu():
-    display_content = (
-        "----------------------------------\n"
-        "       W - Walk\n"
-        "       S - See stats\n"
-        "       A - Aptitude\n"
-        "       I - Inventory\n"
-        "       Q - Quests\n"
-        "       M - Map\n"
-        "----------------------------------\n"
+    pannel = Panel.fit(
+        Text("\nText RPG Game\n\nW - Walk\nS - See stats\nA - Aptitude\nI - Inventory\nQ - Quests\nM - Map\n", justify="center"),
+        title="Use letter keys to select",
+        subtitle="Main Interface",
+        border_style="bold green",
     )
-    print(display_content)
+    console.print(pannel)
 
 
 # *player_ui
 def show_stats(player):
-    stats_template = (
-        f"==================================\n"
-        f"  STATS               💰: {player.money}\n"
-        f"----------------------------------\n"
-        f"      LV: {player.level}          EXP: {player.xp}/{player.xp_to_next_level}\n"
-        f"      {fx.RED}HP: {player.stats['hp']}/{player.stats['max_hp']}{fx.END}    {fx.BLUE}MP: {player.stats['mp']}/{player.stats['max_mp']}{fx.END}\n"
-        f"      ATK: {player.stats['atk']}        DEF: {player.stats['def']}\n"
-        f"      MAT: {player.stats['mat']}        MDF: {player.stats['mdf']}\n"
-        f"      AGI: {player.stats['agi']}        LUK: {player.stats['luk']}\n"  
-        f"----------------------------------\n"
-        f"  APTITUDES\n"
-        f"----------------------------------\n"
-        f"      STR: {player.aptitudes['str']}        DEX: {player.aptitudes['dex']}\n"
-        f"      INT: {player.aptitudes['int']}        WIS: {player.aptitudes['wis']}\n"
-        f"      CONST: {player.aptitudes['const']}\n"
-        f"----------------------------------\n"
-        f"  EQUIPMENT\n"
-        f"----------------------------------"
+    table = Table(title=f"{player.name}'s Stats", box=box.ROUNDED, border_style="bold green")
+    table.add_column("Attribute", justify="right")
+    table.add_column("Value", justify="left")
+    table.add_row("LV", f"{player.level}")
+    table.add_row("EXP", f"{player.xp}/{player.xp_to_next_level}")
+    table.add_row("Money", f"{player.money} 💰")
+    table.add_row("HP", f"[green]{player.stats['hp']}[/green]/[green]{player.stats['max_hp']}[/green]")
+    table.add_row("MP", f"[blue]{player.stats['mp']}[/blue]/[blue]{player.stats['max_mp']}[/blue]")
+    table.add_row("ATK / DEF", f"{player.stats['atk']} / {player.stats['def']}")
+    table.add_row("MAT / MDF", f"{player.stats['mat']} / {player.stats['mdf']}")
+    table.add_row("AGI / LUK", f"{player.stats['agi']} / {player.stats['luk']}")
+    console.print(table)
+
+    aptitudes = Table(title="Aptitudes", box=box.ROUNDED, border_style="bold green")
+    aptitudes.add_column("Name")
+    aptitudes.add_column("Value")
+    for k, v in player.aptitudes.items():
+        aptitudes.add_row(k.upper(), str(v))
+    console.print(aptitudes)
+
+    eq_table = Table(title="Equipment", box=box.ROUNDED, border_style="bold green")
+    eq_table.add_column("Slot")
+    eq_table.add_column("Item")
+    for slot, item in player.equipment.items():
+        eq_table.add_row(slot, item.name if item else "-")
+    console.print(eq_table)
+
+def inventory_menu():
+    pannel = Panel.fit(
+        Text("\nU - Use an item\nD - Drop an item\nE - Equip an item\nQ - Quit\n", justify="center"),
+        title="Use letter keys to select",
+        subtitle="Inventory",
+        border_style="bold green",
     )
-    print(stats_template)
-    for equipment in player.equipment:
-        if player.equipment[equipment] is not None:
-            print(f"    {equipment}: {player.equipment[equipment].name}")
-        else:
-            print(f"    {equipment}:")
+    console.print(pannel)
 
 def show_equipment_info(player):
     print("=================================================")
@@ -93,55 +103,52 @@ def show_aptitudes(player):
     )
     print(display_aptitudes)
 
-def inventory_menu():
-    display_inventory = (
-        "       U  - Use an item\n"
-        "       D  - Drop an item\n"
-        "       E  - Equip an item\n"
-        "       Q  - Quit\n"
-        "================================================="
-    )
-    fx.divider()
-    print(display_inventory)
-
 def show_skills(player):
-    print("========== Spell Skills ==========")
-    if player.spells:
-        for spell in player.spells:
-            print(f"• {spell.name} - {spell.description} ({fx.GREEN}MP: {spell.cost}, Power: {spell.power}{fx.END})")
-    else:
-        print("暂无法术")
-    print("\n========== Combo Skills ==========")
-    if player.combos:
-        for combo in player.combos:
-            print(f"• {combo.name} - {combo.description} ({fx.YELLO}CP: {combo.cost}{fx.END})")
-    else:
-        print("暂无连招")
+    spell_table = Table(title="Spells", box=box.SIMPLE)
+    spell_table.add_column("Name", style="magenta")
+    spell_table.add_column("Cost")
+    spell_table.add_column("Power")
+    spell_table.add_column("Description")
+
+    for spell in player.spells:
+        spell_table.add_row(spell.name, str(spell.cost), str(spell.power), spell.description)
+
+    combo_table = Table(title="Combos", box=box.SIMPLE)
+    combo_table.add_column("Name", style="yellow")
+    combo_table.add_column("Cost")
+    combo_table.add_column("Description")
+
+    for combo in player.combos:
+        combo_table.add_row(combo.name, str(combo.cost), combo.description)
+
+    console.print(spell_table)
+    console.print(combo_table)
 
 
 # *combat_ui
 def combat_menu(player, allies, enemies):
     print("=================================================")
     print(f"【{player.name}】 Lv.{getattr(player, 'level', '?')} - CP: {player.combo_points}")
-    print_status_bar("HP", player.stats['hp'], player.stats['max_hp'], fx.red)
-    print_status_bar("MP", player.stats['mp'], player.stats['max_mp'], fx.blue)
+    print_status_bar("HP", player.stats['hp'], player.stats['max_hp'], "green")
+    print_status_bar("MP", player.stats['mp'], player.stats['max_mp'], "blue")
     for ally in allies:
         if ally != player:
             print(f"【{ally.name}】 Lv.{getattr(ally, 'level', '?')}")
-            print_status_bar("HP", ally.stats['hp'], ally.stats['max_hp'], fx.yellow)
+            print_status_bar("HP", ally.stats['hp'], ally.stats['max_hp'], "yellow")
     for enemy in enemies:
         print(f"【{enemy.name}】 Lv.{getattr(enemy, 'level', '?')}")
-        print_status_bar("HP", enemy.stats['hp'], enemy.stats['max_hp'], fx.green)
+        print_status_bar("HP", enemy.stats['hp'], enemy.stats['max_hp'], "red")
     print("-------------------------------------------------")
     print("         A - Attack  C - Combos")
     print("         S - Spells  D - Defense             ")
     print("         E - Escape")
     print("-------------------------------------------------")
 
-def print_status_bar(label, current, max_value, color_func):
-    print("┌────────────────────┐")
-    print(f"│{color_func(create_bar(current, max_value))}│{color_func(f' {label}: {current}/{max_value}')}")
-    print("└────────────────────┘")
+def print_status_bar(label, current, max_value, color: str):
+    bar_len = 20
+    filled_len = int(bar_len * current / max_value)
+    bar = f"[{color}]{'█' * filled_len}[/{color}]{'.' * (bar_len - filled_len)}"
+    console.print(f"{label}: {bar} {current}/{max_value}")
 
 def spell_menu(player):
     print("=================================================")
