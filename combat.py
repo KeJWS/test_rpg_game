@@ -16,7 +16,7 @@ class Battler():
 
     def take_dmg(self, dmg):
         from test.fx import red, bold, yellow
-        dmg = max(dmg, 0)
+        dmg = max(round(dmg * random.uniform(0.9, 1.1)), 5)
         self.stats["hp"] -= dmg
         battle_log(f"{self.name} 受到伤害 {yellow(dmg)}", "dmg")
         time.sleep(0.3)

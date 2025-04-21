@@ -279,7 +279,7 @@ def get_quest_region(quest_obj):
 
 def map_menu(player):
     import map
-    print(map.world_map.get_current_region_info())
+    map.world_map.get_current_region_info()
     available_quests = map.world_map.show_region_quests(player)
     print("\n可前往地区:")
     print(map.world_map.list_available_regions())

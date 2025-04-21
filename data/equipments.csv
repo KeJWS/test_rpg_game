@@ -41,7 +41,7 @@ id,name,name_zh,description,amount,individual_value,object_type,stat_change_list
 37,-> 高级装甲,Lv3,,,0,armor,{},,,,
 38,iron_armor,粗制铁甲,粗铁打造的铁制护甲,,190,armor,"{'max_hp': 25, 'def': 10}",,3,armor,
 39,sage_tunic,智者上衣,一件适合智者的长上衣，增强法术效果,,225,armor,"{'max_mp': 20, 'def': 5, 'mdf': 7}",,3,magic,
-40,thief_armor,盗贼盔甲,轻便的盔甲，适合潜行和敏捷的动作,,223,armor,"{'def': 7, 'agi': 5, 'luk': 5, 'anti_crit': 5}",,3,armor,
+40,thief_armor,盗贼盔甲,轻便的盔甲，适合潜行和敏捷的动作,,223,armor,"{'def': 7, 'agi': 5, 'luk': 7, 'anti_crit': 5}",,3,armor,
 41,bronze_breastplate,青铜胸甲,一件坚固的整体成型的青铜胸甲,,379,armor,"{'def': 17, 'mdf': 5, 'agi': -5, 'anti_crit': -3}",,3,,
 42,armor_blarmor,鞣制皮甲,一件经过化学鞣制硬化的厚实皮甲。轻巧而耐用,,365,armor,"{'max_hp': 15, 'def': 12, 'agi': 3}",,3,,
 43,-> 高级护盾,Lv3,,,0,shield,{},,,,

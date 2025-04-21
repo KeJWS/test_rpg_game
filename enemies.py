@@ -29,7 +29,7 @@ enemy_variants = {
     },
     "shield": {
         "name_suffix": "•护盾",
-        "stat_multiplier": {"max_hp": 1.5,"def": 1.2, "mdf": 1.2, "agi": 0.5},
+        "stat_multiplier": {"max_hp": 1.5, "hp": 1.5, "def": 1.2, "mdf": 1.2, "agi": 0.5},
         "stat_bonus": {"def": 15, "mdf": 15, "agi": -5},
         "xp_multiplier": 2.1,
         "gold_multiplier": 1.5,

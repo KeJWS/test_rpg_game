@@ -113,6 +113,25 @@ class Healing_event(Event):
         elif accept == "n":
             print(self.refuse)
 
+class Damage_event(Event):
+    def __init__(self, name, encounter_text, success_text, fail_text, success_chance, damage_amount) -> None:
+        super().__init__(name, success_chance, False)
+        self.encounter = encounter_text
+        self.success = success_text
+        self.fail = fail_text
+        self.damage_amount = damage_amount
+
+    def effect(self, player):
+        print(self.encounter)
+        accept = input(">").lower()
+        while accept not in ["y", "n"]:
+            accept = input("> ").lower()
+        if accept == "y" and self.check_success():
+            print(self.success)
+        else:
+            print(self.fail)
+            player.take_dmg(self.damage_amount)
+
 class Inn_event(Healing_event):
     def __init__(self, name, encounter_text, success_text, fail_text, refuse_text, healing_amount, cost) -> None:
         super().__init__(name, encounter_text, success_text, fail_text, refuse_text, 100, False, healing_amount)

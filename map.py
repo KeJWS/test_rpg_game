@@ -3,9 +3,16 @@ from dataclasses import dataclass
 from typing import List, Dict, Tuple, Optional
 from copy import deepcopy
 
+from rich.console import Console
+from rich.panel import Panel
+from rich.text import Text
+from rich.table import Table
+
 import enemies, events, items, quest
 import test.fx as fx
 import data.event_text as event_text
+
+console = Console()
 
 @dataclass
 class Region:
@@ -49,171 +56,39 @@ class World_map:
 
         self.regions["forest"].special_events.append(forest_boss_combat)
 
+        poisonous_swamp_encounter = """
+你不小心踩入一片冒着绿色气泡的沼泽地带。突然, 一股恶臭的气体从沼泽中涌出！
+要屏住呼吸快速离开吗？(y/n)"""
+        poisonous_swamp_success = "你成功憋住了呼吸, 迅速逃离了毒气区域！"
+        poisonous_swamp_fail = "你吸入了一些毒气, 感到一阵头晕目眩, 生命值减少！"
+        # poisonous_swamp_refuse = "你决定绕道而行, 避开了危险的沼泽地带。"
+
+        swamp_poison_event = events.Damage_event(
+            "毒沼气", 
+            poisonous_swamp_encounter,
+            poisonous_swamp_success,
+            poisonous_swamp_fail,
+            30, 50
+        )
+
+        if "swamp" in self.regions:
+            self.regions["swamp"].special_events.append(swamp_poison_event)
+
     def _initialize_regions(self):
+        import map_data.region_factory as region_factory
         ascii_art_dict = items.load_ascii_art_library("data/ascii_art_map.txt")
 
-        forest = self._create_forest(ascii_art_dict)
-        town = self._create_town(ascii_art_dict)
-        mountain = self._create_mountain(ascii_art_dict)
-        swap = self._create_swamp_herbalist(ascii_art_dict)
-        # redflame_canyon = self._create_redflame_canyon(ascii_art_dict)
-        # snowlands = self._create_snowlands(ascii_art_dict)
-        # forgotten_ruins = self._create_forgotten_ruins(ascii_art_dict)
-
         self.regions = {
-            "town": town,
-            "forest": forest,
-            "mountain": mountain,
-            "swap": swap,
-            # "redflame canyon": redflame_canyon,
-            # "snowlands": snowlands,
-            # "forgotten ruins": forgotten_ruins,
+            "town": region_factory.create_town(ascii_art_dict),
+            "forest": region_factory.create_forest(ascii_art_dict),
+            "mountain": region_factory.create_mountain(ascii_art_dict),
+            "swamp": region_factory.create_swamp_herbalist(ascii_art_dict),
+            # "redflame canyon": region_factory.create_redflame_canyon(ascii_art_dict),
+            # "snowlands": region_factory.create_snowlands(ascii_art_dict),
+            # "forgotten ruins": region_factory.create_forgotten_ruins(ascii_art_dict),
         }
 
         self.current_region = self.regions["town"]
-
-    def _create_forest(self, ascii_art_dict):
-        forest_enemies = {
-            "slime": (1, 3),
-            "imp": (1, 5),
-            "forest_spider": (2, 7),
-            "poison_frog": (2, 9),
-            "giant_slime": (4, 23),
-            "shadow_wolf": (8, 16),
-        }
-        fight_against_slime_combat = events.Fixed_combat_event("史莱姆狩猎", enemies.enemy_list_fight_against_slime)
-        fight_against_slime_quest = quest.Quest("史莱姆狩猎",
-                                             event_text.quest_fight_against_slime_text,
-                                             event_text.shop_fight_against_slime_text,
-                                             50, 50, items.equipment_data["zweihander"], fight_against_slime_combat, 3)
-
-        fight_against_slime_king_combat = events.Fixed_combat_event("史莱姆之王", enemies.enemy_list_fight_against_slime_king)
-        fight_against_slime_king_quest = quest.Quest("史莱姆之王", 
-                                             event_text.quest_fight_against_slime_king_text, 
-                                             event_text.shop_fight_against_slime_king_text, 
-                                             170, 230, items.equipment_data["long_bow"], fight_against_slime_king_combat, 9)
-        forest = Region(
-            name="雾林",
-            description="一片神秘的森林, 低级怪物在这里游荡。适合初学者冒险, \n不过要小心这里的森林守卫者",
-            danger_level=1,
-            possible_enemies=forest_enemies,
-            shop_events=[],
-            heal_events=[events.heal_medussa_statue],
-            special_events=[],
-            quests=[fight_against_slime_quest, fight_against_slime_king_quest],
-            ascii_art=ascii_art_dict.get("雾林", "")
-        )
-        return forest
-
-    def _create_town(self, ascii_art_dict):
-        town = Region(
-            name="安全镇",
-            description="一个和平的小镇, 这里没有敌人, 但有许多商店和休息的地方",
-            danger_level=0,
-            possible_enemies={},
-            shop_events=[events.shop_jack_weapon, events.shop_anna_armor],
-            heal_events=[events.inn_event],
-            special_events=[],
-            quests=[],
-            ascii_art=ascii_art_dict.get("安全镇", "")
-        )
-        return town
-
-    def _create_mountain(self, ascii_art_dict):
-        caesarus_bandit_combat = events.Fixed_combat_event("凯撒鲁斯与他的强盗", enemies.enemy_list_caesarus_bandit)
-        caesarus_bandit_quest = quest.Quest("凯撒鲁斯与他的强盗", 
-                                          event_text.quest_caesarus_bandit_text, 
-                                          event_text.shop_quest_caesarus_bandits, 
-                                          150, 150, None, caesarus_bandit_combat, 5)
-
-        wolf_king_combat = events.Fixed_combat_event("夜行狼王", enemies.enemy_list_fight_against_wolf_king)
-        wolf_king_quest = quest.Quest("夜行狼王", 
-                                          event_text.quest_fight_against_wolf_king_text, 
-                                          event_text.shop_fight_against_wolf_king_text, 
-                                          350, 700, items.equipment_data["wolf_king_proof"], wolf_king_combat, 13)
-        mountain_enemies = {
-            "golem": (1, 7),
-            "skeleton": (3, 10),
-            "bandit": (4, 12),
-            "wild_boar": (6, 15),
-            "wolf": (8, 22),
-        }
-        mountain = Region(
-            name="龙脊山",
-            description="危险的山脉地带, 强盗和山地怪物出没。",
-            danger_level=2,
-            possible_enemies=mountain_enemies,
-            shop_events=[events.shop_rik_armor],
-            heal_events=[events.heal_medussa_statue],
-            special_events=[],
-            quests=[caesarus_bandit_quest, wolf_king_quest],
-            ascii_art=ascii_art_dict.get("龙脊山", "")
-        )
-        return mountain
-
-    def _create_swamp_herbalist(self, ascii_art_dict):
-        swamp_enemies = {
-            "forest_spider": (1, 7),
-            "poison_frog": (1, 9),
-            "giant_slime": (3, 15),
-        }
-        swamp = Region(
-            name="迷雾沼泽",
-            description="一片危险的沼泽地带，充满毒气和致命的生物。地面松软，行动困难。",
-            danger_level=3,
-            possible_enemies=swamp_enemies,
-            shop_events=[events.shop_itz_magic],
-            heal_events=[events.heal_medussa_statue],
-            special_events=[],
-            quests=[],
-            ascii_art=ascii_art_dict.get("迷雾沼泽", "")
-        )
-        return swamp
-
-    def _create_redflame_canyon(self, ascii_art_dict):
-        fire_canyon_enemies = {}
-        redflame_canyon = Region(
-            name="赤焰峡谷",
-            description="灼热干裂的峡谷, 有火元素和岩浆魔物出没。高温会持续削弱你的体力, 谨慎前行。",
-            danger_level=3,
-            possible_enemies=fire_canyon_enemies,
-            shop_events=[],
-            heal_events=[],
-            special_events=[],
-            quests=[],
-            ascii_art=ascii_art_dict.get("赤焰峡谷", "")
-        )
-        return redflame_canyon
-
-    def _create_snowlands(self, ascii_art_dict):
-        snowland_enemies = {}
-        snowlands = Region(
-            name="雪之边境",
-            description="一望无际的雪原, 雪怪和冰霜精灵在这片冰天雪地中游荡。\n风雪会干扰视线, 也会影响技能释放。",
-            danger_level=3,
-            possible_enemies=snowland_enemies,
-            shop_events=[],
-            heal_events=[],
-            special_events=[],
-            quests=[],
-            ascii_art=ascii_art_dict.get("雪之边境", "")
-        )
-        return snowlands
-
-    def _create_forgotten_ruins(self, ascii_art_dict):
-        ruins_enemies = {}
-        forgotten_ruins = Region(
-            name="遗忘遗迹",
-            description="一座尘封千年的古老遗迹, 据说隐藏着古代文明的魔导科技。\n机关重重, 还有被封印的魔像在此守卫。",
-            danger_level=4,
-            possible_enemies=ruins_enemies,
-            shop_events=[],
-            heal_events=[],
-            special_events=[],
-            quests=[],
-            ascii_art=ascii_art_dict.get("遗忘遗迹", "")
-        )
-        return forgotten_ruins
 
     def unclock_region(self, region_name):
         """解锁指定地区"""
@@ -232,13 +107,13 @@ class World_map:
     def get_current_region_info(self):
         """获取当前地区的信息"""
         if self.current_region:
-            return (
-                f"\n{fx.GREEN}{self.current_region.ascii_art}{fx.END}\n"
-                f"\n当前位置: {self.current_region.name}\n"
-                f"危险等级: {'★ ' * self.current_region.danger_level}\n"
-                f"{self.current_region.description}"
-            )
-        return "未知地区"
+            text = Text()
+            text.append(self.current_region.ascii_art + "\n\n", style="bold white")
+            text.append(f"危险等级: {'★ ' * self.current_region.danger_level}\n\n", style="bold red")
+            text.append(self.current_region.description, style="italic")
+            console.print(Panel.fit(text, title=f"当前位置: ", subtitle=self.current_region.name, border_style="bold green"))
+        else:
+            console.print("[red]未知地区[/red]")
 
     def list_available_regions(self):
         """列出所有可前往的地区"""

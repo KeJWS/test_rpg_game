@@ -57,6 +57,16 @@ class Inventory:
     def get_consumables(self):
         return self.get_items_by_type("consumable")
 
+    def show_inventory_item(self):
+        for index, item in enumerate(self.items, start=1):
+            print(f"{index} - {item.show_info()}")
+
+    def sort_items(self):
+        """整理背包物品，按类型和名称排序"""
+        self.items.sort(key=lambda item: (type(item).__name__, item.name))
+        print("背包已整理完成")
+        return True
+
     def get_formatted_inventory_table(self):
         """返回格式化的库存表格"""
         if not self.items:

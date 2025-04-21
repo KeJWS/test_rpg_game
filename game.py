@@ -2,11 +2,10 @@ import sys
 
 import text, player, map
 from test.clear_screen import enter_clear_screen, clear_screen
-from tools.save_system import save_game, get_save_list, load_game
+import tools.save_system as sl
 import test.fx
 import data.event_text
 
-from data.constants import DEBUG
 from inventory import Inventory_interface as interface
 from tools import command_parser as cp
 
@@ -38,6 +37,7 @@ def inventory_selections(player):
 
 # *存档相关*
 def save_load_game(player):
+    from data.constants import DEBUG
     if not DEBUG:
         return
     text.save_load_menu()
@@ -47,15 +47,15 @@ def save_load_game(player):
         if not save_name.strip():
             save_name = None
         player.unequip_all()
-        save_metadata = save_game(player, save_name)
+        save_metadata = sl.save_game(player, save_name)
         print(f"游戏已保存: {save_metadata['name']}")
         return player
     elif save_option == "l":
-        saves = get_save_list()
+        saves = sl.get_save_list()
         text.display_save_list(saves)
         save_index = int(input("> "))
         if save_index > 0 and save_index <= len(saves):
-            loaded_player = load_game(saves[save_index-1]['name'])
+            loaded_player = sl.load_game(saves[save_index-1]['name'])
             if loaded_player:
                 print(f"游戏已加载: {loaded_player.name} (等级: {loaded_player.level}, 职业: {loaded_player.class_name})")
                 return loaded_player
@@ -75,7 +75,7 @@ def play(p=None):
     game_loop(p)
 
 def game_loop(p):
-    print(map.world_map.get_current_region_info())
+    map.world_map.get_current_region_info()
     enter_clear_screen()
     event_chances = (65, 20, 15)  # 战斗、商店、治疗的概率
     while p.alive:
