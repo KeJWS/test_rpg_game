@@ -48,7 +48,6 @@ def give_initial_items(my_player):
     print(f"\n你选择了 {my_player.class_name} 职业")
 
 def apply_class_bonuses(my_player):
-    from combat import recover_hp_and_mp
     """根据职业给予初始属性加成"""
     class_bonuses = {
         "战士": {"max_hp": 50, "atk": 3, "def": 3},
@@ -67,7 +66,7 @@ def apply_class_bonuses(my_player):
                 print(fx.cyan(f"{stat} +{value}"))
             else:
                 print(fx.red(f"{stat} -{abs(value)}"))
-        recover_hp_and_mp(my_player, 1)
+        my_player.recover_mp(9999); my_player.heal(9999)
 
 def default_selection_warrior(my_player):
     items.basic_equipments["rusty_sword"].add_to_inventory_player(my_player.inventory)

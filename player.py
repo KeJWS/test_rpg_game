@@ -134,7 +134,8 @@ class Player(combat.Battler):
             self.stats["max_hp"] += 8
             self.stats["max_mp"] += 3
             self.aptitude_points +=1
-            combat.recover_hp_and_mp(self, 1)
+            self.recover_mp(9999)
+            self.heal(9999)
             print(fx.yellow(f"升级! 现在的等级是: {self.level}, 有 {self.aptitude_points} 个能力点"))
 
     def exp_required_formula(self): # 经验需求计算公式，可调整

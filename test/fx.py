@@ -49,8 +49,7 @@ def dot_loading(text="正在行动", dots=3, delay=0.3):
     for _ in range(dots):
         time.sleep(delay)
         print(".", end="", flush=True)
-    print()
-
+    print("\r" + " " * 20 + "\r", end="")
 
 def slow_print(text, delay=0.02):
     for char in text:
@@ -71,3 +70,6 @@ def battle_log(message, style=""):
         case "info": slow_print(cyan(message))
         case "magic": slow_print(blue(message))
         case _: slow_print(message)
+
+def wait(s=0.3):
+    time.sleep(s)

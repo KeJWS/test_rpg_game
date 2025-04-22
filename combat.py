@@ -1,11 +1,19 @@
 import math, random, time
-import text
-from test.fx import dot_loading, typewriter, battle_log
+from typing import List, Union, Callable, Optional, Dict
+from rich.console import Console
 
+from test.combat_utils import battle_log
+import test.combat_utils as utils
+from test.fx import dot_loading, typewriter
 import test.fx as fx
+import text
 
-class Battler():
-    def __init__(self, name, stats) -> None:
+console = Console()
+
+
+# *基本战斗单位类
+class Battler:
+    def __init__(self, name: str, stats: Dict[str, int]) -> None:
         self.name = name
         self.stats = stats
         self.alive = True
@@ -14,18 +22,17 @@ class Battler():
         self.is_defending = False
         self.spells = []
 
-    def take_dmg(self, dmg):
-        from test.fx import red, bold, yellow
+    def take_dmg(self, dmg: int) -> None:
         dmg = max(round(dmg * random.uniform(0.9, 1.1)), 5)
         self.stats["hp"] -= dmg
-        battle_log(f"{self.name} 受到伤害 {yellow(dmg)}", "dmg")
-        time.sleep(0.3)
-        # 防御者死亡
+        console.print(f"{self.name} 受到伤害 {dmg}", style="red")
+        fx.wait()
+        # 检查是否死亡
         if self.stats["hp"] <= 0:
-            print(bold(red(f"{self.name} 被杀死了")))
+            console.print(f"{self.name} 被杀死了", style="bold red")
             self.alive = False
 
-    def normal_attack(self, defender, defender_is_defending=False):
+    def normal_attack(self, defender: 'Battler', defender_is_defending: bool = False) -> int:
         battle_log(f"{self.name} 发动攻击!", "info")
         dot_loading()
 
@@ -36,11 +43,11 @@ class Battler():
             return dmg
 
         # 检查是否攻击未命中
-        if check_miss(self,defender):
-            print(fx.red(f"{self.name} 的攻击被 {defender.name} 躲开了"))
+        if Battle_calculator.check_miss(self,defender):
+            console.print(f"{self.name} 的攻击被 {defender.name} 躲开了", style="yellow")
             return 0
         # 检查是否为暴击
-        is_crit, crit_suppressed = self._is_critical(defender)
+        is_crit, crit_suppressed = Battle_calculator.check_critical(self, defender)
         if is_crit:
             dmg = self._calc_critical_damage(defender)
         elif crit_suppressed:
@@ -51,26 +58,16 @@ class Battler():
 
         if defender_is_defending:
             dmg = round(dmg * 0.5)
-            typewriter(fx.cyan(f"{defender.name} 正在防御，伤害减半!"))
+            console.print(f"{defender.name} 正在防御，伤害减半!", style="cyan")
         defender.take_dmg(dmg)
         return dmg
 
-    def _is_critical(self, defender):
-        raw_chance = round(self.stats["crit"] * 0.8 + self.stats["luk"] * 0.2)
-        anti_crit = defender.stats.get("anti_crit", 0)
-        final_chance = max(0, min(80, raw_chance - anti_crit))
-
-        roll = random.randint(1, 100)
-        is_crit = roll <= final_chance
-        was_suppressed = raw_chance > final_chance and roll <= raw_chance
-
-        return is_crit, was_suppressed
-
-    def _calc_critical_damage(self, defender):
+    def _calc_critical_damage(self, defender: 'Battler') -> int:
         crit_base = self.stats["atk"]*3.5 + self.stats["luk"]*1.2
         rate = random.choices([1.5, 2.0, 2.5, 3.0], weights=[50, 30, 17, 3])[0] # 暴击倍率 : 概率
         rate += round(self.stats["crit"]/100, 2)
-        print(fx.critical(f"暴击! x{rate}"))
+        console.print(f"暴击! x{rate}", style="bold yellow")
+
         dmg = round(crit_base * random.uniform(1.0, 1.2) * rate)
         battle_log(f"{self.name} 对 {defender.name} 造成了 {dmg} 点暴击伤害", "crit")
         return dmg
@@ -93,200 +90,256 @@ class Battler():
         self.stats["hp"] = min(self.stats["hp"] + amount, self.stats["max_hp"])
         typewriter(fx.green(f"{self.name} 治愈了 {amount}HP"))
 
-def combat(my_player, enemies):
-    from player import Player
-    from skills import enhance_weapon
-    # 所有战斗单位（包括玩家和敌人）按速度排序，决定回合顺序
-    allies = [my_player]
-    battlers = define_battlers(allies, enemies) # 参与战斗的单位（盟友 + 敌人）
+    def check_buff_debuff_turns(self, clear_all: bool = False) -> None:
+        for bd in self.buffs_and_debuffs:
+            bd.deactivate() if clear_all else bd.check_turns()
 
-    enemy_exp = 0
-    enemy_money = 0
 
-    print("-------------------------------------------------")
-    for enemy in enemies:
-        typewriter(f"野生的 {enemy.name} 出现了!")
-        enemy_exp += enemy.xp_reward
-        enemy_money += enemy.gold_reward
-
-    escaped = False
-    # 只要玩家存活且仍有敌人，战斗就会持续
-    while my_player.alive and len(enemies) > 0:
-        # 由于速度可能因增益/减益效果改变，需要更新战斗顺序
-        battlers = define_battlers(allies, enemies)
-
-        # 每个战斗单位轮流行动
-        for battler in battlers:
-            if not my_player.alive:
-                return
-            # 玩家回合：选择行动
-            if type(battler) == Player:
-                text.combat_menu(my_player, allies, enemies)
-                cmd = input("> ").lower()
-                while cmd not in ["a", "c", "s", "d", "e"]:
-                    print("请输入有效指令")
-                    cmd = input("> ").lower()
-                # 普通攻击
-                if "a" in cmd:
-                    targeted_enemy = select_target(enemies)
-                    battler.normal_attack(targeted_enemy)
-                    check_if_dead(allies, enemies, battlers)
-                # 施放技能
-                elif "s" in cmd:
-                    spell_menu(my_player, battlers, allies, enemies)
-                # 使用连招
-                elif "c" in cmd:
-                    combo_menu(my_player, battlers, allies, enemies)
-                elif "d" in cmd:
-                    battler.add_combo_points(1)
-                    typewriter(f"{my_player.name} 准备防御, 下一回合将受到的伤害减少50%!")
-                    enhance_weapon.effect(my_player, my_player)
-                    print(fx.yellow("你紧握武器, 时刻准备反击!"))
-                    pass
-                elif "e" in cmd:
-                    if try_escape(my_player):
-                        check_turns_buffs_and_debuffs(my_player, True)
-                        typewriter(f"{my_player.name} 成功逃离了战斗")
-                        my_player.combo_points = 0
-                        escaped = True
-                        return escaped
-            else:
-                # 盟友自动攻击随机敌人
-                if battler.is_ally:
-                    if len(enemies) > 0:
-                        random_enemy = random.choice(enemies)
-                        battler.normal_attack(random_enemy)
-                        check_if_dead(allies, enemies, battlers)
-                else:
-                    if len(allies) > 0:
-                        # 目前敌人只会进行普通攻击
-                        random_ally = random.choice(allies)
-                        battler.normal_attack(random_ally)
-                        check_if_dead(allies, enemies, battlers)
-        # 回合结束，检查增益和减益的持续时间
-        for battler in battlers:
-            check_turns_buffs_and_debuffs(battler, False)
-        text.display_status_effects(battlers)
-
-    if my_player.alive:
-        # 移除所有增益和减益效果
-        check_turns_buffs_and_debuffs(my_player, True)
-        my_player.add_exp(enemy_exp)
-        my_player.add_money(enemy_money)
-        my_player.combo_points = 0
-        recover_hp_and_mp(my_player, 0.25)
+# *战斗计算器
+class Battle_calculator:
+    @staticmethod
+    def check_miss(attacker: Battler, defender: Battler) -> bool:
+        miss_chance = math.floor(math.sqrt(max(0, 5 * defender.stats["agi"] - attacker.stats["agi"] * 2)))
+        if miss_chance > random.randint(0, 100):
+            return True
         return False
 
-def define_battlers(allies, enemies):
-    battlers = enemies.copy()
-    for ally in allies:
-        battlers.append(ally)
-    battlers.sort(key=lambda b: b.stats["agi"], reverse=True)
-    return battlers
+    @staticmethod
+    def check_critical(attacker: Battler, defender: Battler) -> tuple:
+        raw_chance = round(attacker.stats["crit"] * 0.8 + attacker.stats["luk"] * 0.2)
+        anti_crit = defender.stats.get("anti_crit", 0)
+        final_chance = max(0, min(80, raw_chance - anti_crit))
 
-def select_target(targets):
-    text.select_objective(targets)
-    index = get_valid_input("> ", range(1, len(targets)+1), int)
-    return targets[index - 1]
+        roll = random.randint(1, 100)
+        is_crit = roll <= final_chance
+        was_suppressed = raw_chance > final_chance and roll <= raw_chance
+        return is_crit, was_suppressed
 
-def spell_menu(my_player, battlers, allies, enemies):
-    text.spell_menu(my_player)
-    option = int(input("> "))
-    while option not in range(len(my_player.spells)+1):
-        print("请输入有效的数字")
-        option = int(input("> "))
-    if option != 0:
-        spell_chosen = my_player.spells[option-1]
-        if spell_chosen.is_targeted:
-            target = select_target(battlers)
-            spell_chosen.effect(my_player, target)
-            check_if_dead(allies, enemies, battlers)
+    @staticmethod
+    def try_escape(battler: Battler) -> bool:
+        from skills import weakened_defense
+        escape_chance = min(90, 35 + (battler.stats["agi"] * 0.7 + battler.stats["luk"] * 0.3))
+        if random.randint(1, 100) <= escape_chance:
+            console.print("逃跑成功!", style="green")
+            return True
         else:
-            if spell_chosen.default_target == "self":
-                spell_chosen.effect(my_player, my_player)
-            elif spell_chosen.default_target == "all_enemies":
-                spell_chosen.effect(my_player, enemies)
-                check_if_dead(allies, enemies, battlers)
-            elif spell_chosen.default_target == "allies":
-                spell_chosen.effect(my_player, allies)
+            console.print("逃跑失败!", style="bold red")
+            if random.random() < 0.35:  # 35%概率降低防御
+                console.print("你因慌乱防御力下降!", style="red")
+                weakened_defense.effect(battler, battler)
+            return False
 
-def combo_menu(my_player, battlers, allies, enemies):
-    text.combo_menu(my_player)
-    option = int(input("> "))
-    while option not in range(len(my_player.combos)+1):
-        print("请输入有效的数字")
-        option = int(input("> "))
-    if option != 0:
-        combo_chosen = my_player.combos[option-1]
-        if combo_chosen.is_targeted:
-            target = select_target(battlers)
-            combo_chosen.effect(my_player, target)
-            check_if_dead(allies, enemies, battlers)
-        else:
-            if combo_chosen.default_target == "self":
-                combo_chosen.effect(my_player, my_player)
-            elif combo_chosen.default_target == "all_enemies":
-                combo_chosen.effect(my_player, enemies)
-                check_if_dead(allies, enemies, battlers)
 
-def check_miss(attacker, defender):
-    miss_chance = math.floor(math.sqrt(max(0, 5 * defender.stats["agi"] - attacker.stats["agi"] * 2)))
-    if miss_chance > random.randint(0, 100):
-        return True
-    return False
+# *战斗管理器
+class Combat_manager:
+    @staticmethod
+    def define_battlers(allies: List[Battler], enemies: List[Battler]) -> List[Battler]:
+        """根据速度定义行动顺序"""
+        battlers = enemies.copy()
+        for ally in allies:
+            battlers.append(ally)
+        # 按敏捷排序，决定行动顺序
+        battlers.sort(key=lambda b: b.stats["agi"], reverse=True)
+        return battlers
 
-def try_escape(my_player):
-    from skills import weakened_defense
-    escape_chance = min(90, 35 + (my_player.stats["agi"] * 0.7 + my_player.stats["luk"] * 0.3))
-    if random.randint(1, 100) <= escape_chance:
-        print(fx.green("逃跑成功!"))
-        return True
-    else:
-        print(fx.bold_red("逃跑失败!"))
-        if random.random() < 0.35:
-            typewriter(fx.red("你因慌乱防御力下降!"))
-            weakened_defense.effect(my_player, my_player)
-        return False
+    @staticmethod
+    def select_target(targets: List[Battler]) -> Battler:
+        """选择目标"""        
+        text.select_objective(targets)
+        index = utils.get_valid_input("> ", range(1, len(targets)+1), int)
+        return targets[index - 1]
 
-def check_turns_buffs_and_debuffs(target, deactivate):
-    for bd in target.buffs_and_debuffs:
-        bd.deactivate() if deactivate else bd.check_turns()
+    @staticmethod
+    def check_if_dead(allies: List[Battler], enemies: List[Battler], battlers: List[Battler]) -> None:
+        """检查并移除已死亡的单位"""
+        dead_bodies = [b for b in allies + enemies if not b.alive]
 
-def check_if_dead(allies, enemies, battlers):
-    dead_bodies = []
-    for ally in allies:
-        if ally.alive == False:
-            dead_bodies.append(ally)
-    for target in enemies:
-        if target.alive == False:
-            dead_bodies.append(target)
-    for dead in dead_bodies:
-        if dead in battlers:
-            battlers.remove(dead)
-        if dead in enemies:
-            enemies.remove(dead)
-        elif dead in allies:
-            allies.remove(dead)
+        for dead in dead_bodies:
+            if dead in battlers:
+                battlers.remove(dead)
+            if dead in enemies:
+                enemies.remove(dead)
+            elif dead in allies:
+                allies.remove(dead)
 
-def fully_heal(target):
-    target.stats["hp"] = target.stats["max_hp"]
-    battle_log(f"{target.name} 的生命完全恢复了", "info")
+    @staticmethod
+    def fully_heal(target: Battler) -> None:
+        """完全恢复目标的生命值"""
+        target.stats["hp"] = target.stats["max_hp"]
+        battle_log(f"{target.name} 的生命完全恢复了", "info")
 
-def fully_recover_mp(target):
-    target.stats["mp"] = target.stats["max_mp"]
-    battle_log(f"{target.name} 的魔法完全恢复了", "info")
+    @staticmethod
+    def fully_recover_mp(target: Battler) -> None:
+        """完全恢复目标的魔法值"""
+        target.stats["mp"] = target.stats["max_mp"]
+        battle_log(f"{target.name} 的魔法完全恢复了", "info")
 
-def recover_hp_and_mp(target, percent):
-    target.stats["hp"] = min(target.stats["max_hp"], target.stats["hp"] + int(target.stats["max_hp"] * percent))
-    target.stats["mp"] = min(target.stats["max_mp"], target.stats["mp"] + int(target.stats["max_mp"] * percent))
-    battle_log(f"\n恢复了 {percent*100}% 生命值和魔法", "heal")
+    @staticmethod
+    def recover_hp_and_mp(target: Battler, percent: float) -> None:
+        """按百分比恢复目标的生命值和魔法值"""
+        target.stats["hp"] = min(target.stats["max_hp"], target.stats["hp"] + int(target.stats["max_hp"] * percent))
+        target.stats["mp"] = min(target.stats["max_mp"], target.stats["mp"] + int(target.stats["max_mp"] * percent))
+        battle_log(f"\n恢复了 {percent*100}% 生命值和魔法", "heal")
 
-def get_valid_input(prompt, valid_range, cast_func=str):
-    while True:
-        try:
-            val = cast_func(input(prompt))
-            if val in valid_range:
-                return val
-        except:
+
+# *战斗执行器
+class Combat_executor:
+    def __init__(self, player, allies, enemies):
+        self.player = player
+        self.allies = allies
+        self.enemies = enemies
+        self.battlers = Combat_manager.define_battlers(allies, enemies)
+        self.enemy_exp = sum(enemy.xp_reward for enemy in enemies)
+        self.enemy_money = sum(enemy.gold_reward for enemy in enemies)
+
+    def execute_combat(self) -> bool:
+        """执行战斗，返回是否逃跑"""
+        print("-------------------------------------------------")
+        for enemy in self.enemies:
+            typewriter(f"野生的 {enemy.name} 出现了!")
+
+        # 只要玩家存活且仍有敌人，战斗就会持续
+        while self.player.alive and len(self.enemies) > 0:
+            handlers = {
+                "player": self._handle_player_turn,
+                "ally": self._handle_ally_turn,
+                "enemy": self._handle_enemy_turn
+            }
+
+            # 更新战斗顺序
+            self.battlers = Combat_manager.define_battlers(self.allies, self.enemies)
+
+            # 每个战斗单位轮流行动
+            for battler in self.battlers:
+                if not self.player.alive:
+                    return False
+
+                role = "player" if battler == self.player else "ally" if battler.is_ally else "enemy"
+                if handlers[role](battler) is True:
+                    return True
+
+            # 回合结束，检查增益和减益的持续时间
+            for battler in self.battlers:
+                battler.check_buff_debuff_turns()
+            text.display_status_effects(self.battlers)
+
+        # 战斗胜利，处理奖励
+        if self.player.alive:
+            self._handle_combat_rewards()
+            return False
+
+    def _handle_player_turn(self, player) -> bool:
+        """处理玩家的回合"""
+        from skills import enhance_weapon
+        text.combat_menu(player, self.allies, self.enemies)
+        cmd = input("> ").lower()
+        while cmd not in ["a", "c", "s", "d", "e"]:
+            print("请输入有效指令")
+            cmd = input("> ").lower()
+
+        if "a" in cmd:
+            targeted_enemy = Combat_manager.select_target(self.enemies)
+            player.normal_attack(targeted_enemy)
+            Combat_manager.check_if_dead(self.allies, self.enemies, self.battlers)
+
+        elif "s" in cmd:
+            self._handle_spell_casting(player)
+
+        elif "c" in cmd:
+            self._handle_combo_usage(player)
+
+        elif "d" in cmd:
+            battle_log(f"{player.name} 正在行动。", "info")
+            dot_loading()
+            player.add_combo_points(1)
+            typewriter(f"{player.name} 准备防御, 下一回合将受到的伤害减少50%!")
+            enhance_weapon.effect(player, player)
+            console.print("你紧握武器, 时刻准备反击!", style="yellow")
             pass
-        print("请输入有效选项")
+
+        elif "e" in cmd:
+            if Battle_calculator.try_escape(player):
+                player.check_buff_debuff_turns(True)
+                typewriter(f"{player.name} 成功逃离了战斗")
+                player.combo_points = 0
+                return True
+
+        return False
+
+    def _handle_ally_turn(self, ally):
+        """处理盟友的回合"""
+        if self.enemies:
+            random_enemy = random.choice(self.enemies)
+            ally.normal_attack(random_enemy)
+            Combat_manager.check_if_dead(self.allies, self.enemies, self.battlers)
+
+    def _handle_enemy_turn(self, enemy):
+        """处理敌人的回合"""
+        if self.allies:
+            random_ally = random.choice(self.allies)
+            enemy.normal_attack(random_ally)
+            Combat_manager.check_if_dead(self.allies, self.enemies, self.battlers)
+
+    def _handle_spell_casting(self, caster):
+        """处理施法菜单和效果"""
+        text.spell_menu(caster)
+        option = int(input("> "))
+
+        while option not in range(len(caster.spells)+1):
+            print("请输入有效的数字")
+            option = int(input("> "))
+
+        if option != 0:
+            spell_chosen = caster.spells[option-1]
+
+            if spell_chosen.is_targeted:
+                target = Combat_manager.select_target(self.battlers)
+                spell_chosen.effect(caster, target)
+                Combat_manager.check_if_dead(self.allies, self.enemies, self.battlers)
+            else:
+                if spell_chosen.default_target == "self":
+                    spell_chosen.effect(caster, caster)
+                elif spell_chosen.default_target == "all_enemies":
+                    spell_chosen.effect(caster, self.enemies)
+                    Combat_manager.check_if_dead(self.allies, self.enemies, self.battlers)
+                elif spell_chosen.default_target == "allies":
+                    spell_chosen.effect(caster, self.allies)
+
+    def _handle_combo_usage(self, caster):
+        """处理连招菜单和效果"""
+        text.combo_menu(caster)
+        option = int(input("> "))
+
+        while option not in range(len(caster.combos)+1):
+            print("请输入有效的数字")
+            option = int(input("> "))
+
+        if option != 0:
+            combo_chosen = caster.combos[option-1]
+
+            if combo_chosen.is_targeted:
+                target = Combat_manager.select_target(self.battlers)
+                combo_chosen.effect(caster, target)
+                Combat_manager.check_if_dead(self.allies, self.enemies, self.battlers)
+            else:
+                if combo_chosen.default_target == "self":
+                    combo_chosen.effect(caster, caster)
+                elif combo_chosen.default_target == "all_enemies":
+                    combo_chosen.effect(caster, self.enemies)
+                    Combat_manager.check_if_dead(self.allies, self.enemies, self.battlers)
+
+    def _handle_combat_rewards(self):
+        """处理战斗结束后的奖励"""
+        self.player.check_buff_debuff_turns(True)
+        self.player.add_exp(self.enemy_exp)
+        self.player.add_money(self.enemy_money)
+        self.player.combo_points = 0
+        Combat_manager.recover_hp_and_mp(self.player, 0.25)
+
+
+# *战斗入口
+def combat(player, enemies):
+    """战斗系统主入口"""
+    allies = [player]
+    combat_system = Combat_executor(player, allies, enemies)
+    return combat_system.execute_combat()

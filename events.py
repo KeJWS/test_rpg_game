@@ -154,7 +154,7 @@ def life_recovery_crystal(my_player):
         return
     if input("确认抚摸吗? (y/n): ").lower() == 'y':
         my_player.money -= cost
-        combat.recover_hp_and_mp(my_player, 1)
+        my_player.recover_mp(9999); my_player.heal(9999)
     else:
         print("已取消。")
 

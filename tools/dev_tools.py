@@ -1,10 +1,6 @@
 from items import equipment_data, hp_potion, mp_potion, atk_small_gems, mat_small_gems, agi_small_gems, crit_small_gems
 from items import atk_gems, mat_gems, agi_gems, crit_gems, grimoires
-from inventory import Equipment, Potion, Jewel, Grimoire
-import combat
 from data.constants import DEBUG
-import text
-import json
 import os
 from datetime import datetime
 import inspect

@@ -1,4 +1,5 @@
 import math
+from typing import List
 from rich.console import Console
 from rich.table import Table
 from rich.panel import Panel
@@ -6,7 +7,6 @@ from rich.text import Text
 from rich import box
 
 from test.clear_screen import clear_screen
-import test.fx as fx
 
 console = Console()
 
@@ -79,7 +79,7 @@ def inventory_menu():
 def show_equipment_info(player):
     print("=================================================")
     print("  EQUIPMENT")
-    fx.divider()
+    print("-------------------------------------------------")
 
     for equipment in player.equipment:
         if player.equipment[equipment] is not None:
@@ -127,7 +127,7 @@ def show_skills(player):
 
 
 # *combat_ui
-def combat_menu(player, allies, enemies):
+def combat_menu(player, allies, enemies) -> None:
     print("=================================================")
     print(f"【{player.name}】 Lv.{getattr(player, 'level', '?')} - CP: {player.combo_points}")
     print_status_bar("HP", player.stats['hp'], player.stats['max_hp'], "green")
@@ -141,7 +141,7 @@ def combat_menu(player, allies, enemies):
         print_status_bar("HP", enemy.stats['hp'], enemy.stats['max_hp'], "red")
     print("-------------------------------------------------")
     print("         A - Attack  C - Combos")
-    print("         S - Spells  D - Defense             ")
+    print("         S - Spells  D - Defense                 ")
     print("         E - Escape")
     print("-------------------------------------------------")
 
@@ -151,27 +151,41 @@ def print_status_bar(label, current, max_value, color: str):
     bar = f"[{color}]{'█' * filled_len}[/{color}]{'.' * (bar_len - filled_len)}"
     console.print(f"{label}: {bar} {current}/{max_value}")
 
-def spell_menu(player):
+def spell_menu(player) -> None:
     print("=================================================")
     print("             SPELLS ['0' to Quit]")
     print("-------------------------------------------------")
     for index, spell in enumerate(player.spells, start=1):
-        print(str(f"{index} - {spell.name} - {spell.cost}"))
+        console.print(str(f"{index} - {spell.name} - MP: {spell.cost}"))
 
-def combo_menu(player):
+def combo_menu(player) -> None:
     print("=================================================")
     print("             COMBOS ['0' to Quit]")
     print("-------------------------------------------------")
     for index, combo in enumerate(player.combos, start=1):
-        print(str(f"{index} - {combo.name} - {combo.cost}"))
+        console.print(str(f"{index} - {combo.name} - CP: {combo.cost}"))
 
-def select_objective(target):
+def select_objective(targets: List) -> None:
     print("=================================================")
     print("             Select an objective:")
     print("-------------------------------------------------")
-    for index, t in enumerate(target, start=1):
-        print(f"{index} - {t.name} - HP: {fx.RED}{t.stats['hp']}/{t.stats['max_hp']}{fx.END}")
+    for index, t in enumerate(targets, start=1):
+        hp_percent = round(t.stats["hp"] / t.stats["max_hp"] * 100)
+        console.print(f"{index} - {t.name} - HP: [red]{t.stats['hp']}/{t.stats['max_hp']}[/red] ({hp_percent}%)")
     print("-------------------------------------------------")
+
+def display_status_effects(battlers: List) -> None:
+    console.print("==== Status effect ====", style="bold green")
+    for battler in battlers:
+        if battler.buffs_and_debuffs:
+            console.print(f"{battler.name} 的状态: ", style="green")
+            for effect in battler.buffs_and_debuffs:
+                turns = effect.turns
+                warn = "(即将结束)" if turns == 1 else ""
+                print(f" - {effect.name}(剩余 {turns} 回合){warn}")
+        else:
+            print(f"{battler.name} 没有任何状态效果")
+    console.print("=======================", style="bold green")
 
 
 # *shop_ui
@@ -189,9 +203,9 @@ def shop_buy(player):
         "=================================================\n"
         f"          SHOP - 💰: {player.money}\n"
         "           ['0' to Quit]"
+        "-------------------------------------------------\n"
     )
     print(display_shop_buy)
-    fx.divider()
 
 def enter_shop(name):
     import data.event_text as ev
@@ -226,23 +240,10 @@ def display_save_list(saves):
     print(" 0. 取消")
     print("----------------------------------")
 
-def display_status_effects(battlers):
-    print(fx.bright_cyan("==== Status effect ===="))
-    for battler in battlers:
-        if battler.buffs_and_debuffs:
-            print(fx.cyan(f"{battler.name} 的状态: "))
-            for effect in battler.buffs_and_debuffs:
-                turns = effect.turns
-                warn = "(即将结束)" if turns == 1 else ""
-                print(f" - {effect.name}(剩余 {turns} 回合){warn}")
-        else:
-            print(f"{battler.name} 没有任何状态效果")
-    print(fx.bright_cyan("======================="))
-
 
 # *quest_ui
 def show_all_quests(player):
-    print(fx.bright_cyan("\n======= 任务列表 ======="))
+    console.print("\n======= 任务列表 =======", style="bold green")
     if player.active_quests:
         print("\n进行中的任务:")
         for i, q in enumerate(player.active_quests):
@@ -257,7 +258,7 @@ def show_all_quests(player):
             print(f"{i+1}. {q.name} [已完成]")
     else:
         print("\n尚未完成任何任务")
-    print(fx.bright_cyan("\n========================"))
+    console.print("\n========================", style="bold green")
     print("\n输入q数字查看任务详情 (例如: q1), 或输入任意键返回")
     option = input("> ").lower()
     if option.startswith('q'):

@@ -3,7 +3,7 @@ from test.clear_screen import clear_screen, enter_clear_screen, screen_wrapped
 from tools import dev_tools as debug
 
 from data.constants import DEBUG
-import events, text, combat
+import events, text
 from extensions import shops 
 from enemies import enemy_data
 
@@ -75,8 +75,8 @@ def handle_p_command(tokens, player):
         "-sk": screen_wrapped(lambda: text.show_skills(player)),
         "-stats": screen_wrapped(lambda: text.debug_show_stats(player)),
         "-bag": lambda: (debug.handle_debug_command("bag", player.inventory), enter_clear_screen()),
-        "-heal": screen_wrapped(lambda: combat.fully_heal(player) if DEBUG else None),
-        "-mana": screen_wrapped(lambda: combat.fully_recover_mp(player) if DEBUG else None),
+        "-heal": screen_wrapped(lambda: player.heal(9999) if DEBUG else None),
+        "-mana": screen_wrapped(lambda: player.recover_mp(9999) if DEBUG else None),
         "-level": screen_wrapped(lambda: handle_level_command(tokens, player)),
     }
 
