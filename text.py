@@ -200,6 +200,7 @@ def enter_shop(name):
         case "伊兹的魔法店": print(ev.itz_magic_encounter)
         case "安娜的防具店": print(ev.anna_armor_shop_encounter)
         case "杰克的武器店": print(ev.jack_weapon_shop_encounter)
+        case "青铜匠武具店": print(ev.lok_armor_shop_encounter)
 
 
 def save_load_menu():

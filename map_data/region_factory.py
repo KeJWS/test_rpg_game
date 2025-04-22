@@ -68,7 +68,7 @@ def create_mountain(ascii_art_dict):
             description="危险的山脉地带, 强盗和山地怪物出没。",
             danger_level=2,
             possible_enemies=mountain_enemies,
-            shop_events=[events.shop_rik_armor],
+            shop_events=[events.shop_rik_armor, events.shop_lok_armor],
             heal_events=[events.heal_medussa_statue],
             special_events=[],
             quests=[caesarus_bandit_quest],

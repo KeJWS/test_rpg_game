@@ -33,10 +33,13 @@ class Equipment(Item):
         level: int = 1,
         tags: Optional[List[str]] = None,
         image_path: Optional[str] = None,
+        quality_data: Optional[Tuple[str, float, float]] = None,
+        apply_quality: bool = True,
     ):
         super().__init__(name, description, amount, individual_value, object_type)
         self.base_stats: Dict[str, int] = stat_change_list.copy()
         self.base_value: int = individual_value
+        self.base_name: str = name
         self.stat_change_list: Dict[str, int] = self.base_stats.copy()
         self.combo = combo
         self.level = level
@@ -46,12 +49,14 @@ class Equipment(Item):
         self.durability: int = self.max_durability
         self.enhancement_level: int = 0
 
-        (
-            self.quality, 
-            self.quality_price_multiplier, 
-            self.quality_stat_multiplier,
-        ) = self._generate_quality()
-        self._apply_quality()
+        if quality_data:
+            self.quality, self.quality_price_multiplier, self.quality_stat_multiplier = quality_data
+        else:
+            self.quality, self.quality_price_multiplier, self.quality_stat_multiplier = self._generate_quality()
+
+        if apply_quality:
+            self._apply_quality()
+
         self.name = f"{self.quality}{self.name}"
 
         self.individual_value = int(self.base_value * self.quality_price_multiplier)
@@ -171,17 +176,20 @@ class Equipment(Item):
 
     def clone(self, amount: int) -> 'Equipment':
         clone = self.__class__(
-            name=self.name,
+            name=self.base_name,
             description=self.description,
             amount=amount,
             individual_value=self.base_value,
             object_type=self.object_type,
-            stat_change_list=self.base_stats,
+            stat_change_list=self.base_stats.copy(),
             combo=self.combo,
             level=self.level,
             tags=self.tags.copy(),
             image_path=self.image_path,
+            quality_data=(self.quality, self.quality_price_multiplier, self.quality_stat_multiplier),
+            apply_quality=False,
         )
-        clone.enhancement_level = 0
         clone.durability = self.durability
+        clone.enhancement_level = self.enhancement_level
+        clone.stat_change_list = self.stat_change_list.copy()
         return clone

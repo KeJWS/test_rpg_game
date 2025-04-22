@@ -10,7 +10,6 @@ from rich.table import Table
 
 import enemies, events, items, quest
 import test.fx as fx
-import data.event_text as event_text
 
 console = Console()
 

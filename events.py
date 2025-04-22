@@ -1,7 +1,6 @@
 import random
 
 import combat
-import inventory.interface
 import text, extensions.shops as shops, items, enemies
 from test.clear_screen import enter_clear_screen, clear_screen
 
@@ -19,18 +18,6 @@ class Event():
         if self.success_chance < random.randint(0, 100):
             return False
         return True
-
-    def add_event_to_event_list(self):
-        if type(self) == Fixed_combat_event:
-            event_type_list[0].append(self)
-        elif type(self) == Shop_event:
-            event_type_list[1].append(self)
-        elif type(self) == Healing_event:
-            event_type_list[2].append(self)
-
-        from map import world_map
-        if world_map.current_region and self not in world_map.current_region.special_events:
-            world_map.current_region.special_events.append(self)
 
 class Random_combat_event(Event):
     def __init__(self, name) -> None:
@@ -167,25 +154,9 @@ def life_recovery_crystal(my_player):
         return
     if input("确认抚摸吗? (y/n): ").lower() == 'y':
         my_player.money -= cost
-        combat.fully_heal(my_player)
-        combat.fully_recover_mp(my_player)
+        combat.recover_hp_and_mp(my_player, 1)
     else:
         print("已取消。")
-
-def add_event_to_event_list(self):
-    """将事件添加到事件列表"""
-    if type(self) == Fixed_combat_event:
-        event_type_list[0].append(self)
-    elif type(self) == Shop_event:
-        event_type_list[1].append(self)
-    elif type(self) == Healing_event:
-        event_type_list[2].append(self)
-
-    from map import world_map
-    if world_map.current_region and self not in world_map.current_region.special_events:
-        world_map.current_region.special_events.append(self)
-
-Event.add_event_to_event_list = add_event_to_event_list
 
 # 事件实例
 random_combat = Random_combat_event("随机战斗")
@@ -202,10 +173,5 @@ shop_anna_armor = Shop_event("安娜的防具店", False, event_text.anna_armor_
 shop_jack_weapon = Shop_event("杰克的武器店", False, event_text.jack_weapon_shop_encounter, event_text.jack_weapon_shop_enter, \
                               event_text.jack_weapon_shop_talk, event_text.jack_weapon_shop_exit, items.jack_weapon_shop_set)
 
-# 事件分类
-combat_event_list = [random_combat]
-shop_event_list = [shop_itz_magic, shop_rik_armor]
-heal_event_list = [heal_medussa_statue, inn_event]
-
-# 按类型分类的事件列表
-event_type_list = [combat_event_list, shop_event_list, heal_event_list]
+shop_lok_armor = Shop_event("青铜匠武具店", False, event_text.lok_armor_shop_encounter, event_text.lok_armor_shop_enter, \
+                            event_text.lok_armor_shop_talk, event_text.lok_armor_shop_exit, items.lok_armor_shop_item_set)

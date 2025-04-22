@@ -1,7 +1,7 @@
 id,name,name_zh,description,amount,individual_value,object_type,stat_change_list,combo,level,tags,image_path
 1 ,-> 初始武器,Lv1,,,0,weapon,{},,,,
-2 ,rusty_sword,生锈的剑,一把锈迹斑斑的老剑，虽然不再锋利，但仍有其独特的历史价值,,17,weapon,{'atk': 3},,1,,data\equipments\sword.png
-3 ,broken_dagger,破损的匕首,一把边缘破损的匕首，适合紧急情况下的自卫,,13,weapon,"{'atk': 1, 'crit': 3, 'agi': 1}",,1,,data\equipments\dagger.png
+2 ,rusty_sword,锈剑,一把锈迹斑斑的老剑，虽然不再锋利，但仍有其独特的历史价值,,17,weapon,{'atk': 3},,1,,data\equipments\sword.png
+3 ,broken_dagger,破损匕首,一把边缘破损的匕首，适合紧急情况下的自卫,,13,weapon,"{'atk': 1, 'crit': 3, 'agi': 1}",,1,,data\equipments\dagger.png
 4 ,old_staff,旧法杖,一根古老的法杖，虽不再强大，但蕴藏着魔法的气息,,22,weapon,"{'mat': 1, 'max_mp': 3}",,1,,data\equipments\staff.png
 5 ,wood_bow,木弓,一把简单的木弓，适合新手练习射箭,,32,weapon,"{'atk': 3, 'crit': 3}",,1,,
 6 ,-> 初始护甲,Lv1,,,0,armor,{},,,,
@@ -36,23 +36,23 @@ id,name,name_zh,description,amount,individual_value,object_type,stat_change_list
 32,sai,三叉戟,一把威力强大的三叉戟，常被海军使用,,135,weapon,"{'atk': 10, 'crit': 5, 'agi': 3}",combo_slash1,3,weapon,data\equipments\sai.png
 33,long_bow,长弓,一把远程射击的长弓，适合熟练的弓箭手,,175,weapon,"{'atk': 10, 'crit': 12}",combo_quickSshooting1,3,weapon,
 35,battle_axe,战斧,双刃战斧，可造成致命伤害,,237,weapon,"{'atk': 17, 'crit': 5, 'agi': -1}",combo_armor_breaker2,3,,
-36,sword_bronze,青铜剑,一把青铜剑的仿制品。它是把还可以的武器，但无法与真正的剑相比,,195,weapon,"{'atk': 13, 'agi': 3}",combo_power_slash1,3,,
+36,sword_bronze,青铜剑,一把青铜剑的仿制品。它是把还可以的武器，但无法与真正的剑相比,,195,weapon,"{'atk': 13, 'agi': 3}",combo_power_slash1,3,bronze,
 ,caesarus_sword,凯撒鲁斯的剑,,,453,weapon,{'atk': 17},combo_power_slash1,3,,
 37,-> 高级装甲,Lv3,,,0,armor,{},,,,
 38,iron_armor,粗制铁甲,粗铁打造的铁制护甲,,190,armor,"{'max_hp': 25, 'def': 10}",,3,armor,
 39,sage_tunic,智者上衣,一件适合智者的长上衣，增强法术效果,,225,armor,"{'max_mp': 20, 'def': 5, 'mdf': 7}",,3,magic,
 40,thief_armor,盗贼盔甲,轻便的盔甲，适合潜行和敏捷的动作,,223,armor,"{'def': 7, 'agi': 5, 'luk': 7, 'anti_crit': 5}",,3,armor,
-41,bronze_breastplate,青铜胸甲,一件坚固的整体成型的青铜胸甲,,379,armor,"{'def': 17, 'mdf': 5, 'agi': -5, 'anti_crit': -3}",,3,,
+41,bronze_breastplate,青铜胸甲,一件坚固的整体成型的青铜胸甲,,379,armor,"{'def': 17, 'mdf': 5, 'agi': -5, 'anti_crit': -3}",,3,bronze,
 42,armor_blarmor,鞣制皮甲,一件经过化学鞣制硬化的厚实皮甲。轻巧而耐用,,365,armor,"{'max_hp': 15, 'def': 12, 'agi': 3}",,3,,
 43,-> 高级护盾,Lv3,,,0,shield,{},,,,
-44,bronze_shield,青铜盾,青铜制成的坚固盾牌,,183,shield,"{'def': 6, 'mdf': 3, 'agi': -1}",,3,shield,
+44,bronze_shield,青铜盾,青铜制成的坚固盾牌,,183,shield,"{'def': 6, 'mdf': 3, 'agi': -1}",,3,"shield, bronze",
 34,hunting_knife,猎刀,猎人常用的刀具，这种单刃带鞘的小刀专用于切削、剥皮等用途，而不是战斗,,263,shield,"{'atk': 7, 'crit': 2, 'agi': 3}",,3,,
 45,-> 高级头盔,Lv3,,,0,head,{},,,,
 46,leather_helmet,皮帽,用动物皮革制成的头盔,,227,head,{'def': 5},,3,,
-47,helmet_bronze,青铜头盔,一顶坚固的整体成型的封闭式青铜头盔，在眼部有个开口,,345,head,"{'def': 12, 'agi': -2}",,3,,
+47,helmet_bronze,青铜头盔,一顶坚固的整体成型的封闭式青铜头盔，在眼部有个开口,,345,head,"{'def': 12, 'agi': -2}",,3,bronze,
 48,-> 高级护手,Lv3,,,0,hand,{},,,,
 49,gauntlets_larmor,皮甲护手,一对沉重的无指皮革手套,,190,hand,"{'atk': 2, 'def': 5, 'agi': -1}",,3,,
-50,knuckle_brass,铜指虎,一个铜制的金属武器，可以套在手中，造成额外的伤害,,162,hand,"{'atk': 5, 'def': 2}",,3,,
+50,knuckle_brass,铜指虎,一个铜制的金属武器，可以套在手中，造成额外的伤害,,162,hand,"{'atk': 5, 'def': 2}",,3,bronze,
 51,-> 高级护足,Lv3,,,0,foot,{},,,,
 52,leather_boots,皮靴,皮革制成的靴子,,205,foot,"{'def': 4, 'agi': 2}",,3,,
 53,boots_plate,护甲靴,一双十分沉重的重型金属靴,,275,foot,"{'def': 8, 'agi': -2}",,3,,

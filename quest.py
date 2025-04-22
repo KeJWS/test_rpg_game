@@ -15,7 +15,6 @@ class Quest():
     def activate_quest(self, player):
         if self.status == "Not Active":
             self.status = "Active"
-            self.event.add_event_to_event_list()
             player.active_quests.append(self)
 
     def complete_quest(self, player):

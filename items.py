@@ -89,8 +89,12 @@ rik_armor_shop_item_set.extend(jack_weapon_shop_set)
 rik_armor_shop_item_set.extend(filter_equipment_by(level=2, object_type="armor", tags=["armor"]))
 rik_armor_shop_item_set.extend(filter_equipment_by(level=3, object_type="armor", tags=["armor"]))
 
+lok_armor_shop_item_set = filter_equipment_by(level=3, tags=["bronze"])
+
 jack_weapon_shop_set.append(equipment_data["war_hammer"])
 rik_armor_shop_item_set.append(equipment_data["bronze_shield"])
+lok_armor_shop_item_set.append(equipment_data["bronze_armor"])
+lok_armor_shop_item_set.append(equipment_data["copper_ring"])
 
 # *-> 初始装备
 basic_equipments = {
@@ -155,3 +159,4 @@ debug_print(f"Jack 的武器商店物品数: {len(jack_weapon_shop_set)}")
 debug_print(f"Anna 的护甲商店物品数: {len(anna_armor_shop_set)}")
 debug_print(f"Rik 的护甲商店物品数: {len(rik_armor_shop_item_set)}")
 debug_print(f"Itz 的魔法商店物品数: {len(itz_magic_item_set)}")
+debug_print(f"Lok 的武具商店物品数: {len(lok_armor_shop_item_set)}")
