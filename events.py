@@ -3,7 +3,7 @@ import random
 import combat
 import inventory.interface
 import text, extensions.shops as shops, items, enemies
-from test.clear_screen import enter_clear_screen
+from test.clear_screen import enter_clear_screen, clear_screen
 
 from inventory import Inventory_interface as interface
 import data.event_text as event_text
@@ -77,12 +77,16 @@ class Shop_event(Event):
             option = input("> ").lower()
             while option != "e":
                 if option == "b":
+                    clear_screen()
                     player.buy_from_vendor(vendor)
                 elif option == "s":
+                    clear_screen()
                     player.money += interface(player.inventory).sell_item()
                 elif option == "t":
+                    clear_screen()
                     print(self.talk)
                 elif option == "ua":
+                    clear_screen()
                     player.unequip_all()
                 elif option == "si":
                     vendor.inventory.show_inventory_item(); enter_clear_screen()
@@ -154,7 +158,7 @@ class Inn_event(Healing_event):
 
 ### 生命恢复水晶 ###
 def life_recovery_crystal(my_player):
-    cost = 50 * my_player.level
+    cost = 35 * my_player.level
     print("\n" + "="*34)
     print(f"一个神秘的魔法水晶, 可以完全恢复,\n但需要花费: {cost}G")
     print("-"*34)

@@ -8,6 +8,7 @@ YELLO = "\033[33m"
 BLUE = "\033[34m"
 PURPLE = "\033[35m"
 CYAN = "\033[36m"
+
 END = "\033[0m"
 
 def color(text, code):

@@ -56,11 +56,6 @@ def create_mountain(ascii_art_dict):
                                           ev.shop_quest_caesarus_bandits, 
                                           150, 150, None, caesarus_bandit_combat, 5)
 
-        wolf_king_combat = events.Fixed_combat_event("夜行狼王", enemies.enemy_list_fight_against_wolf_king)
-        wolf_king_quest = quest.Quest("夜行狼王", 
-                                          ev.quest_fight_against_wolf_king_text, 
-                                          ev.shop_fight_against_wolf_king_text, 
-                                          350, 700, items.equipment_data["wolf_king_proof"], wolf_king_combat, 13)
         mountain_enemies = {
             "golem": (1, 7),
             "skeleton": (3, 10),
@@ -76,12 +71,18 @@ def create_mountain(ascii_art_dict):
             shop_events=[events.shop_rik_armor],
             heal_events=[events.heal_medussa_statue],
             special_events=[],
-            quests=[caesarus_bandit_quest, wolf_king_quest],
+            quests=[caesarus_bandit_quest],
             ascii_art=ascii_art_dict.get("龙脊山", "")
         )
         return mountain
 
 def create_swamp_herbalist(ascii_art_dict):
+        wolf_king_combat = events.Fixed_combat_event("夜行狼王", enemies.enemy_list_fight_against_wolf_king)
+        wolf_king_quest = quest.Quest("夜行狼王", 
+                                          ev.quest_fight_against_wolf_king_text, 
+                                          ev.shop_fight_against_wolf_king_text, 
+                                          350, 700, items.equipment_data["wolf_king_proof"], wolf_king_combat, 13)
+
         swamp_enemies = {
             "forest_spider": (1, 7),
             "poison_frog": (1, 9),
@@ -95,7 +96,7 @@ def create_swamp_herbalist(ascii_art_dict):
             shop_events=[events.shop_itz_magic],
             heal_events=[events.heal_medussa_statue],
             special_events=[],
-            quests=[],
+            quests=[wolf_king_quest],
             ascii_art=ascii_art_dict.get("迷雾沼泽", "")
         )
         return swamp

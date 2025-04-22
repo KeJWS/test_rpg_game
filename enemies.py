@@ -49,19 +49,21 @@ def load_enemies_from_csv(filepath):
 
             xp = int(row["xp_reward"])
             gold = randint(int(row["gold_min"]), int(row["gold_max"]))
-            enemy = Enemy(row["name_zh"], stats, xp_reward=xp, gold_reward=gold)
+            level = row["level"]
+            enemy = Enemy(row["name_zh"], stats, xp_reward=xp, gold_reward=gold, level=level)
             enemies[row["name"]] = enemy
     return enemies
 
 class Enemy(combat.Battler):
-    def __init__(self, name, stats, xp_reward, gold_reward) -> None:
+    def __init__(self, name, stats, xp_reward, gold_reward, level) -> None:
         super().__init__(name, stats)
         self.xp_reward = xp_reward
         self.gold_reward = gold_reward
+        self.level = level
         self.original_stats = stats.copy()
 
     def clone(self, variant_name=None):
-        cloned = Enemy(self.name, deepcopy(self.original_stats), self.xp_reward, self.gold_reward)
+        cloned = Enemy(self.name, deepcopy(self.original_stats), self.xp_reward, self.gold_reward, self.level)
         if not variant_name:
             roll = random.random()
             if roll < 0.03:

@@ -109,7 +109,7 @@ class World_map:
         if self.current_region:
             text = Text()
             text.append(self.current_region.ascii_art + "\n\n", style="bold white")
-            text.append(f"危险等级: {'★ ' * self.current_region.danger_level}\n\n", style="bold red")
+            text.append(f"危险等级: {'★ ' * self.current_region.danger_level}\n", style="bold red")
             text.append(self.current_region.description, style="italic")
             console.print(Panel.fit(text, title=f"当前位置: ", subtitle=self.current_region.name, border_style="bold green"))
         else:
@@ -117,40 +117,37 @@ class World_map:
 
     def list_available_regions(self):
         """列出所有可前往的地区"""
-        return "\n".join([
-            f"{i+1}. {region.name} 危险等级: {'★ ' * region.danger_level}" 
-            for i, region in enumerate(self.regions.values())
-        ])
+        table = Table(title="可探索地区", header_style="bold green")
+        table.add_column("编号", justify="center")
+        table.add_column("地区名称")
+        table.add_column("危险等级", style="bold red")
+        for i, region in enumerate(self.regions.values()):
+            table.add_row(str(i+1), region.name, "★ " * region.danger_level)
+        console.print(table)
 
     def show_region_quests(self, player):
         """显示当前地区的任务情况"""
         if not self.current_region:
-            print("未知地区, 无法查看任务")
+            console.print("[red]未知地区, 无法查看任务[/red]")
             return
 
         available_quests = self.current_region.available_quests(player)
         active_quests = self.current_region.active_quests(player)
         completed_quests = self.current_region.completed_quests(player)
 
-        print(f"\n=== {self.current_region.name} 的任务 ===")
+        console.print(Panel.fit(f"[bold white]{self.current_region.name} 的任务一览[/bold white]", border_style="bright_green"))
 
-        if available_quests:
-            print("可接受的任务:")
-            for i, q in enumerate(available_quests):
-                print(f"{i+1}. {q.name} (推荐等级: {q.recommended_level})")
-        else:
-            print("\n当前没有可接受的任务")
+        def show_quests(title, quests, style):
+            if quests:
+                console.print(f"[{style}]{title}[/]:")
+                for i, q in enumerate(quests, 1):
+                    console.print(f"  [white]{i}. {q.name}[/] (推荐等级: {q.recommended_level})")
+            else:
+                console.print(f"[dim]{title}：无[/dim]")
 
-        if active_quests:
-            print("\n正在进行的任务:")
-            for q in active_quests:
-                print(f"- {q.name} (进行中)")
-
-        if completed_quests:
-            print("\n已完成的任务:")
-            for q in completed_quests:
-                print(f"- {q.name} (已完成)")
-
+        show_quests("可接受任务", available_quests, "green")
+        show_quests("正在进行", active_quests, "blue")
+        show_quests("已完成任务", completed_quests, "magenta")
         return available_quests
 
     def accept_quest(self, player, quest_index, available_quests):

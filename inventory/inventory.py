@@ -74,13 +74,13 @@ class Inventory:
     
         table = Table(
             show_header=True,
-            header_style="bold magenta",
+            header_style="bold white",
             box=box.SIMPLE_HEAVY,
         )
     
-        table.add_column("编号", justify="center", style="cyan", no_wrap=True)
+        table.add_column("编号", justify="center", no_wrap=True)
         table.add_column("名称", style="bold cyan")
-        table.add_column("类型", style="green")
+        table.add_column("类型", style="cyan")
         table.add_column("数量", justify="right", style="white")
         table.add_column("单价", justify="right", style="yellow")
     
