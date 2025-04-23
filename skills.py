@@ -5,9 +5,9 @@ if TYPE_CHECKING:
     from combat import Battler
 
 import random
-from typing import List, Union, Callable, Optional, Dict, Any
+from typing import List, Union, Callable, Optional, Dict
 
-import extensions.allies as allies
+import core.allies as allies
 
 
 # *技能基类

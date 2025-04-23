@@ -1,8 +1,8 @@
 import sys
 sys.path.append("..")
-import combat
+from core import battler
 
-class Summoned_skeleton(combat.Battler):
+class Summoned_skeleton(battler.Battler):
     def __init__(self) -> None:
         stats = {
             "max_hp": 370,
@@ -20,7 +20,7 @@ class Summoned_skeleton(combat.Battler):
         super().__init__("小骨", stats)
         self.is_ally = True
 
-class Summoned_fire_spirit(combat.Battler):
+class Summoned_fire_spirit(battler.Battler):
     def __init__(self) -> None:
         stats = {
             "max_hp": 510,

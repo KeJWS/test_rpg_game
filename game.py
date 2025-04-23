@@ -1,16 +1,18 @@
 import sys
+from rich.console import Console
 
-import text, player, map
-from test.clear_screen import enter_clear_screen, clear_screen
+import player
+import ui.text as text
 import tools.save_system as sl
-import test.fx
 import data.event_text
 
+from world import map
+from test.clear_screen import enter_clear_screen, clear_screen
 from inventory import Inventory_interface as interface
 from tools import command_parser as cp
 
-from rich.console import Console
 console = Console()
+
 
 # *标题菜单*
 def title_screen_selections():
@@ -68,7 +70,7 @@ def play(p=None):
         p = player.Player("Test Player")
         console.print(data.event_text.initial_event_text())
         give_initial_items(p)
-        print(test.fx.yellow("\n[ 记得在库存 > 装备物品中装备这些物品 ]"))
+        console.print("\n[ 记得在库存 > 装备物品中装备这些物品 ]", style="bold red")
     print()
     apply_class_bonuses(p)
     enter_clear_screen()

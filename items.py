@@ -1,9 +1,9 @@
 import inspect
 import os
+import csv, ast
 from datetime import datetime
 from functools import lru_cache
 
-import csv, ast
 from data.constants import DEBUG
 import inventory, skills
 
@@ -39,7 +39,7 @@ def load_ascii_art_library(filepath):
     return ascii_art_dict
 
 # 装备数据加载
-def load_equipment_from_csv(filepath="data/equipments.csv"):
+def load_equipment_from_csv(filepath="data/csv_data/equipments.csv"):
     equipment_dict = {}
     with open(filepath, newline='', encoding='utf-8') as csvfile:
         reader = csv.DictReader(csvfile)

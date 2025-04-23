@@ -1,13 +1,12 @@
+import os
 import random
 import ascii_magic
-import os
+from rich.console import Console
 from typing import Dict, List, Optional, Tuple, Union, Any
 
-from rich.console import Console
-
 import test.fx as fx
-from inventory.item import Item
 import data.constants as constants
+from inventory.item import Item
 
 console = Console()
 

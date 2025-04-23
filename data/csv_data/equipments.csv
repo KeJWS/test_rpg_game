@@ -1,18 +1,18 @@
 id,name,name_zh,description,amount,individual_value,object_type,stat_change_list,combo,level,tags,image_path
 1 ,-> 初始武器,Lv1,,,0,weapon,{},,,,
-2 ,rusty_sword,锈剑,一把锈迹斑斑的老剑，虽然不再锋利，但仍有其独特的历史价值,,17,weapon,{'atk': 3},,1,,data\equipments\sword.png
-3 ,broken_dagger,破损匕首,一把边缘破损的匕首，适合紧急情况下的自卫,,13,weapon,"{'atk': 1, 'crit': 3, 'agi': 1}",,1,,data\equipments\dagger.png
-4 ,old_staff,旧法杖,一根古老的法杖，虽不再强大，但蕴藏着魔法的气息,,22,weapon,"{'mat': 1, 'max_mp': 3}",,1,,data\equipments\staff.png
+2 ,rusty_sword,锈剑,一把锈迹斑斑的老剑，虽然不再锋利，但仍有其独特的历史价值,,17,weapon,{'atk': 3},,1,,assests\equipments\sword.png
+3 ,broken_dagger,破损匕首,一把边缘破损的匕首，适合紧急情况下的自卫,,13,weapon,"{'atk': 1, 'crit': 3, 'agi': 1}",,1,,assests\equipments\dagger.png
+4 ,old_staff,旧法杖,一根古老的法杖，虽不再强大，但蕴藏着魔法的气息,,22,weapon,"{'mat': 1, 'max_mp': 3}",,1,,assests\equipments\staff.png
 5 ,wood_bow,木弓,一把简单的木弓，适合新手练习射箭,,32,weapon,"{'atk': 3, 'crit': 3}",,1,,
 6 ,-> 初始护甲,Lv1,,,0,armor,{},,,,
-7 ,novice_armor,新手盔甲,轻便的护甲，适合刚入门的冒险者,,15,armor,"{'def': 2, 'agi': 1}",,1,,data\equipments\novice_armor.png
+7 ,novice_armor,新手盔甲,轻便的护甲，适合刚入门的冒险者,,15,armor,"{'def': 2, 'agi': 1}",,1,,assests\equipments\novice_armor.png
 8 ,old_robes,旧长袍,一件磨损的长袍，曾是学者的标志,,13,armor,"{'def': 1, 'mdf': 2, 'max_mp': 3}",,1,,
 9 ,-> 基本武器,Lv2,,,0,weapon,{},,,,
-10,long_sword,长剑,标准制式的长剑,,50,weapon,{'atk': 7},combo_slash1,2,weapon,data\equipments\sword.png
-11,dagger,匕首,轻便锋利的匕首,,77,weapon,"{'atk': 3, 'crit': 5, 'agi': 3}",combo_vampire_stab1,2,weapon,data\equipments\dagger2.png
+10,long_sword,长剑,标准制式的长剑,,50,weapon,{'atk': 7},combo_slash1,2,weapon,assests\equipments\sword.png
+11,dagger,匕首,轻便锋利的匕首,,77,weapon,"{'atk': 3, 'crit': 5, 'agi': 3}",combo_vampire_stab1,2,weapon,assests\equipments\dagger2.png
 12,staff,法杖,简易的木制法杖,,65,weapon,"{'mat': 3, 'max_mp': 5}",combo_meditation1,2,magic,
 13,-> 基础护甲,Lv2,,,0,armor,{},,,,
-14,cloth_armor,布甲,简单的布制护甲,,60,armor,"{'max_hp': 10, 'def': 2, 'agi': 1}",,2,armor,data\equipments\cloth_armor.png
+14,cloth_armor,布甲,简单的布制护甲,,60,armor,"{'max_hp': 10, 'def': 2, 'agi': 1}",,2,armor,assests\equipments\cloth_armor.png
 15,leather_armor,轻便皮甲,适合灵活移动的轻型护甲,,83,armor,"{'max_hp': 12, 'def': 2, 'agi': 1, 'anti_crit': 3}",,2,armor,
 16,bronze_armor,铜制盔甲,较为坚固的铜护甲，能提供良好的防护,,150,armor,"{'max_hp': 10, 'def': 8, 'agi': -2}",,2,armor,
 17,student_robes,学者长袍,一件华丽的长袍，适合知识渊博的学者,,100,armor,"{'max_mp': 10, 'def': 3, 'mdf': 5}",,2,magic,
@@ -33,7 +33,7 @@ id,name,name_zh,description,amount,individual_value,object_type,stat_change_list
 29,war_hammer,战锤,沉重且威力强大的战锤,,116,weapon,"{'atk': 15, 'agi': -2}",combo_armor_breaker1,3,weapon,
 30,zweihander,双手剑,一把巨大的双手剑，力量与威严的象征,,125,weapon,{'atk': 12},combo_slash2,3,weapon,
 31,sage_staff,智者法杖,增强智力的法杖，适合强大的魔法师,,145,weapon,"{'max_mp': 15, 'mat': 12}",combo_meditation2,3,magic,
-32,sai,三叉戟,一把威力强大的三叉戟，常被海军使用,,135,weapon,"{'atk': 10, 'crit': 5, 'agi': 3}",combo_slash1,3,weapon,data\equipments\sai.png
+32,sai,三叉戟,一把威力强大的三叉戟，常被海军使用,,135,weapon,"{'atk': 10, 'crit': 5, 'agi': 3}",combo_slash1,3,weapon,assests\equipments\sai.png
 33,long_bow,长弓,一把远程射击的长弓，适合熟练的弓箭手,,175,weapon,"{'atk': 10, 'crit': 12}",combo_quickSshooting1,3,weapon,
 35,battle_axe,战斧,双刃战斧，可造成致命伤害,,237,weapon,"{'atk': 17, 'crit': 5, 'agi': -1}",combo_armor_breaker2,3,,
 36,sword_bronze,青铜剑,一把青铜剑的仿制品。它是把还可以的武器，但无法与真正的剑相比,,195,weapon,"{'atk': 13, 'agi': 3}",combo_power_slash1,3,bronze,

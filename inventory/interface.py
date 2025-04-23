@@ -1,9 +1,9 @@
-import test.fx as fx
-from test.clear_screen import clear_screen
-import inventory.utils as utils
-from inventory.equipment import Equipment
-
 from rich.console import Console
+
+import test.fx as fx
+import inventory.utils as utils
+from test.clear_screen import clear_screen
+
 console = Console()
 
 class Inventory_interface:

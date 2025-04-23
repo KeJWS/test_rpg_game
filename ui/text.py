@@ -1,4 +1,5 @@
 import math
+
 from typing import List
 from rich.console import Console
 from rich.table import Table
@@ -273,14 +274,14 @@ def show_all_quests(player):
 # *map_ui
 def get_quest_region(quest_obj):
     """查找任务所在地区"""
-    import map
+    import world.map as map
     for region_name, region in map.world_map.regions.items():
         if quest_obj in region.quests:
             return region.name
     return "未知地区"
 
 def map_menu(player):
-    import map
+    import world.map as map
     map.world_map.get_current_region_info()
     available_quests = map.world_map.show_region_quests(player)
     print()
@@ -324,8 +325,8 @@ def debug_show_stats(player):
     table.add_row("经验", f"{player.xp}/{player.xp_to_next_level}")
     table.add_row("职业", f"{player.class_name}")
     table.add_row("金钱", f"[yellow]{player.money}G[/yellow]")
-    table.add_row("HP", f"[green]{player.stats["hp"]}/{player.stats["max_hp"]}[/green]")
-    table.add_row("MP", f"[blue]{player.stats["mp"]}/{player.stats["max_mp"]}[/blue]")
+    table.add_row("HP", f"[green]{player.stats['hp']}/{player.stats['max_hp']}[/green]")
+    table.add_row("MP", f"[blue]{player.stats['mp']}/{player.stats['max_mp']}[/blue]")
     table.add_row("攻击 / 防御", f"{player.stats['atk']} / {player.stats['def']}")
     table.add_row("魔攻 / 魔防", f"{player.stats['mat']} / {player.stats['mdf']}")
     table.add_row("敏捷 / 幸运", f"{player.stats['agi']} / {player.stats['luk']}")

@@ -1,7 +1,7 @@
+import random
 import sys
 sys.path.append("..")
 import inventory
-import random
 
 class Shop():
     def __init__(self, item_set) -> None:

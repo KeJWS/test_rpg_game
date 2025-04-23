@@ -3,6 +3,7 @@ import os
 import time
 
 from player import Player
+
 SAVE_FOLDER = "saves"
 
 def ensure_save_folder():

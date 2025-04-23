@@ -1,13 +1,12 @@
 from data.constants import EXPERIENCE_RATE, MONEY_MULTIPLIER
 
-import text, combat
 import inventory
-
+import ui.text as text
 import test.fx as fx
+from core import battler
 from inventory.interface import Inventory_interface as interface
-from inventory import utils
 
-class Player(combat.Battler):
+class Player(battler.Battler):
     def __init__(self, name) -> None:
         self.class_name = ""
         stats = {

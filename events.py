@@ -1,11 +1,11 @@
 import random
 
-import combat
-import text, extensions.shops as shops, items, enemies
-from test.clear_screen import enter_clear_screen, clear_screen
-
-from inventory import Inventory_interface as interface
+import combat, items, enemies
+import ui.text as text
 import data.event_text as event_text
+from extensions import shops
+from inventory import Inventory_interface as interface
+from test.clear_screen import enter_clear_screen, clear_screen
 
 # 处理事件（遭遇敌人、商店、治疗场所......）
 class Event():

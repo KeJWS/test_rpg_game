@@ -1,14 +1,15 @@
 import random
 from dataclasses import dataclass
-from typing import List, Dict, Tuple, Optional
 from copy import deepcopy
+from typing import List, Dict, Tuple, Optional
 
 from rich.console import Console
 from rich.panel import Panel
 from rich.text import Text
 from rich.table import Table
 
-import enemies, events, items, quest
+import enemies, events, items
+import world.quest as quest
 import test.fx as fx
 
 console = Console()
@@ -74,8 +75,8 @@ class World_map:
             self.regions["swamp"].special_events.append(swamp_poison_event)
 
     def _initialize_regions(self):
-        import map_data.region_factory as region_factory
-        ascii_art_dict = items.load_ascii_art_library("data/ascii_art_map.txt")
+        from world import region_factory
+        ascii_art_dict = items.load_ascii_art_library("data/ascii_art/ascii_art_map.txt")
 
         self.regions = {
             "town": region_factory.create_town(ascii_art_dict),

@@ -1,7 +1,7 @@
-from map import Region
-import events, quest, enemies, items
-
+import events, enemies, items
+from world import quest
 import data.event_text as ev
+from world.map import Region
 
 def create_forest(ascii_art_dict):
     forest_enemies = {

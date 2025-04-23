@@ -35,7 +35,7 @@ class Quest():
             print(f"G: {self.gold_reward}")
         if self.item_reward != None:
             print(f"物品: {self.item_reward.name}")
-        from map import world_map
+        from world.map import world_map
         for region_name, region in world_map.regions.items():
             if self in region.quests:
                 print(f"\n所在地区: {region.name}")

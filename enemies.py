@@ -1,11 +1,9 @@
 import csv
-from random import randint
 import random
 from copy import deepcopy
 
+from core import battler
 from tools.dev_tools import debug_print
-
-import combat
 
 enemy_variants = {
     "elite": {
@@ -48,13 +46,13 @@ def load_enemies_from_csv(filepath):
             stats["mp"] = stats["max_mp"]
 
             xp = int(row["xp_reward"])
-            gold = randint(int(row["gold_min"]), int(row["gold_max"]))
+            gold = random.randint(int(row["gold_min"]), int(row["gold_max"]))
             level = row["level"]
             enemy = Enemy(row["name_zh"], stats, xp_reward=xp, gold_reward=gold, level=level)
             enemies[row["name"]] = enemy
     return enemies
 
-class Enemy(combat.Battler):
+class Enemy(battler.Battler):
     def __init__(self, name, stats, xp_reward, gold_reward, level) -> None:
         super().__init__(name, stats)
         self.xp_reward = xp_reward
@@ -96,7 +94,7 @@ def apply_variant(enemy, variant_name):
             for stat, value in multiplier.items():
                 if stat in enemy.stats:
                     enemy.stats[stat] = int(enemy.stats[stat] * value)
-    
+
     # 属性加成
     if "stat_bonus" in variant:
         for stat, value in variant["stat_bonus"].items():
@@ -128,7 +126,7 @@ def create_enemy_group(level, possible_enemies, enemy_quantity_for_level):
         group.append(enemy)
     return group
 
-enemy_data = load_enemies_from_csv("data/enemies.csv")
+enemy_data = load_enemies_from_csv("data/csv_data/enemies.csv")
 
 possible_enemies = {
     "slime": (1, 3),

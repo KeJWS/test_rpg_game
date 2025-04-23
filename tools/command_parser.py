@@ -1,13 +1,13 @@
-from inventory import Inventory_interface as interface
-from test.clear_screen import clear_screen, enter_clear_screen, screen_wrapped
-from tools import dev_tools as debug
-
 from data.constants import DEBUG
-import events, text
-from extensions import shops 
-from enemies import enemy_data
 
+import events
 import data.debug_help
+import ui.text as text
+from extensions import shops
+from tools import dev_tools as debug
+from inventory import Inventory_interface as interface
+from enemies import enemy_data
+from test.clear_screen import clear_screen, enter_clear_screen, screen_wrapped
 
 SHOP_DICT = {
     "jack": events.shop_jack_weapon,
