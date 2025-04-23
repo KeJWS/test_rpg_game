@@ -2,12 +2,14 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
-    from combat import Battler
+    from core.battler import Battler
 
 import random
-from typing import List, Union, Callable, Optional, Dict
+from typing import List, Union, Callable
+from rich.console import Console
 
 import core.allies as allies
+console = Console()
 
 
 # *技能基类
@@ -38,10 +40,10 @@ class Spell(Skill):
     def check_mp(self, caster: Battler) -> bool:
         """检查施法者是否有足够的MP"""
         if caster.stats["mp"] < self.cost:
-            print("没有足够的 MP 释放技能")
+            console.print("没有足够的 MP 释放技能", style="red")
             return False
         else:
-            print(f"{caster.name} 释放了 {self.name}!")
+            console.print(f"{caster.name} 释放了 {self.name}!", style="blue")
             caster.stats["mp"] -= self.cost
             return True
 
@@ -54,10 +56,10 @@ class Combo(Skill):
     def check_cp(self, caster: Battler) -> bool:
         """检查施法者是否有足够的连击点数"""
         if caster.combo_points < self.cost:
-            print("没有足够的 CP 释放技能")
+            console.print("没有足够的 CP 释放技能", style="red")
             return False
         else:
-            print(f"{caster.name} 使用了 {self.name}!")
+            console.print(f"{caster.name} 使用了 {self.name}!", style="yellow")
             caster.combo_points -= self.cost
             return True
 
@@ -256,7 +258,7 @@ spell_fire_spirit_summoning = Summon_spell("召唤火精灵", "召唤一个火�
 
 combo_slash1 = Slash_combo("斩击连击 I", "连续攻击敌人2次", 3, True, None, 2)
 combo_slash2 = Slash_combo("斩击连击 II", "连续攻击敌人3次", 3, True, None, 3)
-combo_armor_breaker1 = Armor_breaking_combo("破甲 I", "破坏敌人护甲", 2, True, None, -0.3)
+combo_armor_breaker1 = Armor_breaking_combo("破甲 I", "破坏敌人护甲", 3, True, None, -0.35)
 combo_armor_breaker2 = Armor_breaking_combo("破甲 II", "破坏敌人护甲", 3, True, None, -0.5)
 combo_vampire_stab1 = Vampirism_combo("吸血之刺 I", "吸取敌人生命", 2, True, None, 0.35)
 combo_vampire_stab2 = Vampirism_combo("吸血之刺 II", "吸取敌人大量生命", 2, True, None, 0.5)
@@ -270,3 +272,13 @@ combo_quickSshooting1 = Slash_combo("快速连射 I", "快速射击敌人两次"
 combo_quickSshooting2 = Slash_combo("快速连射 II", "快速射击敌人三次", 2, True, None, 3)
 
 combo_power_slash1 = Damage_combo("力量斩 I", "蓄力一击，造成较高伤害", 130, 3, True, None)
+
+
+# 敌人技能
+enemy_fireball = Damage_spell("火球", "发射一个火球", 60, 20, True, None)
+enemy_ice_spike = Damage_spell("冰刺", "召唤冰刺攻击敌人", 55, 18, True, None)
+
+SPELL_REGISTRY = {
+    "enemy_fireball": enemy_fireball,
+    "enemy_ice_spike": enemy_ice_spike,
+}

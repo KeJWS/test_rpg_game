@@ -12,6 +12,7 @@ import ui.text as text
 from test.combat_utils import battle_log
 import test.combat_utils as utils
 from test.fx import dot_loading, typewriter
+from skills import enhance_weapon
 
 console = Console()
 
@@ -151,7 +152,8 @@ class Combat_executor:
 
     def _handle_player_turn(self, player) -> bool:
         """处理玩家的回合"""
-        from skills import enhance_weapon
+        if player.is_defending:
+            player.end_defense()
         text.combat_menu(player, self.allies, self.enemies)
         cmd = input("> ").lower()
         while cmd not in ["a", "c", "s", "d", "e"]:
@@ -172,8 +174,8 @@ class Combat_executor:
         elif "d" in cmd:
             battle_log(f"{player.name} 正在行动。", "info")
             dot_loading()
+            player.defend()
             player.add_combo_points(1)
-            typewriter(f"{player.name} 准备防御, 下一回合将受到的伤害减少50%!")
             enhance_weapon.effect(player, player)
             console.print("你紧握武器, 时刻准备反击!", style="yellow")
             pass
@@ -188,6 +190,8 @@ class Combat_executor:
         return False
 
     def _handle_ally_turn(self, ally):
+        if ally.is_defending:
+            ally.end_defense()
         """处理盟友的回合"""
         if self.enemies:
             random_enemy = random.choice(self.enemies)
@@ -196,10 +200,36 @@ class Combat_executor:
 
     def _handle_enemy_turn(self, enemy):
         """处理敌人的回合"""
+        if enemy.is_defending:
+            enemy.end_defense()
         if self.allies:
-            random_ally = random.choice(self.allies)
-            enemy.normal_attack(random_ally)
-            Combat_manager.check_if_dead(self.allies, self.enemies, self.battlers)
+            decision = enemy.decide_action(self.allies)
+
+            if decision["type"] == "attack":
+                enemy.normal_attack(decision["target"])
+                Combat_manager.check_if_dead(self.allies, self.enemies, self.battlers)
+            elif decision["type"] == "defend":
+                battle_log(f"{enemy.name} 正在行动。", "info")
+                dot_loading()
+                enemy.defend()
+                enhance_weapon.effect(enemy, enemy)
+                console.print("敌人摆好了防御的架势!", style="yellow")
+            elif decision["type"] == "spell":
+                spell = decision["spell"]
+
+                if spell.is_targeted:
+                    spell.effect(enemy, random.choice(self.allies))
+                elif spell.default_target == "self":
+                    spell.effect(enemy, enemy)
+                elif spell.default_target == "all_enemies":
+                    spell.effect(enemy, self.allies)
+                elif spell.default_target == "allies":
+                    spell.effect(enemy, self.enemies)
+                    Combat_manager.check_if_dead(self.allies, self.enemies, self.battlers)
+                else:
+                    random_ally = random.choice(self.allies)
+                    enemy.normal_attack(random_ally)
+                    Combat_manager.check_if_dead(self.allies, self.enemies, self.battlers)
 
     def _handle_spell_casting(self, caster):
         """处理施法菜单和效果"""
@@ -251,6 +281,7 @@ class Combat_executor:
 
     def _handle_combat_rewards(self):
         """处理战斗结束后的奖励"""
+        self.player.end_defense()
         self.player.check_buff_debuff_turns(True)
         self.player.add_exp(self.enemy_exp)
         self.player.add_money(self.enemy_money)

@@ -44,11 +44,11 @@
 
 ## 截图预览
 
-![alt text](assests\screenshots/233.png)
+![alt text](assests/screenshots/233.png)
 
-![alt text](assests\screenshots/234.png)
+![alt text](assests/screenshots/234.png)
 
-![alt text](assests\screenshots/235.png)
+![alt text](assests/screenshots/235.png)
 
 ## 贡献指南
 

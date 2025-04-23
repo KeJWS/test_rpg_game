@@ -22,6 +22,11 @@ class Battler:
 
     def take_dmg(self, dmg: int) -> None:
         dmg = max(round(dmg * random.uniform(0.9, 1.1)), 5)
+
+        if self.is_defending:
+            dmg = round(dmg * 0.5)
+            console.print(f"{self.name} 正在防御，伤害减半!", style="cyan")
+
         self.stats["hp"] -= dmg
         console.print(f"{self.name} 受到伤害 {dmg}", style="red")
         fx.wait()
@@ -30,7 +35,7 @@ class Battler:
             console.print(f"{self.name} 被杀死了", style="bold red")
             self.alive = False
 
-    def normal_attack(self, defender: 'Battler', defender_is_defending: bool = False) -> int:
+    def normal_attack(self, defender: 'Battler') -> int:
         from combat import Battle_calculator
         battle_log(f"{self.name} 发动攻击!", "info")
         dot_loading()
@@ -55,9 +60,6 @@ class Battler:
         else:
             dmg = self._calc_normal_damage(defender)
 
-        if defender_is_defending:
-            dmg = round(dmg * 0.5)
-            console.print(f"{defender.name} 正在防御，伤害减半!", style="cyan")
         defender.take_dmg(dmg)
         return dmg
 
@@ -92,3 +94,14 @@ class Battler:
     def check_buff_debuff_turns(self, clear_all: bool = False) -> None:
         for bd in self.buffs_and_debuffs:
             bd.deactivate() if clear_all else bd.check_turns()
+
+    def defend(self):
+        """开始防御，减少受到的伤害"""
+        self.is_defending = True
+        console.print(f"{self.name} 进入防御姿态，伤害减半!", style="cyan")
+
+    def end_defense(self):
+        """结束防御状态"""
+        if self.is_defending:
+            self.is_defending = False
+            console.print(f"{self.name} 已结束防御状态。", style="cyan")

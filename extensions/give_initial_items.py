@@ -55,7 +55,7 @@ def apply_class_bonuses(my_player):
         "法师": {"max_mp": 25, "mat": 5, "mdf": 2},
         "弓箭手": {"atk": 3, "agi": 1, "crit": 2},
         "圣骑士": {"atk": 5, "def": 3, "mat": 5, "agi": -3},
-        "死灵法师": {"max_mp": 60, "mat": 7, "def": -5, "max_hp": -70},
+        "死灵法师": {"max_mp": 60, "mat": 7, "def": -5, "max_hp": -90},
     }
 
     if my_player.class_name in class_bonuses:

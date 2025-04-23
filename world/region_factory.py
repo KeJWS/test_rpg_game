@@ -5,11 +5,11 @@ from world.map import Region
 
 def create_forest(ascii_art_dict):
     forest_enemies = {
+        "rat": (1, 2),
         "slime": (1, 3),
-        "imp": (1, 5),
-        "forest_spider": (2, 7),
-        "poison_frog": (2, 9),
-        "giant_slime": (4, 23),
+        "bat": (1, 4),
+        "imp": (2, 6),
+        "giant_slime": (4, 19),
         "shadow_wolf": (8, 16),
     }
     fight_against_slime_combat = events.Fixed_combat_event("史莱姆狩猎", enemies.enemy_list_fight_against_slime)
@@ -60,6 +60,7 @@ def create_mountain(ascii_art_dict):
             "golem": (1, 7),
             "skeleton": (3, 10),
             "bandit": (4, 12),
+            "goblin": (5, 13),
             "wild_boar": (6, 15),
             "wolf": (8, 22),
         }

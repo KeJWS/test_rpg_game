@@ -3,38 +3,12 @@ import random
 from copy import deepcopy
 
 from core import battler
+from data.constants import ENEMY_VARIANTS
 from tools.dev_tools import debug_print
 
-enemy_variants = {
-    "elite": {
-        "name_suffix": "•稀有",
-        "stat_multiplier": 1.5,
-        "xp_multiplier": 2.0,
-        "gold_multiplier": 2.5,
-    },
-    "frenzy": {
-        "name_suffix": "•狂暴",
-        "stat_multiplier": {"atk": 2.0, "def": 0.5, "agi": 1.5},
-        "xp_multiplier": 1.2,
-        "gold_multiplier": 1.1,
-    },
-    "cursed": {
-        "name_suffix": "•诅咒",
-        "stat_multiplier": {"mdf": 1.2, "mat": 1.2, "luk": 0.8},
-        "stat_bonus": {"mdf": 20, "luk": -10},
-        "xp_multiplier": 1.7,
-        "gold_multiplier": 1.2,
-    },
-    "shield": {
-        "name_suffix": "•护盾",
-        "stat_multiplier": {"max_hp": 1.5, "hp": 1.5, "def": 1.2, "mdf": 1.2, "agi": 0.5},
-        "stat_bonus": {"def": 15, "mdf": 15, "agi": -5},
-        "xp_multiplier": 2.1,
-        "gold_multiplier": 1.5,
-    },
-}
 
 def load_enemies_from_csv(filepath):
+    from skills import SPELL_REGISTRY
     enemies = {}
     with open(filepath, newline='', encoding="utf-8") as csvfile:
         reader = csv.DictReader(csvfile)
@@ -49,8 +23,23 @@ def load_enemies_from_csv(filepath):
             gold = random.randint(int(row["gold_min"]), int(row["gold_max"]))
             level = row["level"]
             enemy = Enemy(row["name_zh"], stats, xp_reward=xp, gold_reward=gold, level=level)
+
+            spell_names = row.get("spells", "").strip()
+            if spell_names:
+                for spell_name in spell_names.split(","):
+                    spell_name = spell_name.strip()
+                    spell_object = SPELL_REGISTRY.get(spell_name)
+                    if spell_object:
+                        enemy.spells.append(spell_object)
+                    else:
+                        debug_print(f"[警告] 技能 `{spell_name}` 不存在于 SPELL_REGISTRY 中")
+            else:
+                default_spell = SPELL_REGISTRY.get("enemy_fireball")
+                if default_spell:
+                    enemy.spells.append(default_spell)
             enemies[row["name"]] = enemy
     return enemies
+
 
 class Enemy(battler.Battler):
     def __init__(self, name, stats, xp_reward, gold_reward, level) -> None:
@@ -59,9 +48,15 @@ class Enemy(battler.Battler):
         self.gold_reward = gold_reward
         self.level = level
         self.original_stats = stats.copy()
+        self.action_weights = {
+            "attack": 60,
+            "defend": 15,
+            "spell": 25
+        }
 
     def clone(self, variant_name=None):
         cloned = Enemy(self.name, deepcopy(self.original_stats), self.xp_reward, self.gold_reward, self.level)
+        cloned.spells = self.spells.copy()
         if not variant_name:
             roll = random.random()
             if roll < 0.03:
@@ -77,8 +72,42 @@ class Enemy(battler.Battler):
             apply_variant(cloned, variant_name)
         return cloned
 
+    def decide_action(self, allies):
+        """敌人AI决策"""
+        if self.stats["hp"] < self.stats["max_hp"] * 0.3:
+            self.action_weights["defend"] = 35
+            self.action_weights["attack"] = 35
+            self.action_weights["spell"] = 30
+
+        usable_spells = [spell for spell in self.spells if self.stats["mp"] >= spell.cost]
+
+        if not usable_spells:
+            self.action_weights["spell"] = 0
+            total = self.action_weights["attack"] + self.action_weights["defend"]
+            self.action_weights["attack"] = round(self.action_weights["attack"] / total * 100)
+            self.action_weights["defend"] = round(self.action_weights["defend"] / total * 100)
+
+        action_type = random.choices(
+            ["attack", "defend", "spell"], 
+            weights=[self.action_weights["attack"], self.action_weights["defend"], self.action_weights["spell"]]
+        )[0]
+
+        if len(self.spells) == 0 or self.stats["mp"] < min([s.cost for s in self.spells] or [999]):
+            self.action_weights["spell"] = 0
+            total = self.action_weights["attack"] + self.action_weights["defend"]
+            self.action_weights["attack"] = round(self.action_weights["attack"] / total * 100)
+            self.action_weights["defend"] = round(self.action_weights["defend"] / total * 100)
+
+        if action_type == "attack":
+            return {"type": "attack", "target": random.choice(allies)}
+        elif action_type == "defend":
+            return {"type": "defend"}
+        else:
+            spell = random.choice(usable_spells)
+            return {"type": "spell", "spell": spell, "target": None}
+
 def apply_variant(enemy, variant_name):
-    variant = enemy_variants.get(variant_name)
+    variant = ENEMY_VARIANTS.get(variant_name)
     if not variant:
         return
 
