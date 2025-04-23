@@ -76,8 +76,8 @@ class Enemy(battler.Battler):
         """敌人AI决策"""
         if self.stats["hp"] < self.stats["max_hp"] * 0.3:
             self.action_weights["defend"] = 35
-            self.action_weights["attack"] = 35
-            self.action_weights["spell"] = 30
+            self.action_weights["attack"] = 30
+            self.action_weights["spell"] = 35
 
         usable_spells = [spell for spell in self.spells if self.stats["mp"] >= spell.cost]
 

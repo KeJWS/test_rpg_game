@@ -23,10 +23,10 @@ class Random_combat_event(Event):
     def __init__(self, name) -> None:
         super().__init__(name, 100, False)
         self.enemy_quantity_for_level = {
-            3: 1,
-            6: 2,
-            9: 3,
-            15: 4,
+            4: 1,
+            8: 2,
+            16: 3,
+            33: 4,
             100: 5,
         }
 

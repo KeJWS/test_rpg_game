@@ -6,6 +6,8 @@ import test.fx as fx
 from core import battler
 from inventory.interface import Inventory_interface as interface
 
+import skills
+
 class Player(battler.Battler):
     def __init__(self, name) -> None:
         self.class_name = ""
@@ -48,9 +50,9 @@ class Player(battler.Battler):
             "foot": None,
             "accessory": None
         }
-        self.money = 0 # 当前资金
-        self.combos = [] # 玩家选择的组合（atk, cp）
-        # self.spells = []
+        self.money = 0
+        self.combos = []
+        self.spells = []
 
         self.active_quests = []
         self.completed_quests = []
