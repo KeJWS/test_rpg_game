@@ -1,12 +1,16 @@
 from data.constants import EXPERIENCE_RATE, MONEY_MULTIPLIER
 
+from rich.console import Console
+
 import inventory
 import ui.text as text
 import test.fx as fx
 from core import battler
 from inventory.interface import Inventory_interface as interface
-
 import skills
+
+console = Console()
+
 
 class Player(battler.Battler):
     def __init__(self, name) -> None:
@@ -122,22 +126,50 @@ class Player(battler.Battler):
     def add_exp(self, exp):
         exp_value = (exp + self.stats["luk"]) * EXPERIENCE_RATE
         self.xp += exp_value
-        print(f"获得了 {fx.YELLO}{exp_value}xp{fx.END}")
-        # 处理升级
-        while(self.xp >= self.xp_to_next_level):
+        console.print(f"获得了 {exp_value}xp")
+        self.check_level_up()
+
+    def check_level_up(self):
+        while self.xp >= self.xp_to_next_level:
             self.xp -= self.xp_to_next_level
             self.level += 1
             self.xp_to_next_level = self.exp_required_formula()
-            for stat in self.stats:
-                self.stats[stat] += 2
-            self.stats["crit"] -= 1
-            self.stats["anti_crit"] -= 2
-            self.stats["max_hp"] += 8
-            self.stats["max_mp"] += 3
-            self.aptitude_points +=1
-            self.recover_mp(9999)
-            self.heal(9999)
-            print(fx.yellow(f"升级! 现在的等级是: {self.level}, 有 {self.aptitude_points} 个能力点"))
+            self.handle_level_up()
+
+    def handle_level_up(self):
+        console.print(f"升级! 现在的等级是: {self.level}, 有 {self.aptitude_points + 1} 个能力点", style="bold yellow")
+        self.aptitude_points += 1
+
+        # 通用基础成长
+        for stat in self.stats:
+            self.stats[stat] += 1
+        self.stats["crit"] -= 1
+        self.stats["anti_crit"] -= 1
+        self.stats["max_hp"] += 4
+        self.stats["max_mp"] += 2
+
+        # 职业成长加成
+        self.apply_class_growth()
+        self.recover_mp(9999)
+        self.heal(9999)
+
+    def apply_class_growth(self):
+        growth = {
+            "战士": {"atk": 2, "max_hp": 5},
+            "盗贼": {"agi": 2, "crit": 1},
+            "法师": {"mat": 2, "max_mp": 5},
+            "弓箭手": {"atk": 2, "crit": 1},
+            "圣骑士": {"atk": 2, "mat": 1, "max_hp": 10, "agi": -1},
+            "死灵法师": {"mat": 3, "max_mp": 10, "max_hp": -15},
+        }
+
+        bonuses = growth.get(self.class_name, {})
+        for stat, value in bonuses.items():
+            self.stats[stat] += value
+            if value > 0:
+                console.print(f"{stat} +{value}", style="green")
+            else:
+                console.print(f"{stat} {value}", style="red")
 
     def exp_required_formula(self): # 经验需求计算公式，可调整
         base = 100 * self.level

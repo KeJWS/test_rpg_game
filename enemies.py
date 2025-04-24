@@ -37,8 +37,27 @@ def load_enemies_from_csv(filepath):
                 default_spell = SPELL_REGISTRY.get("enemy_fireball")
                 if default_spell:
                     enemy.spells.append(default_spell)
+            assign_enemy_action_weights(enemy, row["name"])
             enemies[row["name"]] = enemy
     return enemies
+
+def assign_enemy_action_weights(enemy, enemy_type):
+    if "slime" in enemy_type:
+        if "giant" in enemy_type:
+            enemy.action_weights = {"attack": 60, "defend": 10, "spell": 30}
+
+    elif "skeleton" in enemy_type:
+        enemy.action_weights = {"attack": 65, "defend": 15, "spell": 20}
+
+    elif "golem" in enemy_type:
+        enemy.action_weights = {"attack": 55, "defend": 25, "spell": 20}
+
+    elif "imp" in enemy_type:
+        enemy.action_weights = {"attack": 60, "defend": 5, "spell": 35}
+
+    elif "bandit" in enemy_type:
+        if "leader" in enemy_type:
+            enemy.action_weights = {"attack": 45, "defend": 20, "spell": 35}
 
 
 class Enemy(battler.Battler):
@@ -50,8 +69,8 @@ class Enemy(battler.Battler):
         self.original_stats = stats.copy()
         self.action_weights = {
             "attack": 60,
-            "defend": 15,
-            "spell": 25
+            "defend": 10,
+            "spell": 30
         }
 
     def clone(self, variant_name=None):
@@ -73,30 +92,32 @@ class Enemy(battler.Battler):
         return cloned
 
     def decide_action(self, allies):
-        """敌人AI决策"""
+        # 拷贝当前行为权重
+        weights = self.action_weights.copy()
+
         if self.stats["hp"] < self.stats["max_hp"] * 0.3:
-            self.action_weights["defend"] = 35
-            self.action_weights["attack"] = 30
-            self.action_weights["spell"] = 35
+            weights["defend"] = 35
+            weights["attack"] = 30
+            weights["spell"] = 35
 
         usable_spells = [spell for spell in self.spells if self.stats["mp"] >= spell.cost]
 
         if not usable_spells:
-            self.action_weights["spell"] = 0
-            total = self.action_weights["attack"] + self.action_weights["defend"]
-            self.action_weights["attack"] = round(self.action_weights["attack"] / total * 100)
-            self.action_weights["defend"] = round(self.action_weights["defend"] / total * 100)
+            weights["spell"] = 0
+            total = weights["attack"] + weights["defend"]
+            weights["attack"] = round(weights["attack"] / total * 100)
+            weights["defend"] = round(weights["defend"] / total * 100)
 
         action_type = random.choices(
             ["attack", "defend", "spell"], 
-            weights=[self.action_weights["attack"], self.action_weights["defend"], self.action_weights["spell"]]
+            weights=[weights["attack"], weights["defend"], weights["spell"]]
         )[0]
 
-        if len(self.spells) == 0 or self.stats["mp"] < min([s.cost for s in self.spells] or [999]):
-            self.action_weights["spell"] = 0
-            total = self.action_weights["attack"] + self.action_weights["defend"]
-            self.action_weights["attack"] = round(self.action_weights["attack"] / total * 100)
-            self.action_weights["defend"] = round(self.action_weights["defend"] / total * 100)
+        debug_print(f"[AI决策] {self.name} 当前行为选择: {action_type}")
+        debug_print(f"{self.name} 当前 MP: {self.stats['mp']}, 可用法术: {[s.name for s in usable_spells]}")
+        debug_print(f"{self.name} 技能列表: {[s.name for s in self.spells]}")
+        for spell in self.spells:
+            debug_print(f"{spell.name}: 可用? MP消耗: {spell.cost}")
 
         if action_type == "attack":
             return {"type": "attack", "target": random.choice(allies)}
@@ -105,6 +126,7 @@ class Enemy(battler.Battler):
         else:
             spell = random.choice(usable_spells)
             return {"type": "spell", "spell": spell, "target": None}
+
 
 def apply_variant(enemy, variant_name):
     variant = ENEMY_VARIANTS.get(variant_name)
