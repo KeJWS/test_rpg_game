@@ -138,8 +138,8 @@ class Grimoire(Item):
         return Grimoire(self.name, self.description, amount, self.individual_value, self.object_type, self.spell)
 
 class Jewel(Item):
-    def __init__(self, name, description, amount, individual_value, object_type, stat, amount_to_change) -> None:
-        super().__init__(name, description, amount, individual_value, object_type)
+    def __init__(self, name, description, amount, individual_value, stat, amount_to_change) -> None:
+        super().__init__(name, description, amount, individual_value, "consumable")
         self.stat = stat
         self.amount_to_change = amount_to_change
 
@@ -150,4 +150,4 @@ class Jewel(Item):
             fx.typewriter(fx.yellow(f"{self.stat} 增加了 {self.amount_to_change} 点"))
 
     def clone(self, amount):
-        return Jewel(self.name, self.description, amount, self.individual_value, self.object_type, self.stat, self.amount_to_change)
+        return Jewel(self.name, self.description, amount, self.individual_value, self.stat, self.amount_to_change)

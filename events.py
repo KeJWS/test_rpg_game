@@ -25,8 +25,8 @@ class Random_combat_event(Event):
         self.enemy_quantity_for_level = {
             4: 1,
             8: 2,
-            16: 3,
-            33: 4,
+            17: 3,
+            35: 4,
             100: 5,
         }
 

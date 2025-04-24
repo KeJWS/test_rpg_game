@@ -78,6 +78,10 @@ class Player(battler.Battler):
                 if actual_equipment.combo != None:
                     self.combos.remove(actual_equipment.combo)
                     print(f"不能再使用组合: {actual_equipment.combo.name}")
+                # 移除之前装备提供的技能
+                if actual_equipment.spell != None:
+                    self.spells.remove(actual_equipment.spell)
+                    print(f"不能再使用技能: {actual_equipment.spell.name}")
                 # 移除旧装备提供的属性加成
                 for stat, value in actual_equipment.stat_change_list.items():
                     self.stats[stat] -= actual_equipment.stat_change_list[stat]
@@ -90,6 +94,10 @@ class Player(battler.Battler):
             if equipment.combo != None and equipment.combo not in self.combos:
                 self.combos.append(equipment.combo)
                 print(f"现在可以使用组合: {equipment.combo.name}")
+            # 添加新装备的技能
+            if equipment.spell != None and equipment.spell not in self.spells:
+                self.spells.append(equipment.spell)
+                print(f"现在可以使用技能: {equipment.spell.name}")
             self.inventory.decrease_item_amount(equipment, 1)
             print(f"装备了 {equipment.name}")
             print(equipment.show_stats())
@@ -257,4 +265,4 @@ class Player(battler.Battler):
                 q.status = "Not Active"
 
         print(fx.cyan(f"你以 Lv.{self.level} 重生，保留了 {self.money} 金币和背包物品!"))
-        interface(self.inventory).show_inventory();
+        interface(self.inventory).show_inventory()

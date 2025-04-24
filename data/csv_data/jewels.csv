@@ -1,0 +1,19 @@
+id,name,name_zh,description,amount,individual_value,stat,amount_to_change
+,-> 小宝石,Lv1,,,0,,0
+1,atk_small_gems,攻击小宝石,提升3点攻击力的宝石,,150,atk,3
+,mat_small_gems,魔攻小宝石,提升3点魔法攻击力的宝石,,150,mat,3
+,agi_small_gems,敏捷小宝石,提升3点敏捷的宝石,,150,agi,3
+,crit_small_gems,暴击小宝石,提升1点暴击的宝石,,125,crit,1
+,def_small_gems,防御小宝石,提升2点防御力的宝石,,120,def,2
+,mdf_small_gems,魔防小宝石,提升2点魔防的宝石,,120,mat,2
+,hp_small_gems,生命小宝石,提升25点血量上限的宝石,,170,max_hp,25
+,mp_small_gems,魔法小宝石,提升10点魔力上限的宝石,,170,max_mp,10
+,-> 中宝石,Lv2,,,0,,0
+,atk_gems,攻击宝石,提升5点攻击力的宝石,,235,atk,5
+,mat_gems,魔攻宝石,提升5点魔法攻击力的宝石,,235,mat,5
+,agi_gems,敏捷宝石,提升5点敏捷的宝石,,235,agi,5
+,crit_gems,暴击宝石,提升3点暴击的宝石,,310,crit,3
+,def_gems,防御宝石,提升5点防御力的宝石,,230,def,4
+,mdf_gems,魔防宝石,提升5点魔防的宝石,,230,mdf,4
+,hp_gems,生命宝石,提升60点血量上限的宝石,,350,max_hp,60
+,mp_gems,魔法宝石,提升25点魔力上限的宝石,,350,max_mp,25

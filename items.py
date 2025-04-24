@@ -1,19 +1,10 @@
-import inspect
-import os
-import csv, ast
-from datetime import datetime
+import ast
+import csv
 from functools import lru_cache
 
-from data.constants import DEBUG
 import inventory, skills
-
-def debug_print(*args, **kwargs):
-    if DEBUG:
-        frame = inspect.currentframe().f_back
-        filename = os.path.basename(frame.f_code.co_filename)
-        lineno = frame.f_lineno
-        timestamp = datetime.now().strftime("%H:%M:%S")
-        print(f"[DEBUG {timestamp} {filename}:{lineno}]", *args, **kwargs)
+from tools.load_data_from_csv import load_jewel_from_csv
+from tools.dev_tools import debug_print
 
 # ASCII 图库加载
 @lru_cache(maxsize=1)
@@ -52,12 +43,13 @@ def load_equipment_from_csv(filepath="data/csv_data/equipments.csv"):
             object_type = row["object_type"]
             stat_change_list = ast.literal_eval(row["stat_change_list"])
             combo_object = getattr(skills, row["combo"], None)
+            spell_object = getattr(skills, row["spell"], None)
 
             image_path = row["image_path"]
             level = int(row["level"]) if row["level"].strip() else 1
             tags = row.get("tags", "").split(",") if row.get("tags") else []
 
-            eq = inventory.Equipment(name_zh, description, amount, individual_value, object_type, stat_change_list, combo_object, level, tags, image_path)
+            eq = inventory.Equipment(name_zh, description, amount, individual_value, object_type, stat_change_list, combo_object, spell_object, level, tags, image_path)
             equipment_dict[name] = eq
 
         debug_print(f"从 CSV 加载装备数据，共加载 {len(equipment_dict)} 项装备")
@@ -111,19 +103,12 @@ jack_weapon_shop_set.append(basic_equipments["wood_bow"])
 # 消耗品
 hp_potion = inventory.Potion("生命药水 I", "恢复少量生命值的药水", 1, 25, "consumable", "hp", 70)
 mp_potion = inventory.Potion("法力药水 I", "恢复少量法力值的药水", 1, 25, "consumable", "mp", 35)
+hp_potion2 = inventory.Potion("生命药水 II", "恢复生命值的药水", 1, 55, "consumable", "hp", 170)
+mp_potion2 = inventory.Potion("法力药水 II", "恢复法力值的药水", 1, 60, "consumable", "mp", 80)
+hp_potion3 = inventory.Potion("生命药水 III", "恢复中量生命值的药水", 1, 70, "consumable", "hp", 270)
+mp_potion3 = inventory.Potion("法力药水 III", "恢复中量法力值的药水", 1, 90, "consumable", "mp", 130)
 
-hp_potion2 = inventory.Potion("生命药水 II", "恢复少量生命值的药水", 1, 55, "consumable", "hp", 170)
-mp_potion2 = inventory.Potion("法力药水 II", "恢复少量法力值的药水", 1, 60, "consumable", "mp", 80)
-
-atk_small_gems = inventory.Jewel("攻击小宝石", "提升3点攻击力的宝石", 1, 150, "consumable", "atk", 3)
-mat_small_gems = inventory.Jewel("魔攻小宝石", "提升3点魔法攻击力的宝石", 1, 150, "consumable", "mat", 3)
-agi_small_gems = inventory.Jewel("敏捷小宝石", "提升3点敏捷的宝石", 1, 150, "consumable", "agi", 3)
-crit_small_gems = inventory.Jewel("暴击小宝石", "提升1点暴击的宝石", 1, 125, "consumable", "crit", 1)
-
-atk_gems = inventory.Jewel("攻击宝石", "提升5点攻击力的宝石", 1, 235, "consumable", "atk", 5)
-mat_gems = inventory.Jewel("魔攻宝石", "提升5点魔法攻击力的宝石", 1, 235, "consumable", "mat", 5)
-agi_gems = inventory.Jewel("敏捷宝石", "提升5点敏捷的宝石", 1, 235, "consumable", "agi", 5)
-crit_gems = inventory.Jewel("暴击宝石", "提升3点暴击的宝石", 1, 310, "consumable", "crit", 3)
+jewel_data = load_jewel_from_csv()
 
 # 魔法书
 grimoire_data = [
@@ -152,7 +137,7 @@ itz_magic_item_set = [
     equipment_data["mana_charm"],
     *grimoires[:6],
     equipment_data["ring_of_magic"],
-    mat_small_gems,
+    jewel_data["mat_small_gems"],
 ]
 
 debug_print(f"Jack 的武器商店物品数: {len(jack_weapon_shop_set)}")

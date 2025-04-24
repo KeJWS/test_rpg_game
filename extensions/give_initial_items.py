@@ -18,7 +18,7 @@ def give_initial_items(my_player):
     elif option == "2":
         items.basic_equipments["broken_dagger"].add_to_inventory_player(my_player.inventory)
         items.basic_equipments["novice_armor"].add_to_inventory_player(my_player.inventory)
-        items.agi_gems.add_to_inventory_player(my_player.inventory)
+        items.jewel_data["agi_gems"].add_to_inventory_player(my_player.inventory)
         my_player.class_name = "盗贼"
     elif option == "3":
         items.basic_equipments["old_staff"].add_to_inventory_player(my_player.inventory)
@@ -28,7 +28,7 @@ def give_initial_items(my_player):
     elif option == "4":
         items.basic_equipments["wood_bow"].add_to_inventory_player(my_player.inventory)
         items.equipment_data["leather_armor"].add_to_inventory_player(my_player.inventory)
-        items.crit_gems.add_to_inventory_player(my_player.inventory)
+        items.jewel_data["crit_gems"].add_to_inventory_player(my_player.inventory)
         my_player.class_name = "弓箭手"
     elif option == "5":
         items.basic_equipments["rusty_sword"].add_to_inventory_player(my_player.inventory)
@@ -71,5 +71,5 @@ def apply_class_bonuses(my_player):
 def default_selection_warrior(my_player):
     items.basic_equipments["rusty_sword"].add_to_inventory_player(my_player.inventory)
     items.basic_equipments["novice_armor"].add_to_inventory_player(my_player.inventory)
-    items.atk_gems.add_to_inventory_player(my_player.inventory)
+    items.jewel_data["atk_gems"].add_to_inventory_player(my_player.inventory)
     my_player.class_name = "战士"

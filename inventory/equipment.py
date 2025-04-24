@@ -29,6 +29,7 @@ class Equipment(Item):
         object_type: str,
         stat_change_list: Dict[str, int],
         combo: Optional[Any] = None,
+        spell: Optional[Any] = None,
         level: int = 1,
         tags: Optional[List[str]] = None,
         image_path: Optional[str] = None,
@@ -41,6 +42,7 @@ class Equipment(Item):
         self.base_name: str = name
         self.stat_change_list: Dict[str, int] = self.base_stats.copy()
         self.combo = combo
+        self.spell = spell
         self.level = level
         self.tags = tags or []
 
@@ -91,9 +93,10 @@ class Equipment(Item):
 
     def show_info(self):
         combo_name = fx.yellow(self.combo.name) if self.combo else ""
+        spell_name = fx.yellow(self.spell.name) if self.spell else ""
         return (
             f"[x{self.amount}] {self.name} ({self.object_type}) {self.show_stats()} - "
-            f"{self.individual_value}G {combo_name}\n"
+            f"{self.individual_value}G {combo_name}{spell_name}\n"
             f"    简介: {self.description}"
         )
 
@@ -182,6 +185,7 @@ class Equipment(Item):
             object_type=self.object_type,
             stat_change_list=self.base_stats.copy(),
             combo=self.combo,
+            spell=self.spell,
             level=self.level,
             tags=self.tags.copy(),
             image_path=self.image_path,

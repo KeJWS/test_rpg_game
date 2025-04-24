@@ -5,8 +5,6 @@ from datetime import datetime
 import inspect
 
 import test.fx as fx
-from items import atk_gems, mat_gems, agi_gems, crit_gems, grimoires
-from items import equipment_data, hp_potion, mp_potion, atk_small_gems, mat_small_gems, agi_small_gems, crit_small_gems
 
 def debug_print(*args, **kwargs):
     if DEBUG:
@@ -17,6 +15,7 @@ def debug_print(*args, **kwargs):
         print(f"{fx.CYAN}[DEBUG {timestamp} {filename}:{lineno}]{fx.END}", *args, **kwargs)
 
 def spawn_item(inventory_instance, item_name, quantity=1):
+    from items import equipment_data, jewel_data, hp_potion, mp_potion, grimoires
     # 查找装备
     if item_name in equipment_data:
         eq = equipment_data[item_name]
@@ -29,14 +28,14 @@ def spawn_item(inventory_instance, item_name, quantity=1):
     item_map = {
         "hp_potion": hp_potion,
         "mp_potion": mp_potion,
-        "atk_small_gems": atk_small_gems,
-        "mat_small_gems": mat_small_gems,
-        "agi_small_gems": agi_small_gems,
-        "crit_small_gems": crit_small_gems,
-        "atk_gems": atk_gems,
-        "mat_gems": mat_gems,
-        "agi_gems": agi_gems,
-        "crit_gems": crit_gems,
+        "atk_small_gems": jewel_data["atk_small_gems"],
+        "mat_small_gems": jewel_data["mat_small_gems"],
+        "agi_small_gems": jewel_data["agi_small_gems"],
+        "crit_small_gems": jewel_data["crit_small_gems"],
+        "atk_gems": jewel_data["atk_gems"],
+        "mat_gems": jewel_data["mat_gems"],
+        "agi_gems": jewel_data["agi_gems"],
+        "crit_gems": jewel_data["crit_gems"],
     }
 
     for g in grimoires:
@@ -50,6 +49,7 @@ def spawn_item(inventory_instance, item_name, quantity=1):
         debug_print(f"[警告] 找不到名为 {item_name} 的物品")
 
 def spawn_all_items(inventory_instance):
+    from items import equipment_data, jewel_data, hp_potion, mp_potion, grimoires
     for eq in equipment_data.values():
         inventory_instance.add_item(eq.clone(amount=1))
     debug_print(f"已刷入 {len(equipment_data)} 件装备")
@@ -59,11 +59,7 @@ def spawn_all_items(inventory_instance):
         inventory_instance.add_item(p.clone(amount=3))
     debug_print("已刷入全部药水")
 
-    jewels = [
-        atk_small_gems, mat_small_gems, agi_small_gems, crit_small_gems,
-        atk_gems, mat_gems, agi_gems, crit_gems
-    ]
-    for j in jewels:
+    for j in jewel_data.values():
         inventory_instance.add_item(j.clone(amount=2))
     debug_print("已刷入全部宝石")
 
