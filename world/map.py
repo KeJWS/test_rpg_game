@@ -1,3 +1,4 @@
+import json
 import random
 from dataclasses import dataclass
 from copy import deepcopy
@@ -77,21 +78,17 @@ class World_map:
             self.regions["swamp"].special_events.append(swamp_poison_event)
 
     def _initialize_regions(self):
-        from world import region_factory
+        from world.region_factory import load_region_from_dict
         ascii_art_dict = items.load_ascii_art_library("data/ascii_art/ascii_art_map.txt")
+        with open("data/json_regions/world_map.json", "r", encoding="utf-8") as f:
+            all_region_data = json.load(f)
 
+        self.regions = {}
+
+        for key, region_data in all_region_data.items():
+            self.regions[key] = load_region_from_dict(region_data, ascii_art_dict)
         for region in self.regions.values():
             region.quest_events = []
-
-        self.regions = {
-            "town": region_factory.create_town(ascii_art_dict),
-            "forest": region_factory.create_forest(ascii_art_dict),
-            "mountain": region_factory.create_mountain(ascii_art_dict),
-            "swamp": region_factory.create_swamp_herbalist(ascii_art_dict),
-            # "redflame canyon": region_factory.create_redflame_canyon(ascii_art_dict),
-            # "snowlands": region_factory.create_snowlands(ascii_art_dict),
-            # "forgotten ruins": region_factory.create_forgotten_ruins(ascii_art_dict),
-        }
 
         self.current_region = self.regions["town"]
 
@@ -237,7 +234,7 @@ class World_map:
             heal_event.effect(player)
 
         if (self.current_region.special_events and 
-            random.randint(1, 100) <= 10):
+            random.randint(1, 100) <= 7):
             special_event = random.choice(self.current_region.special_events)
             print(f"\n一个特殊事件发生了: {special_event.name}")
             escaped = special_event.effect(player)

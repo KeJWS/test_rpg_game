@@ -115,9 +115,6 @@ class Enemy(battler.Battler):
 
         debug_print(f"[AI决策] {self.name} 当前行为选择: {action_type}")
         debug_print(f"{self.name} 当前 MP: {self.stats['mp']}, 可用法术: {[s.name for s in usable_spells]}")
-        debug_print(f"{self.name} 技能列表: {[s.name for s in self.spells]}")
-        for spell in self.spells:
-            debug_print(f"{spell.name}: 可用? MP消耗: {spell.cost}")
 
         if action_type == "attack":
             return {"type": "attack", "target": random.choice(allies)}

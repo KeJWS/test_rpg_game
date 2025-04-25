@@ -1,0 +1,65 @@
+
+{
+  "town": {
+    "name": "安全镇",
+    "description": "一个和平的小镇, 这里没有敌人, \n但有许多商店和休息的地方。",
+    "danger_level": 0,
+    "possible_enemies": {},
+    "shop_events": ["shop_jack_weapon", "shop_anna_armor"],
+    "heal_events": ["inn_event"],
+    "special_events": [],
+    "quests": [],
+    "ascii_art_key": "安全镇"
+  },
+  "forest": {
+    "name": "雾林",
+    "description": "一片神秘的森林, 低级怪物在这里游荡。\n适合初学者冒险, 不过要小心这里的森林守卫者。",
+    "danger_level": 1,
+    "possible_enemies": {
+      "rat": [1, 2],
+      "slime": [1, 3],
+      "bat": [1, 4],
+      "imp": [2, 6],
+      "giant_slime": [4, 19],
+      "shadow_wolf": [8, 16]
+    },
+    "shop_events": [],
+    "heal_events": ["heal_medussa_statue"],
+    "special_events": [],
+    "quests": ["hunting_slimes", "slime_king"],
+    "ascii_art_key": "雾林"
+  },
+  "mountain": {
+    "name": "龙脊山",
+    "description": "一个和平的小镇, 这里没有敌人, \n但有许多商店和休息的地方。",
+    "danger_level": 2,
+    "possible_enemies": {
+      "golem": [1, 7],
+      "skeleton": [3, 10],
+      "bandit": [4, 12],
+      "goblin": [5, 13],
+      "wild_boar": [6, 15],
+      "wolf": [8, 22]
+    },
+    "shop_events": ["shop_rik_armor", "shop_lok_armor"],
+    "heal_events": ["heal_medussa_statue"],
+    "special_events": [],
+    "quests": ["caesarus_bandit"],
+    "ascii_art_key": "龙脊山"
+  },
+  "swamp": {
+    "name": "迷雾沼泽",
+    "description": "一个和平的小镇, 这里没有敌人, \n但有许多商店和休息的地方。",
+    "danger_level": 3,
+    "possible_enemies": {
+      "forest_spider": [1, 7],
+      "poison_frog": [1, 9],
+      "giant_slime": [3, 15]
+    },
+    "shop_events": ["shop_itz_magic"],
+    "heal_events": ["heal_medussa_statue"],
+    "special_events": [],
+    "quests": ["wolf_king"],
+    "ascii_art_key": "迷雾沼泽"
+  }
+}

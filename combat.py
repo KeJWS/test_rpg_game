@@ -178,7 +178,6 @@ class Combat_executor:
             player.add_combo_points(1)
             enhance_weapon.effect(player, player)
             console.print("你紧握武器, 时刻准备反击!", style="yellow")
-            pass
 
         elif "e" in cmd:
             if Battle_calculator.try_escape(player):
