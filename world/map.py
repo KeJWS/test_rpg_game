@@ -80,7 +80,7 @@ class World_map:
     def _initialize_regions(self):
         from world.region_factory import load_region_from_dict
         ascii_art_dict = items.load_ascii_art_library("data/ascii_art/ascii_art_map.txt")
-        with open("data/json_regions/world_map.json", "r", encoding="utf-8") as f:
+        with open("data/json_data/world_map.json", "r", encoding="utf-8") as f:
             all_region_data = json.load(f)
 
         self.regions = {}

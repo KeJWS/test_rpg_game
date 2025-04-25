@@ -37,7 +37,13 @@ class Player(battler.Battler):
             "accessory": None
         }
         self.money = 0
-        self.combos, self.spells = [], []
+        self.combos, self.spells = [
+            skills.skills["旋风斩"],
+            skills.skills["击晕"],
+            skills.skills["双重打击"],
+            skills.skills["野蛮突袭"],
+            skills.skills["快速恢复"],
+        ], []
         self.active_quests, self.completed_quests = [], []
         self.class_name = ""
         self.is_ally = True

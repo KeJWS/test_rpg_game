@@ -21,9 +21,8 @@ def give_initial_items(my_player):
         items.jewel_data["agi_gems"].add_to_inventory_player(my_player.inventory)
         my_player.class_name = "盗贼"
     elif option == "3":
-        items.basic_equipments["old_staff"].add_to_inventory_player(my_player.inventory)
+        items.equipment_data["fire_staff"].add_to_inventory_player(my_player.inventory)
         items.basic_equipments["old_robes"].add_to_inventory_player(my_player.inventory)
-        items.grimoires[0].add_to_inventory_player(my_player.inventory)
         my_player.class_name = "法师"
     elif option == "4":
         items.basic_equipments["wood_bow"].add_to_inventory_player(my_player.inventory)

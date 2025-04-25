@@ -1,0 +1,286 @@
+[
+  {
+    "type": "BuffDebuffSpell",
+    "name": "蓄力",
+    "description": "临时提升攻击力",
+    "power": 0,
+    "cost": 0,
+    "is_targeted": false,
+    "default_target": "self",
+    "stat": "atk",
+    "change": 0.25,
+    "turns": 2,
+    "effect_type": "enhance_weapon"
+  },
+  {
+    "type": "BuffDebuffSpell",
+    "name": "破防",
+    "description": "降低防御力",
+    "power": 0,
+    "cost": 0,
+    "is_targeted": false,
+    "default_target": "self",
+    "stat": "def",
+    "change": -0.5,
+    "turns": 2,
+    "effect_type": "weakened_defense"
+  },
+  {
+    "type": "DamageSpell",
+    "name": "a",
+    "description": "--------- 玩家法术 ---------",
+    "power": 0,
+    "cost": 0
+  },
+  {
+    "type": "DamageSpell",
+    "name": "火球术",
+    "description": "向单个敌人发射一颗火球",
+    "power": 75,
+    "cost": 35,
+    "is_targeted": true,
+    "default_target": null
+  },
+  {
+    "type": "RecoverySpell",
+    "name": "神圣祝福",
+    "description": "治疗单个目标",
+    "power": 60,
+    "cost": 50,
+    "stat": "hp",
+    "is_targeted": true,
+    "default_target": null
+  },
+  {
+    "type": "BuffDebuffSpell",
+    "name": "强化武器",
+    "description": "提升攻击力",
+    "power": 0,
+    "cost": 32,
+    "is_targeted": false,
+    "default_target": "self",
+    "stat": "atk",
+    "change": 0.5,
+    "turns": 3,
+    "effect_type": "atk_buff"
+  },
+  {
+    "type": "DamageSpell",
+    "name": "地狱火",
+    "description": "对所有敌人造成伤害",
+    "power": 50,
+    "cost": 55,
+    "is_targeted": false,
+    "default_target": "all_enemies"
+  },
+  {
+    "type": "SummonSpell",
+    "name": "召唤骷髅",
+    "description": "召唤一个骷髅战士",
+    "power": 0,
+    "cost": 42,
+    "is_targeted": false,
+    "default_target": "allies",
+    "summoning": "Summoned_skeleton"
+  },
+  {
+    "type": "SummonSpell",
+    "name": "召唤火精灵",
+    "description": "召唤一个火精灵",
+    "power": 0,
+    "cost": 78,
+    "is_targeted": false,
+    "default_target": "allies",
+    "summoning": "Summoned_fire_spirit"
+  },
+  {
+    "type": "DamageSpell",
+    "name": "b",
+    "description": "--------- 高级法术 ---------",
+    "power": 0,
+    "cost": 0
+  },
+  {
+    "type": "AdvancedDamageSpell",
+    "name": "闪电击",
+    "description": "发射闪电可能造成眩晕",
+    "power": 90,
+    "cost": 45,
+    "is_targeted": true,
+    "default_target": null,
+    "effect_type": "stun"
+  },
+  {
+    "type": "AdvancedDamageSpell",
+    "name": "爆炎术",
+    "description": "释放强力火焰，可能造成灼烧",
+    "power": 110,
+    "cost": 60,
+    "is_targeted": true,
+    "default_target": null,
+    "effect_type": "burn"
+  },
+  {
+    "type": "DamageSpell",
+    "name": "c",
+    "description": "--------- 玩家连击 ---------",
+    "power": 0,
+    "cost": 0
+  },
+  {
+    "type": "SlashCombo",
+    "name": "斩击连击 I",
+    "description": "连续攻击敌人2次",
+    "cost": 3,
+    "is_targeted": true,
+    "default_target": null,
+    "hits": 2
+  },
+  {
+    "type": "SlashCombo",
+    "name": "斩击连击 II",
+    "description": "连续攻击敌人3次",
+    "cost": 3,
+    "is_targeted": true,
+    "default_target": null,
+    "hits": 3
+  },
+  {
+    "type": "ArmorBreakingCombo",
+    "name": "破甲 I",
+    "description": "破坏敌人护甲",
+    "cost": 3,
+    "is_targeted": true,
+    "default_target": null,
+    "reduction": -0.35,
+    "effect_type": "armor_break"
+  },
+  {
+    "type": "ArmorBreakingCombo",
+    "name": "破甲 II",
+    "description": "破坏敌人护甲",
+    "cost": 3,
+    "is_targeted": true,
+    "default_target": null,
+    "reduction": -0.5,
+    "effect_type": "armor_break"
+  },
+  {
+    "type": "VampirismCombo",
+    "name": "吸血之刺 I",
+    "description": "吸取敌人生命",
+    "cost": 2,
+    "is_targeted": true,
+    "default_target": null,
+    "percent": 0.35
+  },
+  {
+    "type": "VampirismCombo",
+    "name": "吸血之刺 II",
+    "description": "吸取敌人大量生命",
+    "cost": 2,
+    "is_targeted": true,
+    "default_target": null,
+    "percent": 0.5
+  },
+  {
+    "type": "RecoveryCombo",
+    "name": "冥想 I",
+    "description": "恢复少量魔法",
+    "cost": 1,
+    "stat": "mp",
+    "amount": 30,
+    "is_targeted": false,
+    "default_target": "self"
+  },
+  {
+    "type": "RecoveryCombo",
+    "name": "冥想 II",
+    "description": "恢复大量魔法",
+    "cost": 2,
+    "stat": "mp",
+    "amount": 70,
+    "is_targeted": false,
+    "default_target": "self"
+  },
+  {
+    "type": "SlashCombo",
+    "name": "快速连射 I",
+    "description": "快速射击敌人两次",
+    "cost": 2,
+    "is_targeted": true,
+    "default_target": null,
+    "hits": 2
+  },
+  {
+    "type": "SlashCombo",
+    "name": "快速连射 II",
+    "description": "快速射击敌人三次",
+    "cost": 2,
+    "is_targeted": true,
+    "default_target": null,
+    "hits": 3
+  },
+  {
+    "type": "DamageCombo",
+    "name": "力量斩 I",
+    "description": "蓄力一击，造成较高伤害",
+    "power": 130,
+    "cost": 3,
+    "is_targeted": true,
+    "default_target": null
+  },
+  {
+    "type": "DamageSpell",
+    "name": "d",
+    "description": "--------- 高级连击 ---------",
+    "power": 0,
+    "cost": 0
+  },
+  {
+    "type": "MultiTargetCombo",
+    "name": "旋风斩",
+    "description": "攻击所有敌人",
+    "cost": 3,
+    "is_targeted": false,
+    "default_target": "all_enemies",
+    "damage_multiplier": 0.8
+  },
+  {
+    "type": "StunCombo",
+    "name": "击晕",
+    "description": "攻击敌人并可能使其眩晕",
+    "cost": 2,
+    "is_targeted": true,
+    "default_target": null,
+    "stun_chance": 0.55
+  },
+  {
+    "type": "SlashCombo",
+    "name": "双重打击",
+    "description": "快速攻击敌人两次",
+    "cost": 2,
+    "is_targeted": true,
+    "default_target": null,
+    "hits": 2
+  },
+  {
+    "type": "SlashCombo",
+    "name": "野蛮突袭",
+    "description": "疯狂攻击敌人5次",
+    "cost": 4,
+    "is_targeted": true,
+    "default_target": null,
+    "hits": 5
+  },
+  {
+    "type": "RecoveryCombo",
+    "name": "快速恢复",
+    "description": "恢复少量生命",
+    "cost": 2,
+    "stat": "hp",
+    "amount": 110,
+    "is_targeted": false,
+    "default_target": "self"
+  }
+]

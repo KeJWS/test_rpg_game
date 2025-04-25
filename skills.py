@@ -1,5 +1,6 @@
 from __future__ import annotations
 from typing import TYPE_CHECKING, List, Union, Callable
+import json
 import random
 from rich.console import Console
 import core.allies as allies
@@ -114,8 +115,8 @@ class SummonSpell(Spell):
 
 
 class AdvancedDamageSpell(Spell):
-    def __init__(self, name, desc, power, cost, is_targeted, default_target, effect_type=None):
-        super().__init__(name, desc, power, cost, is_targeted, default_target)
+    def __init__(self, name, description, power, cost, is_targeted, default_target, effect_type=None):
+        super().__init__(name, description, power, cost, is_targeted, default_target)
         self.effect_type = effect_type
 
     def effect(self, caster: Battler, target: Battler):
@@ -125,18 +126,18 @@ class AdvancedDamageSpell(Spell):
 
         if self.effect_type == "stun" and random.random() < 0.4:
             if not any(b.effect_type == "stun" for b in target.buffs_and_debuffs):
-                BuffDebuff("眩晕", target, "agi", -0.7, 2, "stun").activate()
+                BuffDebuff("眩晕", target, "agi", -0.8, 2, "stun").activate()
         elif self.effect_type == "poison" and random.random() < 0.7:
             if not any(b.effect_type == "poison" for b in target.buffs_and_debuffs):
-                PoisonEffect("中毒", target, "hp", -int(dmg * 0.15), 4).activate()
+                PoisonEffect("中毒", target, "hp", -int(dmg * 0.12), 5).activate()
         elif self.effect_type == "burn" and random.random() < 0.6:
             if not any(b.effect_type == "burn" for b in target.buffs_and_debuffs):
-                PoisonEffect("燃烧", target, "hp", -int(dmg * 0.3), 2).activate()
+                PoisonEffect("燃烧", target, "hp", -int(dmg * 0.3), 3).activate()
 
 
 class SlashCombo(Combo):
-    def __init__(self, name, desc, cost, is_targeted, default_target, hits):
-        super().__init__(name, desc, cost, is_targeted, default_target)
+    def __init__(self, name, description, cost, is_targeted, default_target, hits):
+        super().__init__(name, description, cost, is_targeted, default_target)
         self.hits = hits
 
     def effect(self, caster: Battler, target: Battler):
@@ -147,8 +148,8 @@ class SlashCombo(Combo):
 
 
 class ArmorBreakingCombo(Combo):
-    def __init__(self, name, desc, cost, is_targeted, default_target, reduction, effect_type="armor_break"):
-        super().__init__(name, desc, cost, is_targeted, default_target)
+    def __init__(self, name, description, cost, is_targeted, default_target, reduction, effect_type="armor_break"):
+        super().__init__(name, description, cost, is_targeted, default_target)
         self.reduction = reduction
         self.effect_type = effect_type
 
@@ -156,23 +157,23 @@ class ArmorBreakingCombo(Combo):
         if not self.check_cp(caster): return
         if apply_buff(target, self.name, "def", self.reduction, 4, self.effect_type):
             console.print(f"{caster.name} 刺穿了 {target.name} 的盔甲!", style="red")
-        caster.normal_attack(target)
+        caster.normal_attack(target, gain_cp=False)
 
 
 class VampirismCombo(Combo):
-    def __init__(self, name, desc, cost, is_targeted, default_target, percent):
-        super().__init__(name, desc, cost, is_targeted, default_target)
+    def __init__(self, name, description, cost, is_targeted, default_target, percent):
+        super().__init__(name, description, cost, is_targeted, default_target)
         self.percent = percent
 
     def effect(self, caster: Battler, target: Battler):
         if self.check_cp(caster):
-            recovered = caster.normal_attack(target) * self.percent
+            recovered = caster.normal_attack(target, gain_cp=False) * self.percent
             caster.heal(round(recovered))
 
 
 class RecoveryCombo(Combo):
-    def __init__(self, name, desc, cost, stat, amount, is_targeted, default_target):
-        super().__init__(name, desc, cost, is_targeted, default_target)
+    def __init__(self, name, description, cost, stat, amount, is_targeted, default_target):
+        super().__init__(name, description, cost, is_targeted, default_target)
         self.stat = stat
         self.amount = amount
 
@@ -182,14 +183,41 @@ class RecoveryCombo(Combo):
 
 
 class DamageCombo(Combo):
-    def __init__(self, name, desc, power, cost, is_targeted, default_target):
-        super().__init__(name, desc, cost, is_targeted, default_target)
+    def __init__(self, name, description, power, cost, is_targeted, default_target):
+        super().__init__(name, description, cost, is_targeted, default_target)
         self.power = power
 
     def effect(self, caster: Battler, target: Battler):
         if self.check_cp(caster):
             dmg = self.power + (caster.stats["atk"] * 2.7 - target.stats["def"] * 0.8 + caster.stats["luk"])
             apply_damage(target, dmg)
+
+
+class MultiTargetCombo(Combo):
+    def __init__(self, name, description, cost, is_targeted, default_target, damage_multiplier):
+        super().__init__(name, description, cost, is_targeted, default_target)
+        self.damage_multiplier = damage_multiplier
+
+    def effect(self, caster, targets):
+        if self.check_cp(caster):
+            console.print(f"{caster.name} 使用了 {self.name} 攻击所有敌人!")
+            for target in targets:
+                dmg = caster.stats["atk"] * 4 * self.damage_multiplier - target.stats["def"] * 2.5
+                apply_damage(target, dmg)
+
+
+class StunCombo(Combo):
+    def __init__(self, name, description, cost, is_targeted, default_target, stun_chance) -> None:
+        super().__init__(name, description, cost, is_targeted, default_target)
+        self.stun_chance = stun_chance
+
+    def effect(self, caster, target):
+        if self.check_cp(caster):
+            caster.normal_attack(target, gain_cp=False)
+            if random.random() < self.stun_chance:
+                print(f"{caster.name} 眩晕了 {target.name}!")
+                if not any(b.effect_type == "stun" for b in target.buffs_and_debuffs):
+                    BuffDebuff("眩晕", target, "agi", -0.8, 2, "stun").activate()
 
 
 # --- 状态类 ---
@@ -242,30 +270,52 @@ class PoisonEffect(BuffDebuff):
         super().check_turns()
 
 
-enhance_weapon = BuffDebuffSpell("蓄力", "临时提升攻击力", 0, 0, False, "self", "atk", 0.25, 2, "enhance_weapon")
-weakened_defense = BuffDebuffSpell("破防", "降低防御力", 0, 0, False, "self", "def", -0.5, 2, "weakened_defense")
+SPELL_CLASS_MAP = {
+    "DamageSpell": DamageSpell,
+    "RecoverySpell": RecoverySpell,
+    "BuffDebuffSpell": BuffDebuffSpell,
+    "SummonSpell": SummonSpell,
+    "AdvancedDamageSpell": AdvancedDamageSpell,
+    "SlashCombo": SlashCombo,
+    "ArmorBreakingCombo": ArmorBreakingCombo,
+    "VampirismCombo": VampirismCombo,
+    "RecoveryCombo": RecoveryCombo,
+    "DamageCombo": DamageCombo,
+    "MultiTargetCombo": MultiTargetCombo,
+    "StunCombo": StunCombo,
+}
 
-# 玩家法术
-spell_fire_ball = DamageSpell("火球术", "向单个敌人发射一颗火球", 75, 30, True, None)
-spell_divine_blessing = RecoverySpell("神圣祝福", "治疗单个目标", 60, 50, "hp", True, None)
-spell_enhance_weapon = BuffDebuffSpell("强化武器", "提升攻击力", 0, 32, False, "self", "atk", 0.5, 3, "atk_buff")
-spell_inferno = DamageSpell("地狱火", "对所有敌人造成伤害", 50, 55, False, "all_enemies")
-spell_skeleton_summoning = SummonSpell("召唤骷髅", "召唤一个骷髅战士", 0, 42, False, "allies", allies.Summoned_skeleton)
-spell_fire_spirit_summoning = SummonSpell("召唤火精灵", "召唤一个火精灵", 0, 78, False, "allies", allies.Summoned_fire_spirit)
+SUMMON_CLASS_MAP = {
+    "Summoned_skeleton": allies.Summoned_skeleton,
+    "Summoned_fire_spirit": allies.Summoned_fire_spirit
+}
 
-# 玩家连击
-combo_slash1 = SlashCombo("斩击连击 I", "连续攻击敌人2次", 3, True, None, 2)
-combo_slash2 = SlashCombo("斩击连击 II", "连续攻击敌人3次", 3, True, None, 3)
-combo_armor_breaker1 = ArmorBreakingCombo("破甲 I", "破坏敌人护甲", 3, True, None, -0.35, "armor_break")
-combo_armor_breaker2 = ArmorBreakingCombo("破甲 II", "破坏敌人护甲", 3, True, None, -0.5, "armor_break")
-combo_vampire_stab1 = VampirismCombo("吸血之刺 I", "吸取敌人生命", 2, True, None, 0.35)
-combo_vampire_stab2 = VampirismCombo("吸血之刺 II", "吸取敌人大量生命", 2, True, None, 0.5)
-combo_meditation1 = RecoveryCombo("冥想 I", "恢复少量魔法", 1, "mp", 30, False, "self")
-combo_meditation2 = RecoveryCombo("冥想 II", "恢复大量魔法", 2, "mp", 70, False, "self")
-combo_quickSshooting1 = SlashCombo("快速连射 I", "快速射击敌人两次", 2, True, None, 2)
-combo_quickSshooting2 = SlashCombo("快速连射 II", "快速射击敌人三次", 2, True, None, 3)
-combo_power_slash1 = DamageCombo("力量斩 I", "蓄力一击，造成较高伤害", 130, 3, True, None)
+def load_skills_from_json(path="data/json_data/skills.json"):
+    with open(path, "r", encoding="utf-8") as f:
+        data = json.load(f)
+    defaults = {
+        "is_targeted": True,
+        "default_target": None,
+    }
+    skill_instances = {}
+    for entry in data:
+        entry = {**defaults, **entry}
+        skill_type = entry.pop("type")
+        if skill_type == "SummonSpell":
+            entry["summoning"] = SUMMON_CLASS_MAP[entry["summoning"]]
 
+        cls = SPELL_CLASS_MAP.get(skill_type)
+        if not cls:
+            raise ValueError(f"未知技能类型: {skill_type}")
+        skill = cls(**entry)
+        skill_instances[skill.name] = skill
+
+    return skill_instances
+
+skills = load_skills_from_json()
+
+enhance_weapon = skills["蓄力"]
+weakened_defense = skills["破防"]
 
 # --- 敌人技能注册 ---
 SPELL_REGISTRY = {
