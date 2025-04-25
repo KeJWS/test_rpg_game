@@ -10,9 +10,9 @@ from rich.table import Table
 
 import enemies, events, items
 import world.quest as quest
-import test.fx as fx
 
 console = Console()
+
 
 @dataclass
 class Region:
@@ -26,6 +26,7 @@ class Region:
     quests: List[quest.Quest]
     ascii_art: str
     is_unlocked: bool = True
+    quest_events: List[events.Event] = None
 
     def available_quests(self, player):
         """返回该地区可接受的任务列表（未激活的）"""
@@ -45,6 +46,7 @@ class World_map:
         self.current_region = None
         self._initialize_regions()
         self._initialize_special_events()
+        self._initialize_quest_events()
 
     def _initialize_special_events(self):
         """初始化各地区的特殊事件"""
@@ -78,6 +80,9 @@ class World_map:
         from world import region_factory
         ascii_art_dict = items.load_ascii_art_library("data/ascii_art/ascii_art_map.txt")
 
+        for region in self.regions.values():
+            region.quest_events = []
+
         self.regions = {
             "town": region_factory.create_town(ascii_art_dict),
             "forest": region_factory.create_forest(ascii_art_dict),
@@ -89,6 +94,14 @@ class World_map:
         }
 
         self.current_region = self.regions["town"]
+
+    def _initialize_quest_events(self):
+        """初始化所有区域的任务事件"""
+        for region in self.regions.values():
+            region.quest_events = []
+            for q in region.quests:
+                if hasattr(q, "event") and isinstance(q.event, events.Event):
+                    region.quest_events.append(q.event)
 
     def unclock_region(self, region_name):
         """解锁指定地区"""
@@ -172,6 +185,25 @@ class World_map:
         if not self.current_region:
             return
 
+        active_quest_events = [
+            q.event for q in player.active_quests 
+            if hasattr(q, 'event') and q.event in self.current_region.quest_events
+        ]
+
+        if active_quest_events:
+            if random.randint(1, 100) <= 70:
+                quest_event = random.choice(active_quest_events)
+                print(f"\n一个任务相关事件发生了: {quest_event.name}")
+                escaped = quest_event.effect(player)
+                if quest_event.is_unique and not escaped and player.alive:
+                    self.current_region.quest_events.remove(quest_event)
+                    for q in player.active_quests:
+                        if hasattr(q, 'event') and q.event == quest_event:
+                            q.complete_quest(player)
+                elif quest_event.is_unique and escaped:
+                    console.print("你逃离了战斗, 还有机会再尝试完成任务", style="yellow")
+                return
+
         if self.current_region.danger_level == 0:
             combot_chance = 0
 
@@ -181,15 +213,12 @@ class World_map:
         if self.current_region.possible_enemies and combot_chance > 0:
             event_types.append("combat")
             weights.append(combot_chance)
-
         if self.current_region.shop_events and shop_chance > 0:
             event_types.append("shop")
             weights.append(shop_chance)
-
         if self.current_region.heal_events and heal_chance > 0:
             event_types.append("heal")
             weights.append(heal_chance)
-
         if not event_types:
             print("这个地区目前很平静, 没有发生任何事件")
             return
@@ -200,11 +229,9 @@ class World_map:
             combat_event = events.Random_combat_event(f"{self.current_region.name}的随机战斗")
             enemies.possible_enemies = self.current_region.possible_enemies
             combat_event.effect(player)
-
         elif event_type == "shop":
             shop_event = random.choice(self.current_region.shop_events)
             shop_event.effect(player)
-
         elif event_type == "heal":
             heal_event = random.choice(self.current_region.heal_events)
             heal_event.effect(player)
@@ -216,11 +243,8 @@ class World_map:
             escaped = special_event.effect(player)
             if special_event.is_unique and not escaped and player.alive:
                 self.current_region.special_events.remove(special_event)
-                for quest in player.active_quests:
-                    if hasattr(quest, 'event') and quest.event == special_event:
-                        quest.complete_quest(player)
             elif special_event.is_unique and escaped:
-                print(fx.yellow("你逃离了战斗, 不过没关系还可以再次尝试"))
+                console.print("你逃离了战斗...", style="yellow")
                 pass
 
 world_map = World_map()
