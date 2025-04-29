@@ -41,6 +41,7 @@ class Player(battler.Battler):
         self.active_quests, self.completed_quests = [], []
         self.class_name = ""
         self.is_ally = True
+        self.auto_mode = False
 
     def normal_attack(self, defender, gain_cp=True):
         if gain_cp: self.add_combo_points(1)
@@ -198,3 +199,7 @@ class Player(battler.Battler):
                 q.status = "Not Active"
         print(fx.cyan(f"你以 Lv.{self.level} 重生，保留了 {self.money} 金币和背包物品!"))
         interface(self.inventory).show_inventory()
+
+    def change_auto_mode(self):
+        self.auto_mode = not self.auto_mode
+        print("-Auto mode-")

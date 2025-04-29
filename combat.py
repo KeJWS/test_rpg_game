@@ -154,6 +154,22 @@ class Combat_executor:
         """处理玩家的回合"""
         if player.is_defending:
             player.end_defense()
+
+        if player.auto_mode:
+            text.combat_menu(player, self.allies, self.enemies)
+            hp_ratio = player.stats["hp"] / player.stats["max_hp"]
+            if hp_ratio < 0.3 and random.random() < 0.5:
+                if Battle_calculator.try_escape(player):
+                    player.check_buff_debuff_turns(True)
+                    typewriter(f"{player.name} 成功逃离了战斗")
+                    player.combo_points = 0
+                    return True
+            else:
+                random_enemy = random.choice(self.enemies)
+                player.normal_attack(random_enemy)
+                Combat_manager.check_if_dead(self.allies, self.enemies, self.battlers)
+            return False
+
         text.combat_menu(player, self.allies, self.enemies)
         cmd = input("> ").lower()
         while cmd not in ["a", "c", "s", "d", "e"]:

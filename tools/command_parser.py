@@ -78,6 +78,7 @@ def handle_p_command(tokens, player):
         "-heal": screen_wrapped(lambda: player.heal(9999) if DEBUG else None),
         "-mana": screen_wrapped(lambda: player.recover_mp(9999) if DEBUG else None),
         "-level": screen_wrapped(lambda: handle_level_command(tokens, player)),
+        "-auto": screen_wrapped(lambda: player.change_auto_mode() if DEBUG else None),
     }
 
     if len(tokens) == 1 or tokens[1] == "--help":
