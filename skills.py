@@ -135,6 +135,20 @@ class AdvancedDamageSpell(Spell):
                 PoisonEffect("燃烧", target, "hp", -int(dmg * 0.3), 3).activate()
 
 
+class ArcaneBarrage(Spell):
+    def __init__(self, name, description, power, cost, is_targeted, default_target, hits):
+        super().__init__(name, description, power, cost, is_targeted, default_target)
+        self.min_hits = hits[0]
+        self.max_hits = hits[1]
+
+    def effect(self, caster: Battler, target: Battler):
+        if not self.check_mp(caster): return
+        hits = random.randint(self.min_hits, self.max_hits)
+        console.print(f"{caster.name} 对 {target.name} 发射了 {hits} 枚奥术飞弹!", style="blue")
+        for _ in range(hits):
+            caster.normal_attack(target, gain_cp=False)
+
+
 class SlashCombo(Combo):
     def __init__(self, name, description, cost, is_targeted, default_target, hits):
         super().__init__(name, description, cost, is_targeted, default_target)
@@ -317,6 +331,9 @@ skills = load_skills_from_json()
 enhance_weapon = skills["蓄力"]
 weakened_defense = skills["破防"]
 
+arcane_barrage = ArcaneBarrage("奥术弹幕 I", "发射多枚奥术飞弹，对敌人造成伤害", 0, 90, True, None, (3, 5))
+arcane_barrage2 = ArcaneBarrage("奥术弹幕 II", "发射多枚奥术飞弹，对敌人造成伤害", 0, 145, True, None, (4, 7))
+
 # --- 敌人技能注册 ---
 SPELL_REGISTRY = {
     "enemy_fireball": DamageSpell("火球", "发射一个火球", 55, 23, True, None),
@@ -326,6 +343,7 @@ SPELL_REGISTRY = {
     "enemy_shadow_bolt": DamageSpell("暗影箭", "发射暗影能量", 70, 32, True, None),
     "enemy_heal": RecoverySpell("治疗", "恢复生命值", 50, 45, "hp", False, "self"),
     "enemy_group_attack": DamageSpell("群体攻击", "攻击所有敌人", 45, 50, False, "all_enemies"),
-    "enemy_weaken": BuffDebuffSpell("削弱", "降低目标防御", 0, 25, True, None, "def", -0.3, 3, "atk_debuff"),
-    "enemy_stun": AdvancedDamageSpell("眩晕击", "攻击并可能眩晕目标", 50, 37, True, None, "stun")
+    "enemy_weaken": BuffDebuffSpell("削弱", "降低目标防御", 0, 25, True, None, "def", -0.3, 3, "def_debuff"),
+    "enemy_stun": AdvancedDamageSpell("眩晕击", "攻击并可能眩晕目标", 50, 37, True, None, "stun"),
+    # "lizard_bite": AdvancedDamageSpell("蜥蜴撕咬", "造成中等物理伤害，有几率降低目标防御", 25, 35, True, None, ""),
 }

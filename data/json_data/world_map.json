@@ -54,7 +54,8 @@
     "possible_enemies": {
       "forest_spider": [1, 7],
       "poison_frog": [1, 9],
-      "giant_slime": [3, 15]
+      "giant_slime": [3, 15],
+      "lizard_scout": [4, 22]
     },
     "shop_events": ["shop_itz_magic"],
     "heal_events": ["heal_medussa_statue"],
