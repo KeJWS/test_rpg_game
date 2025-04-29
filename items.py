@@ -46,7 +46,7 @@ def load_equipment_from_csv(filepath="data/csv_data/equipments.csv", skill_dict=
                 "name": row["name_zh"],
                 "description": row["description"],
                 "amount": int(row["amount"]) if row["amount"].strip() else 1,
-                "individual_value": int(row["individual_value"]),
+                "individual_value": int(row["individual_value"]) if row["individual_value"].strip() else 0,
                 "object_type": row["object_type"],
                 "stat_change_list": ast.literal_eval(row["stat_change_list"]),
                 "combo": skill_dict.get(combo_name) if combo_name else None,
