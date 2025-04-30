@@ -111,6 +111,7 @@ class Equipment(Item):
             info += f"  {fx.GREEN}{stat}: {sign}{value}{fx.END}\n"
         return info
 
+    # TODO 把武器从原本的装备加角色属性改成，战斗中提供武器自身的属性加值
     def get_effective_stats(self) -> Dict[str, int]:
         factor = self.durability / self.max_durability
         if self.is_broken():

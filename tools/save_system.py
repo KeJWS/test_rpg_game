@@ -194,6 +194,7 @@ def save_game(player, save_name=None):
 
     return save_metadata
 
+# TODO 读档以后任务会清空
 def load_game(save_name):
     """加载游戏存档"""
     save_path = os.path.join(SAVE_FOLDER, f"{save_name}.json")
@@ -229,5 +230,3 @@ def get_save_list():
 
     saves.sort(key=lambda x: x["timestamp"], reverse=True)
     return saves
-
-# TODO 读档以后任务会清空

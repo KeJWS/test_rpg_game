@@ -155,6 +155,7 @@ class Combat_executor:
         if player.is_defending:
             player.end_defense()
 
+        # TODO 需要更好的自动战斗模式
         if player.auto_mode:
             text.combat_menu(player, self.allies, self.enemies)
             hp_ratio = player.stats["hp"] / player.stats["max_hp"]

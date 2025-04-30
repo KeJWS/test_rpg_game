@@ -12,7 +12,6 @@ class Quest():
         self.xp_reward = xp_reward
         self.gold_reward = gold_reward
         self.item_reward = item_reward
-        # TODO: 修改任务状态的处理方式
         self.status = "Not Active"
         self.event = event
         self.proposal_text = proposal_text
