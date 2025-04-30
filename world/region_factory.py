@@ -20,6 +20,8 @@ event_mapping = {
     "friendly_villager": events.SimpleEvent("村民物资", events.friendly_villager),
     "find_herb": events.SimpleEvent("找到草药", events.find_herb),
     "rest_spot": events.SimpleEvent("短暂休息", events.rest_spot),
+    "mysterious_businessman": events.Shop_event("神秘商人", False, ev.mysterious_businessman_encounter, ev.mysterious_businessman_enter, \
+                            ev.mysterious_businessman_talk, ev.mysterious_businessman_exit, items.rik_armor_shop_item_set)
 }
 
 quest_mapping = {

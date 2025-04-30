@@ -57,7 +57,7 @@
       "giant_slime": [3, 15],
       "lizard_scout": [4, 22]
     },
-    "shop_events": ["shop_itz_magic", "find_coins"],
+    "shop_events": ["shop_itz_magic", "find_coins", "mysterious_businessman"],
     "heal_events": ["heal_medussa_statue", "find_herb"],
     "special_events": [],
     "quests": ["wolf_king"],

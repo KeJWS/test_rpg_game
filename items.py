@@ -94,6 +94,8 @@ rik_armor_shop_item_set = (
 
 lok_armor_shop_item_set = filter_equipment_by(level=3, tags=["bronze"])
 
+mysterious_businessman_shop_item_set = filter_equipment_by(level=2)
+
 # 加入特殊指定装备
 jack_weapon_shop_set.append(equipment_data["war_hammer"])
 rik_armor_shop_item_set.append(equipment_data["bronze_shield"])
@@ -152,3 +154,4 @@ debug_print(f"Anna 的护甲商店物品数: {len(anna_armor_shop_set)}")
 debug_print(f"Rik 的护甲商店物品数: {len(rik_armor_shop_item_set)}")
 debug_print(f"Itz 的魔法商店物品数: {len(itz_magic_item_set)}")
 debug_print(f"Lok 的武具商店物品数: {len(lok_armor_shop_item_set)}")
+debug_print(f"神秘商人的物品数: {len(mysterious_businessman_shop_item_set)}")

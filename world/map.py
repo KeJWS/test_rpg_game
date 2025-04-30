@@ -226,6 +226,7 @@ class World_map:
             combat_event = events.Random_combat_event(f"{self.current_region.name}的随机战斗")
             enemies.possible_enemies = self.current_region.possible_enemies
             combat_event.effect(player)
+            return
         elif event_type == "shop":
             shop_event = random.choice(self.current_region.shop_events)
             shop_event.effect(player)

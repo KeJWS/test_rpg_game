@@ -135,29 +135,29 @@ class SimpleEvent(Event):
 # 定义简化的轻事件
 def find_coins(player):
     gold = random.randint(1, 3) * player.level
-    print(f"真幸运! 你在地上发现了一些零钱!")
+    print(event_text.find_coins_text)
     player.add_money(gold)
 
 def admire_scenery(player):
     exp = random.randint(5, 10) + player.level
-    print(f"你欣赏了美丽的景色, 获得了少量经验")
+    print(event_text.admire_scenery_text)
     player.add_exp(exp)
 
 def friendly_villager(player):
     gold = random.randint(5, 10)
     healing = int(player.stats["max_hp"] * 0.1)
-    print(f"村民提供给了你一些金币, 食物")
+    print(event_text.friendly_villager_text)
     player.add_money(gold)
     player.heal(healing)
 
 def find_herb(player):
     healing = int(player.stats["max_hp"] * 0.2)
-    print(f"你找到了一些认识的草药, 然后使用了")
+    print(event_text.find_herb_text)
     player.heal(healing)
 
 def rest_spot(player):
     healing = int(player.stats["max_hp"] * 0.3)
-    print(f"你在一个安静的地方短暂休息")
+    print(event_text.rest_spot_text)
     player.heal(healing)
 
 ### 生命恢复水晶 ###
