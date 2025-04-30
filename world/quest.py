@@ -66,13 +66,11 @@ class Quest():
         return status_dict.get(self.status, self.status)
 
     def give_rewards(self, player):
-        print(f"任务 \"{self.name}\" 已完成。您获得了:")
+        print(f"任务 \"{self.name}\" 已完成")
         if self.xp_reward > 0:
-            print(f"- {self.xp_reward}xp")
             player.add_exp(self.xp_reward)
         if self.gold_reward > 0:
-            print(f"- {self.gold_reward}G")
-            player.money += self.gold_reward
+            player.add_money(self.gold_reward)
         if self.item_reward != None:
             print(f"- {self.item_reward.name}")
             self.item_reward.add_to_inventory_player(player.inventory)

@@ -308,7 +308,6 @@ class Combat_executor:
         Combat_manager.recover_hp_and_mp(self.player, 0.25)
 
         for item in self.enemy_drops:
-            print(f"[调试] 添加物品 {item.name} x{item.amount}")
             self.player.inventory.add_item(item)
             print(f"- {item.name} x{item.amount}")
 

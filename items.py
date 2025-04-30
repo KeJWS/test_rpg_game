@@ -124,6 +124,8 @@ mp_potion3 = inventory.Potion("法力药水 III", "恢复中量法力值的药�
 def item_factory(name: str, amount: int = 1):
     if name == "狼皮":
         return inventory.Item("狼皮", "一张完整的野狼皮", amount, 50, "material")
+    elif name == "凝胶":
+        return inventory.Item("凝胶", "像果冻一样...", amount, 10, "material")
     elif name == "魔法草":
         return inventory.Item("魔法草", "散发魔力的草药", amount, 30, "material")
     else:

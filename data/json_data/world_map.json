@@ -26,7 +26,7 @@
     "shop_events": ["find_coins", "hidden_chest_forest"],
     "heal_events": ["heal_medussa_statue", "find_herb", "rest_spot"],
     "special_events": [],
-    "quests": ["hunting_slimes", "slime_king"],
+    "quests": ["slime_gels_quest", "hunting_slimes", "slime_king"],
     "ascii_art_key": "雾林"
   },
   "mountain": {
