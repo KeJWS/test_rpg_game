@@ -127,7 +127,6 @@ class Enemy(battler.Battler):
             weights=[weights["attack"], weights["defend"], weights["spell"]]
         )[0]
 
-        debug_print(f"[AI决策] {self.name} 当前行为选择: {action_type}")
         debug_print(f"{self.name} 当前 MP: {self.stats['mp']}, 可用法术: {[s.name for s in usable_spells]}")
 
         if action_type == "attack":

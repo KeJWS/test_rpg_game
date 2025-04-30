@@ -38,7 +38,7 @@ def handle_command(command: str, player):
             case "i": handle_pi_command(tokens, player)
             case "gold": player.add_money(int(tokens[1])) if tokens[1].isdigit() and DEBUG else None; enter_clear_screen()
             case "exp": player.add_exp(int(tokens[1])) if tokens[1].isdigit() and DEBUG else None; enter_clear_screen()
-            case "ap": player.aptitude_points += int(tokens[1]) if tokens[1].isdigit() and DEBUG else None; enter_clear_screen()
+            case "ap": player.ls.aptitude_points += int(tokens[1]) if tokens[1].isdigit() and DEBUG else None; enter_clear_screen()
             case _: debug.debug_print(f"未知 p 命令模块: {main}"); enter_clear_screen(); return command
 
     elif main in SHOP_DICT and DEBUG:
@@ -99,7 +99,7 @@ def handle_pi_command(tokens, player):
         "-E": screen_wrapped(lambda: player.equip_item(interface(inv).equip_item())),
         "-C": screen_wrapped(lambda: interface(inv).compare_equipment()),
         "-ua": screen_wrapped(lambda: player.unequip_all()),
-        "-vi": screen_wrapped(lambda: player.view_item_detail(interface(inv).view_item())),
+        "-vi": screen_wrapped(lambda: print(interface(inv).view_item().get_detailed_info())),
         "-show": screen_wrapped(lambda: inv.show_inventory_item()),
         "--help": lambda: show_help("p.i"),
         "--give-all": lambda: (debug.handle_debug_command("give-all", inv), enter_clear_screen()),
@@ -126,10 +126,10 @@ def handle_level_command(tokens, player):
         return
     if len(tokens) > 2 and tokens[2].isdigit():
         target_level = int(tokens[2])
-        current_level = player.level
+        current_level = player.ls.level
         if target_level > current_level:
             for _ in range(target_level - current_level):
-                player.add_exp(player.xp_to_next_level)
+                player.add_exp(player.ls.xp_to_next_level)
 
 def handle_spawn_item_command(tokens, player):
     if len(tokens) >= 3:

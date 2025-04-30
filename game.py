@@ -29,7 +29,7 @@ def title_screen_selections():
 def inventory_selections(player):
     while (option := input("> ").lower()) != "q":
         match option:
-            case "u": clear_screen(); player.use_item(interface(player.inventory).use_item())
+            case "u": clear_screen(); interface(player.inventory).use_item().activate(player)
             case "d": clear_screen(); interface(player.inventory).drop_item()
             case "e": clear_screen(); player.equip_item(interface(player.inventory).equip_item())
             case "c": clear_screen(); interface(player.inventory).compare_equipment()
@@ -59,7 +59,7 @@ def save_load_game(player):
         if save_index > 0 and save_index <= len(saves):
             loaded_player = sl.load_game(saves[save_index-1]['name'])
             if loaded_player:
-                print(f"游戏已加载: {loaded_player.name} (等级: {loaded_player.level}, 职业: {loaded_player.class_name})")
+                print(f"游戏已加载: {loaded_player.name} (等级: {loaded_player.ls.level}, 职业: {loaded_player.ls.class_name})")
                 return loaded_player
 
 

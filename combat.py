@@ -18,7 +18,7 @@ console = Console()
 
 
 # *战斗计算器
-class Battle_calculator:
+class BattleCalculator:
     @staticmethod
     def check_miss(attacker: Battler, defender: Battler) -> bool:
         miss_chance = math.floor(math.sqrt(max(0, 5 * defender.stats["agi"] - attacker.stats["agi"] * 2)))
@@ -50,7 +50,7 @@ class Battle_calculator:
 
 
 # *战斗管理器
-class Combat_manager:
+class CombatManager:
     @staticmethod
     def define_battlers(allies: List[Battler], enemies: List[Battler]) -> List[Battler]:
         """根据速度定义行动顺序"""
@@ -87,12 +87,12 @@ class Combat_manager:
 
 
 # *战斗执行器
-class Combat_executor:
+class CombatExecutor:
     def __init__(self, player, allies, enemies):
         self.player = player
         self.allies = allies
         self.enemies = enemies
-        self.battlers = Combat_manager.define_battlers(allies, enemies)
+        self.battlers = CombatManager.define_battlers(allies, enemies)
         self.enemy_exp = sum(enemy.xp_reward for enemy in enemies)
         self.enemy_money = sum(enemy.gold_reward for enemy in enemies)
 
@@ -113,7 +113,7 @@ class Combat_executor:
             }
 
             # 更新战斗顺序
-            self.battlers = Combat_manager.define_battlers(self.allies, self.enemies)
+            self.battlers = CombatManager.define_battlers(self.allies, self.enemies)
 
             # 每个战斗单位轮流行动
             for battler in self.battlers:
@@ -144,7 +144,7 @@ class Combat_executor:
             text.combat_menu(player, self.allies, self.enemies)
             hp_ratio = player.stats["hp"] / player.stats["max_hp"]
             if hp_ratio < 0.3 and random.random() < 0.5:
-                if Battle_calculator.try_escape(player):
+                if BattleCalculator.try_escape(player):
                     player.check_buff_debuff_turns(True)
                     typewriter(f"{player.name} 成功逃离了战斗")
                     player.combo_points = 0
@@ -152,7 +152,7 @@ class Combat_executor:
             else:
                 random_enemy = random.choice(self.enemies)
                 player.normal_attack(random_enemy)
-                Combat_manager.check_if_dead(self.allies, self.enemies, self.battlers)
+                CombatManager.check_if_dead(self.allies, self.enemies, self.battlers)
             return False
 
         text.combat_menu(player, self.allies, self.enemies)
@@ -162,9 +162,9 @@ class Combat_executor:
             cmd = input("> ").lower()
 
         if "a" in cmd:
-            targeted_enemy = Combat_manager.select_target(self.enemies)
+            targeted_enemy = CombatManager.select_target(self.enemies)
             player.normal_attack(targeted_enemy)
-            Combat_manager.check_if_dead(self.allies, self.enemies, self.battlers)
+            CombatManager.check_if_dead(self.allies, self.enemies, self.battlers)
 
         elif "s" in cmd:
             self._handle_spell_casting(player)
@@ -176,12 +176,12 @@ class Combat_executor:
             battle_log(f"{player.name} 正在行动。", "info")
             dot_loading()
             player.defend()
-            player.add_combo_points(1)
+            player.combo_points += 1
             enhance_weapon.effect(player, player)
             console.print("你紧握武器, 时刻准备反击!", style="yellow")
 
         elif "e" in cmd:
-            if Battle_calculator.try_escape(player):
+            if BattleCalculator.try_escape(player):
                 player.check_buff_debuff_turns(True)
                 typewriter(f"{player.name} 成功逃离了战斗")
                 player.combo_points = 0
@@ -196,7 +196,7 @@ class Combat_executor:
         if self.enemies:
             random_enemy = random.choice(self.enemies)
             ally.normal_attack(random_enemy)
-            Combat_manager.check_if_dead(self.allies, self.enemies, self.battlers)
+            CombatManager.check_if_dead(self.allies, self.enemies, self.battlers)
 
     def _handle_enemy_turn(self, enemy):
         """处理敌人的回合"""
@@ -207,7 +207,7 @@ class Combat_executor:
             match decision["type"]:
                 case "attack":
                     enemy.normal_attack(decision["target"])
-                    Combat_manager.check_if_dead(self.allies, self.enemies, self.battlers)
+                    CombatManager.check_if_dead(self.allies, self.enemies, self.battlers)
                 case "defend":
                     battle_log(f"{enemy.name} 正在行动", "info")
                     dot_loading()
@@ -229,11 +229,11 @@ class Combat_executor:
                     else:
                         target = random.choice(self.allies)
                         enemy.normal_attack(target)
-                        Combat_manager.check_if_dead(self.allies, self.enemies, self.battlers)
+                        CombatManager.check_if_dead(self.allies, self.enemies, self.battlers)
                         return
 
                     spell.effect(enemy, target)
-                    Combat_manager.check_if_dead(self.allies, self.enemies, self.battlers)
+                    CombatManager.check_if_dead(self.allies, self.enemies, self.battlers)
 
     def _handle_spell_casting(self, caster):
         """处理施法菜单和效果"""
@@ -247,7 +247,7 @@ class Combat_executor:
             target = None
 
             if spell_chosen.is_targeted:
-                target = Combat_manager.select_target(self.battlers)
+                target = CombatManager.select_target(self.battlers)
             else:
                 match spell_chosen.default_target:
                     case "self":
@@ -258,7 +258,7 @@ class Combat_executor:
                         target = self.allies
             
             spell_chosen.effect(caster, target)
-            Combat_manager.check_if_dead(self.allies, self.enemies, self.battlers)
+            CombatManager.check_if_dead(self.allies, self.enemies, self.battlers)
 
     def _handle_combo_usage(self, caster):
         """处理连招菜单和效果"""
@@ -272,7 +272,7 @@ class Combat_executor:
             target = None
 
             if combo_chosen.is_targeted:
-                target = Combat_manager.select_target(self.battlers)
+                target = CombatManager.select_target(self.battlers)
             else:
                 match combo_chosen.default_target:
                     case "self":
@@ -281,7 +281,7 @@ class Combat_executor:
                         target = self.enemies
 
             combo_chosen.effect(caster, target)
-            Combat_manager.check_if_dead(self.allies, self.enemies, self.battlers)
+            CombatManager.check_if_dead(self.allies, self.enemies, self.battlers)
 
     def _handle_combat_rewards(self, enemy_drops):
         """处理战斗结束后的奖励"""
@@ -290,7 +290,7 @@ class Combat_executor:
         self.player.add_exp(self.enemy_exp)
         self.player.add_money(self.enemy_money)
         self.player.combo_points = 0
-        Combat_manager.recover_hp_and_mp(self.player, 0.25)
+        CombatManager.recover_hp_and_mp(self.player, 0.25)
 
         for item in enemy_drops:
             self.player.inventory.add_item(item)
@@ -300,5 +300,5 @@ class Combat_executor:
 def combat(player, enemies):
     """战斗系统主入口"""
     allies = [player]
-    combat_system = Combat_executor(player, allies, enemies)
+    combat_system = CombatExecutor(player, allies, enemies)
     return combat_system.execute_combat()

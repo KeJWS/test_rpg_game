@@ -44,8 +44,8 @@ def show_stats(player):
     table = Table(title=f"{player.name}'s Stats", box=box.ROUNDED, border_style="bold green")
     table.add_column("Attribute", justify="right")
     table.add_column("Value", justify="left")
-    table.add_row("LV", f"{player.level}")
-    table.add_row("EXP", f"{player.xp}/{player.xp_to_next_level}")
+    table.add_row("LV", f"{player.ls.level}")
+    table.add_row("EXP", f"{player.ls.xp}/{player.ls.xp_to_next_level}")
     table.add_row("Money", f"[yellow]{player.money}[/yellow] 💰")
     table.add_row("HP", f"[green]{player.stats['hp']}[/green]/[green]{player.stats['max_hp']}[/green]")
     table.add_row("MP", f"[blue]{player.stats['mp']}[/blue]/[blue]{player.stats['max_mp']}[/blue]")
@@ -100,7 +100,7 @@ def show_aptitudes(player):
         justify="left"
         ),
         title="Select an aptitude",
-        subtitle=f"Point: {player.aptitude_points}",
+        subtitle=f"Point: {player.ls.aptitude_points}",
         border_style="bold green"
     )
     console.print(pannel)
@@ -328,9 +328,9 @@ def debug_show_stats(player):
     table = Table(title=f"[bold]{player.name}[/bold] 状态", box=box.ROUNDED)
     table.add_column("属性", style="bold cyan")
     table.add_column("数值", style="bold white")
-    table.add_row("等级", str(player.level))
-    table.add_row("经验", f"{player.xp}/{player.xp_to_next_level}")
-    table.add_row("职业", f"{player.class_name}")
+    table.add_row("等级", str(player.ls.level))
+    table.add_row("经验", f"{player.ls.xp}/{player.ls.xp_to_next_level}")
+    table.add_row("职业", f"{player.ls.class_name}")
     table.add_row("金钱", f"[yellow]{player.money}G[/yellow]")
     table.add_row("HP", f"[green]{player.stats['hp']}/{player.stats['max_hp']}[/green]")
     table.add_row("MP", f"[blue]{player.stats['mp']}/{player.stats['max_mp']}[/blue]")
@@ -339,7 +339,7 @@ def debug_show_stats(player):
     table.add_row("敏捷 / 幸运", f"{player.stats['agi']} / {player.stats['luk']}")
     table.add_row("暴击", str(player.stats["crit"]))
     table.add_row("抗暴击", str(player.stats["anti_crit"]))
-    table.add_row("能力点", str(player.aptitude_points))
+    table.add_row("能力点", str(player.ls.aptitude_points))
     console.print(table)
 
 def backpack_item_stats(inv):

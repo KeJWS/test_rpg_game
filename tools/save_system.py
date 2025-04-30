@@ -15,13 +15,13 @@ def player_to_dict(player):
     """将玩家对象转换为 JSON 可序列化字典"""
     player_dict = {
         "name": player.name,
-        "class_name": player.class_name,
-        "level": player.level,
-        "xp": player.xp,
-        "xp_to_next_level": player.xp_to_next_level,
+        "class_name": player.ls.class_name,
+        "level": player.ls.level,
+        "xp": player.ls.xp,
+        "xp_to_next_level": player.ls.xp_to_next_level,
         "stats": player.stats,
         "aptitudes": player.aptitudes,
-        "aptitude_points": player.aptitude_points,
+        "aptitude_points": player.ls.aptitude_points,
         "buffs_and_debuffs": [],
         "is_ally": player.is_ally,
         "is_defending": player.is_defending,
@@ -89,13 +89,13 @@ def dict_to_player(player_dict):
     }
 
     player = Player(player_dict["name"])
-    player.class_name = player_dict["class_name"]
-    player.level = player_dict["level"]
-    player.xp = player_dict["xp"]
-    player.xp_to_next_level = player_dict["xp_to_next_level"]
+    player.ls.class_name = player_dict["class_name"]
+    player.ls.level = player_dict["level"]
+    player.ls.xp = player_dict["xp"]
+    player.ls.xp_to_next_level = player_dict["xp_to_next_level"]
     player.stats = player_dict["stats"]
     player.aptitudes = player_dict["aptitudes"]
-    player.aptitude_points = player_dict["aptitude_points"]
+    player.ls.aptitude_points = player_dict["aptitude_points"]
     player.is_ally = player_dict["is_ally"]
     player.is_defending = player_dict["is_defending"]
     player.alive = player_dict["alive"]
@@ -174,7 +174,7 @@ def save_game(player, save_name=None):
     save_metadata = {
         "name": save_name,
         "player_name": player.name,
-        "level": player.level,
+        "level": player.ls.level,
         "timestamp": time.time(),
         "date": time.strftime("%Y-%m-%d %H:%M:%S")
     }

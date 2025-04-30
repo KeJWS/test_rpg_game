@@ -38,7 +38,7 @@ class RandomCombatEvent(Event):
         }
 
     def effect(self, player):
-        enemy_group = enemies.create_enemy_group(player.level, enemies.possible_enemies, self.enemy_quantity_for_level)
+        enemy_group = enemies.create_enemy_group(player.ls.level, enemies.possible_enemies, self.enemy_quantity_for_level)
         combat.combat(player, enemy_group)
 
 class FixedCombatEvent(Event):
@@ -131,10 +131,10 @@ class HiddenChestEvent(Event):
         if not ask_yes_no():
             print("你决定不去动这个宝箱")
             return
-        lock_chance = player.stats["luk"] * 2 + player.stats["agi"] * 1.25 + player.level
+        lock_chance = player.stats["luk"] * 2 + player.stats["agi"] * 1.25 + player.ls.level
         if random.randint(0, 200) < min(lock_chance, 125):
-            gold = random.randint(12, 35) + player.level
-            exp = random.randint(5, 25) * player.level
+            gold = random.randint(12, 35) + player.ls.level
+            exp = random.randint(5, 25) * player.ls.level
             item = items.equipment_data[self.item_name]
             print(f"你成功打开了宝箱, 获得了不少好东西")
             player.add_money(gold)
@@ -144,7 +144,7 @@ class HiddenChestEvent(Event):
             damage = int(player.stats["max_hp"] * 0.2)
             print("你触发了陷阱, 遭受伤害并引来了敌人!")
             player.take_dmg(damage)
-            enemy_group = enemies.create_enemy_group(player.level, enemies.possible_enemies, {100: 4})
+            enemy_group = enemies.create_enemy_group(player.ls.level, enemies.possible_enemies, {100: 4})
             combat.combat(player, enemy_group)
 
 # 轻事件
@@ -158,12 +158,12 @@ class SimpleEvent(Event):
 
 # 定义简化的轻事件
 def find_coins(player):
-    gold = random.randint(1, 5) * player.level
+    gold = random.randint(1, 5) * player.ls.level
     print(event_text.find_coins_text)
     player.add_money(gold)
 
 def admire_scenery(player):
-    exp = random.randint(5, 15) + player.level
+    exp = random.randint(5, 15) + player.ls.level
     print(event_text.admire_scenery_text)
     player.add_exp(exp)
 

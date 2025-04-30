@@ -35,7 +35,7 @@ class Battler:
             self.alive = False
 
     def normal_attack(self, defender: 'Battler') -> int:
-        from combat import Battle_calculator
+        from combat import BattleCalculator
         battle_log(f"{self.name} 发动攻击!", "info")
         dot_loading()
 
@@ -46,11 +46,11 @@ class Battler:
             return dmg
 
         # 检查是否攻击未命中
-        if Battle_calculator.check_miss(self,defender):
+        if BattleCalculator.check_miss(self,defender):
             console.print(f"{self.name} 的攻击被 {defender.name} 躲开了", style="yellow")
             return 0
         # 检查是否为暴击
-        is_crit, crit_suppressed = Battle_calculator.check_critical(self, defender)
+        is_crit, crit_suppressed = BattleCalculator.check_critical(self, defender)
         if is_crit:
             dmg = self._calc_critical_damage(defender)
         elif crit_suppressed:

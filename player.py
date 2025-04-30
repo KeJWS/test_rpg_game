@@ -1,10 +1,11 @@
-from data.constants import EXPERIENCE_RATE, MONEY_MULTIPLIER
+from data.constants import MONEY_MULTIPLIER
 from rich.console import Console
 
 import inventory
 import ui.text as text
 import test.fx as fx
 from core import battler
+from core.level_system import LevelSystem
 from inventory.interface import Inventory_interface as interface
 from test.clear_screen import clear_screen
 import skills
@@ -22,11 +23,10 @@ class Player(battler.Battler):
         }
         super().__init__(name, stats)
 
-        self.level, self.xp = 1, 0
-        self.xp_to_next_level = self.exp_required_formula()
-        self.combo_points, self.aptitude_points = 0, 0
+        self.ls = LevelSystem()
+        self.combo_points = 0
         self.aptitudes = {k: 0 for k in ("str", "dex", "int", "wis", "const")}
-        self.inventory = inventory.Inventory() # 玩家的库存
+        self.inventory = inventory.Inventory()
         self.equipment = {
             "weapon": None,
             "shield": None,
@@ -37,14 +37,14 @@ class Player(battler.Battler):
             "accessory": None
         }
         self.money = 0
-        self.combos, self.spells = [], []
+        self.combos = []
+        self.spells = []
         self.active_quests, self.completed_quests = [], []
-        self.class_name = ""
         self.is_ally = True
         self.auto_mode = False
 
     def normal_attack(self, defender, gain_cp=True):
-        if gain_cp: self.add_combo_points(1)
+        if gain_cp: self.combo_points += 1
         return super().normal_attack(defender)
 
     def equip_item(self, equipment):
@@ -73,9 +73,6 @@ class Player(battler.Battler):
         self.inventory.decrease_item_amount(equipment, 1)
         print(f"装备了 {equipment.name}\n{equipment.show_stats()}")
 
-    def view_item_detail(self, item):
-        clear_screen(); print(item.get_detailed_info()) if item else print("未选择任何物品")
-
     def unequip_all(self):
         for slot, eq in self.equipment.items():
             if not eq: continue
@@ -88,56 +85,8 @@ class Player(battler.Battler):
             self.equipment[slot] = None
         print("所有装备已解除")
 
-    def use_item(self, item):
-        if type(item) in (inventory.Potion, inventory.Grimoire, inventory.Jewel):
-            item.activate(self)
-
     def add_exp(self, exp):
-        earned = (exp + self.stats["luk"]) * EXPERIENCE_RATE
-        self.xp += earned
-        console.print(f"获得了 {earned}xp")
-        self.check_level_up()
-
-    def check_level_up(self):
-        while self.xp >= self.xp_to_next_level:
-            self.xp -= self.xp_to_next_level
-            self.level += 1
-            self.xp_to_next_level = self.exp_required_formula()
-            self.handle_level_up()
-
-    def handle_level_up(self):
-        console.print(f"升级! 现在的等级是: {self.level}, 有 {self.aptitude_points + 1} 个能力点", style="bold yellow")
-        self.aptitude_points += 1
-
-        for stat in self.stats:
-            self.stats[stat] += 1
-        self.stats["crit"] -= 1
-        self.stats["anti_crit"] -= 1
-        self.stats["max_hp"] += 4
-        self.stats["max_mp"] += 2
-
-        self.apply_class_growth()
-        self.recover_mp(9999)
-        self.heal(9999)
-
-    def apply_class_growth(self):
-        growth = {
-            "战士": {"atk": 2, "max_hp": 5},
-            "盗贼": {"agi": 2, "crit": 1},
-            "法师": {"mat": 2, "max_mp": 5},
-            "弓箭手": {"atk": 2, "crit": 1},
-            "圣骑士": {"atk": 2, "mat": 1, "max_hp": 10, "agi": -1},
-            "死灵法师": {"mat": 3, "max_mp": 10, "max_hp": -15},
-        }
-        for stat, val in growth.get(self.class_name, {}).items():
-            self.stats[stat] += val
-            console.print(f"{stat} {'+' if val > 0 else ''}{val}", style="green" if val > 0 else "red")
-
-    def exp_required_formula(self): # 经验需求计算公式
-        base = 100 * self.level
-        growth = (self.level ** 2.5) * 1.25
-        scaling = self.level * 35
-        return round(base + growth + scaling)
+        self.ls.gain_exp(self, exp)
 
     def add_money(self, money):
         gained = money * MONEY_MULTIPLIER
@@ -150,14 +99,14 @@ class Player(battler.Battler):
             text.show_aptitudes(self)
             option = input("> ").lower()
             if option == "q": break
-            if self.aptitude_points <= 0:
+            if self.ls.aptitude_points <= 0:
                 clear_screen(); print("没有足够的能力点!")
                 continue
             if aptitude := options.get(option):
                 self.aptitudes[aptitude] += 1
                 clear_screen(); console.print(f"{aptitude} 增加到了 {self.aptitudes[aptitude]}")
                 self.update_stats_to_aptitudes(aptitude)
-                self.aptitude_points -= 1
+                self.ls.aptitude_points -= 1
             else:
                 clear_screen(); print("请输入有效的数字")
 
@@ -182,9 +131,6 @@ class Player(battler.Battler):
                 inv.show_inventory()
             else:
                 break
-
-    def add_combo_points(self, points):
-        self.combo_points += points
 
     def rebirth(self, world_map):
         print(fx.cyan("你选择了转生! 重置所有成长, 但保留了财富与物品"))
