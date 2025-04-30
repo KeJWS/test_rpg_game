@@ -95,10 +95,11 @@ class Combat_executor:
         self.battlers = Combat_manager.define_battlers(allies, enemies)
         self.enemy_exp = sum(enemy.xp_reward for enemy in enemies)
         self.enemy_money = sum(enemy.gold_reward for enemy in enemies)
-        self.enemy_drops = [item for enemy in enemies for item in enemy.drop_items]
 
     def execute_combat(self) -> bool:
         """执行战斗，返回是否逃跑"""
+        enemy_drops = [item for enemy in self.enemies for item in enemy.drop_items]
+
         print("-------------------------------------------------")
         for enemy in self.enemies:
             typewriter(f"野生的 {enemy.name} 出现了!")
@@ -130,7 +131,7 @@ class Combat_executor:
 
         # 战斗胜利，处理奖励
         if self.player.alive:
-            self._handle_combat_rewards()
+            self._handle_combat_rewards(enemy_drops)
             return False
 
     def _handle_player_turn(self, player) -> bool:
@@ -282,7 +283,7 @@ class Combat_executor:
             combo_chosen.effect(caster, target)
             Combat_manager.check_if_dead(self.allies, self.enemies, self.battlers)
 
-    def _handle_combat_rewards(self):
+    def _handle_combat_rewards(self, enemy_drops):
         """处理战斗结束后的奖励"""
         self.player.end_defense()
         self.player.check_buff_debuff_turns(True)
@@ -291,7 +292,7 @@ class Combat_executor:
         self.player.combo_points = 0
         Combat_manager.recover_hp_and_mp(self.player, 0.25)
 
-        for item in self.enemy_drops:
+        for item in enemy_drops:
             self.player.inventory.add_item(item)
             print(f"- {item.name} x{item.amount}")
 

@@ -20,7 +20,7 @@
       "slime": [1, 3],
       "bat": [1, 4],
       "imp": [2, 6],
-      "giant_slime": [4, 19],
+      "giant_slime": [4, 100],
       "shadow_wolf": [13, 16]
     },
     "shop_events": ["find_coins", "hidden_chest_forest"],

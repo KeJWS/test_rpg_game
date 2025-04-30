@@ -88,7 +88,7 @@ class Enemy(battler.Battler):
         self.drop_items = drop_items or []
 
     def clone(self, variant_name=None):
-        cloned = Enemy(self.name, deepcopy(self.original_stats), self.xp_reward, self.gold_reward, self.level, drop_items=self.drop_items.copy())
+        cloned = Enemy(self.name, deepcopy(self.original_stats), self.xp_reward, self.gold_reward, self.level, drop_items=deepcopy(self.drop_items))
         cloned.spells = self.spells.copy()
         if not variant_name:
             roll = random.random()
