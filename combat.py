@@ -22,9 +22,7 @@ class Battle_calculator:
     @staticmethod
     def check_miss(attacker: Battler, defender: Battler) -> bool:
         miss_chance = math.floor(math.sqrt(max(0, 5 * defender.stats["agi"] - attacker.stats["agi"] * 2)))
-        if miss_chance > random.randint(0, 100):
-            return True
-        return False
+        return miss_chance > random.randint(0, 100)
 
     @staticmethod
     def check_critical(attacker: Battler, defender: Battler) -> tuple:
@@ -44,12 +42,11 @@ class Battle_calculator:
         if random.randint(1, 100) <= escape_chance:
             console.print("逃跑成功!", style="green")
             return True
-        else:
-            console.print("逃跑失败!", style="bold red")
-            if random.random() < 0.35:  # 35%概率降低防御
-                console.print("你因慌乱防御力下降!", style="red")
-                weakened_defense.effect(battler, battler)
-            return False
+        console.print("逃跑失败!", style="bold red")
+        if random.random() < 0.35:  # 35%概率降低防御
+            console.print("你因慌乱防御力下降!", style="red")
+            weakened_defense.effect(battler, battler)
+        return False
 
 
 # *战斗管理器
@@ -57,12 +54,9 @@ class Combat_manager:
     @staticmethod
     def define_battlers(allies: List[Battler], enemies: List[Battler]) -> List[Battler]:
         """根据速度定义行动顺序"""
-        battlers = enemies.copy()
-        for ally in allies:
-            battlers.append(ally)
+        battlers = enemies.copy() + allies.copy()
         # 按敏捷排序，决定行动顺序
-        battlers.sort(key=lambda b: b.stats["agi"], reverse=True)
-        return battlers
+        return sorted(battlers, key=lambda b: b.stats["agi"], reverse=True)
 
     @staticmethod
     def select_target(targets: List[Battler]) -> Battler:
@@ -85,18 +79,6 @@ class Combat_manager:
                 allies.remove(dead)
 
     @staticmethod
-    def fully_heal(target: Battler) -> None:
-        """完全恢复目标的生命值"""
-        target.stats["hp"] = target.stats["max_hp"]
-        battle_log(f"{target.name} 的生命完全恢复了", "info")
-
-    @staticmethod
-    def fully_recover_mp(target: Battler) -> None:
-        """完全恢复目标的魔法值"""
-        target.stats["mp"] = target.stats["max_mp"]
-        battle_log(f"{target.name} 的魔法完全恢复了", "info")
-
-    @staticmethod
     def recover_hp_and_mp(target: Battler, percent: float) -> None:
         """按百分比恢复目标的生命值和魔法值"""
         target.stats["hp"] = min(target.stats["max_hp"], target.stats["hp"] + int(target.stats["max_hp"] * percent))
@@ -113,9 +95,7 @@ class Combat_executor:
         self.battlers = Combat_manager.define_battlers(allies, enemies)
         self.enemy_exp = sum(enemy.xp_reward for enemy in enemies)
         self.enemy_money = sum(enemy.gold_reward for enemy in enemies)
-        self.enemy_drops = []
-        for enemy in enemies:
-            self.enemy_drops.extend(enemy.drop_items)
+        self.enemy_drops = [item for enemy in enemies for item in enemy.drop_items]
 
     def execute_combat(self) -> bool:
         """执行战斗，返回是否逃跑"""
@@ -209,9 +189,9 @@ class Combat_executor:
         return False
 
     def _handle_ally_turn(self, ally):
+        """处理盟友的回合"""
         if ally.is_defending:
             ally.end_defense()
-        """处理盟友的回合"""
         if self.enemies:
             random_enemy = random.choice(self.enemies)
             ally.normal_attack(random_enemy)
@@ -223,80 +203,84 @@ class Combat_executor:
             enemy.end_defense()
         if self.allies:
             decision = enemy.decide_action(self.allies)
-
-            if decision["type"] == "attack":
-                enemy.normal_attack(decision["target"])
-                Combat_manager.check_if_dead(self.allies, self.enemies, self.battlers)
-            elif decision["type"] == "defend":
-                battle_log(f"{enemy.name} 正在行动。", "info")
-                dot_loading()
-                enemy.defend()
-                enhance_weapon.effect(enemy, enemy)
-                console.print("敌人摆好了防御的架势!", style="yellow")
-            elif decision["type"] == "spell":
-                spell = decision["spell"]
-
-                if spell.is_targeted:
-                    spell.effect(enemy, random.choice(self.allies))
-                elif spell.default_target == "self":
-                    spell.effect(enemy, enemy)
-                elif spell.default_target == "all_enemies":
-                    spell.effect(enemy, self.allies)
-                elif spell.default_target == "allies":
-                    spell.effect(enemy, self.enemies)
+            match decision["type"]:
+                case "attack":
+                    enemy.normal_attack(decision["target"])
                     Combat_manager.check_if_dead(self.allies, self.enemies, self.battlers)
-                else:
-                    random_ally = random.choice(self.allies)
-                    enemy.normal_attack(random_ally)
+                case "defend":
+                    battle_log(f"{enemy.name} 正在行动", "info")
+                    dot_loading()
+                    enemy.defend()
+                    enhance_weapon.effect(enemy, enemy)
+                    console.print("敌人摆好了防御的架势!", style="yellow")
+                case "spell":
+                    spell = decision["spell"]
+                    target = None
+
+                    if spell.is_targeted:
+                        target = random.choice(self.allies)
+                    elif spell.default_target == "self":
+                        target = enemy
+                    elif spell.default_target == "all_enemies":
+                        target = self.allies
+                    elif spell.default_target == "allies":
+                        target = self.enemies
+                    else:
+                        target = random.choice(self.allies)
+                        enemy.normal_attack(target)
+                        Combat_manager.check_if_dead(self.allies, self.enemies, self.battlers)
+                        return
+
+                    spell.effect(enemy, target)
                     Combat_manager.check_if_dead(self.allies, self.enemies, self.battlers)
 
     def _handle_spell_casting(self, caster):
         """处理施法菜单和效果"""
         text.spell_menu(caster)
         option = int(input("> "))
-
         while option not in range(len(caster.spells)+1):
             print("请输入有效的数字")
             option = int(input("> "))
-
         if option != 0:
             spell_chosen = caster.spells[option-1]
+            target = None
 
             if spell_chosen.is_targeted:
                 target = Combat_manager.select_target(self.battlers)
-                spell_chosen.effect(caster, target)
-                Combat_manager.check_if_dead(self.allies, self.enemies, self.battlers)
             else:
-                if spell_chosen.default_target == "self":
-                    spell_chosen.effect(caster, caster)
-                elif spell_chosen.default_target == "all_enemies":
-                    spell_chosen.effect(caster, self.enemies)
-                    Combat_manager.check_if_dead(self.allies, self.enemies, self.battlers)
-                elif spell_chosen.default_target == "allies":
-                    spell_chosen.effect(caster, self.allies)
+                match spell_chosen.default_target:
+                    case "self":
+                        target = caster
+                    case "all_enemies":
+                        target = self.enemies
+                    case "allies":
+                        target = self.allies
+            
+            spell_chosen.effect(caster, target)
+            Combat_manager.check_if_dead(self.allies, self.enemies, self.battlers)
 
     def _handle_combo_usage(self, caster):
         """处理连招菜单和效果"""
         text.combo_menu(caster)
         option = int(input("> "))
-
         while option not in range(len(caster.combos)+1):
             print("请输入有效的数字")
             option = int(input("> "))
-
         if option != 0:
             combo_chosen = caster.combos[option-1]
+            target = None
 
             if combo_chosen.is_targeted:
                 target = Combat_manager.select_target(self.battlers)
-                combo_chosen.effect(caster, target)
-                Combat_manager.check_if_dead(self.allies, self.enemies, self.battlers)
             else:
-                if combo_chosen.default_target == "self":
-                    combo_chosen.effect(caster, caster)
-                elif combo_chosen.default_target == "all_enemies":
-                    combo_chosen.effect(caster, self.enemies)
-                    Combat_manager.check_if_dead(self.allies, self.enemies, self.battlers)
+                match combo_chosen.default_target:
+                    case "self":
+                        target = caster
+                    case "all_enemies":
+                        target = self.enemies
+
+            combo_chosen.effect(caster, target)
+            Combat_manager.check_if_dead(self.allies, self.enemies, self.battlers)
 
     def _handle_combat_rewards(self):
         """处理战斗结束后的奖励"""

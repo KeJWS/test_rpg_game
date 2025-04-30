@@ -21,8 +21,8 @@ class Region:
     description: str
     danger_level: int
     possible_enemies: Dict[str, Tuple[int, int]]
-    shop_events: List[events.Shop_event]
-    heal_events: List[events.Healing_event]
+    shop_events: List[events.ShopEvent]
+    heal_events: List[events.HealingEvent]
     special_events: List[events.Event]
     quests: List[quest.Quest]
     ascii_art: str
@@ -52,7 +52,7 @@ class World_map:
     def _initialize_special_events(self):
         """初始化各地区的特殊事件"""
         shadow_wolf = enemies.enemy_data["shadow_wolf"].clone()
-        forest_boss_combat = events.Fixed_combat_event(
+        forest_boss_combat = events.FixedCombatEvent(
             "影狼袭击", 
             [shadow_wolf]
         )
@@ -66,7 +66,7 @@ class World_map:
         poisonous_swamp_fail = "你吸入了一些毒气, 感到一阵头晕目眩, 生命值减少！"
         # poisonous_swamp_refuse = "你决定绕道而行, 避开了危险的沼泽地带。"
 
-        swamp_poison_event = events.Damage_event(
+        swamp_poison_event = events.DamageEvent(
             "毒沼气", 
             poisonous_swamp_encounter,
             poisonous_swamp_success,
@@ -223,7 +223,7 @@ class World_map:
         event_type = random.choices(event_types, weights=weights, k=1)[0]
 
         if event_type == "combat":
-            combat_event = events.Random_combat_event(f"{self.current_region.name}的随机战斗")
+            combat_event = events.RandomCombatEvent(f"{self.current_region.name}的随机战斗")
             enemies.possible_enemies = self.current_region.possible_enemies
             combat_event.effect(player)
             return

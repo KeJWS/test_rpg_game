@@ -10,10 +10,10 @@ from enemies import enemy_data
 from test.clear_screen import clear_screen, enter_clear_screen, screen_wrapped
 
 SHOP_DICT = {
-    "jack": events.shop_jack_weapon,
-    "anna": events.shop_anna_armor,
-    "rik": events.shop_rik_armor,
-    "itz": events.shop_itz_magic
+    # "jack": events.shop_jack_weapon,
+    # "anna": events.shop_anna_armor,
+    # "rik": events.shop_rik_armor,
+    # "itz": events.shop_itz_magic
 }
 
 @screen_wrapped
@@ -70,7 +70,6 @@ def handle_p_command(tokens, player):
         "-hp": screen_wrapped(lambda: print(f"HP: {player.stats['hp']}/{player.stats['max_hp']}")),
         "-mp": screen_wrapped(lambda: print(f"MP: {player.stats['mp']}/{player.stats['max_mp']}")),
         "-gold": screen_wrapped(lambda: print(f"💰: {player.money}")),
-        "-lr": screen_wrapped(lambda: events.life_recovery_crystal(player)),
         "-se": screen_wrapped(lambda: text.show_equipment_info(player)),
         "-sk": screen_wrapped(lambda: text.show_skills(player)),
         "-stats": screen_wrapped(lambda: text.debug_show_stats(player)),
