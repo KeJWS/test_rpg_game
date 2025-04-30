@@ -5,6 +5,7 @@ import inventory
 import ui.text as text
 import test.fx as fx
 from core import battler
+from others.equipment import Equipment
 from core.level_system import LevelSystem
 from inventory.interface import Inventory_interface as interface
 from test.clear_screen import clear_screen
@@ -48,7 +49,7 @@ class Player(battler.Battler):
         return super().normal_attack(defender)
 
     def equip_item(self, equipment):
-        if not isinstance(equipment, inventory.Equipment):
+        if not isinstance(equipment, Equipment):
             if equipment: print(f"{equipment.name} 无法装备")
             return
 
@@ -135,15 +136,15 @@ class Player(battler.Battler):
     def rebirth(self, world_map):
         print(fx.cyan("你选择了转生! 重置所有成长, 但保留了财富与物品"))
         self.unequip_all()
-        saved_money, saved_inventory, saved_class = self.money, self.inventory, self.class_name
+        saved_money, saved_inventory, saved_class = self.money, self.inventory, self.ls.class_name
         self.__init__(self.name)
-        self.money, self.inventory, self.class_name = saved_money, saved_inventory, saved_class
+        self.money, self.inventory, self.ls.class_name = saved_money, saved_inventory, saved_class
         self.active_quests.clear()
         self.completed_quests.clear()
         for region in world_map.regions.values():
             for q in region.quests:
                 q.status = "Not Active"
-        print(fx.cyan(f"你以 Lv.{self.level} 重生，保留了 {self.money} 金币和背包物品!"))
+        print(fx.cyan(f"你以 Lv.{self.ls.level} 重生，保留了 {self.money} 金币和背包物品!"))
         interface(self.inventory).show_inventory()
 
     def change_auto_mode(self):

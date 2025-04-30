@@ -1,5 +1,15 @@
 import test.fx as fx
-import inventory.utils as utils
+
+def prompt_for_amount(max_amount, prompt="多少个？") -> int:
+    """提示用户输入数量并进行验证"""
+    try:
+        amount = int(input(f"{prompt} (最多: {max_amount})\n> "))
+        if 0 < amount <= max_amount:
+            return amount
+        print(f"请输入 1 到 {max_amount} 之间的数字!")
+    except ValueError:
+        print("请输入有效数字!")
+    return 0
 
 class Item:
     def __init__(self, name, description, amount, individual_value, object_type) -> None:
@@ -16,7 +26,7 @@ class Item:
             return 1
         else:
             print(f"有 {self.amount} 个 {self.name}")
-            amount_to_drop = utils.prompt_for_amount(self.amount, "丢弃多少?")
+            amount_to_drop = prompt_for_amount(self.amount, "丢弃多少?")
             if amount_to_drop > 0:
                 self.amount -= amount_to_drop
                 print(f"丢弃了 {self.name}x{amount_to_drop}")
@@ -30,7 +40,7 @@ class Item:
             return money_to_receive, 1
         elif self.amount > 1:
             print(f"有 {self.amount} 个 {self.name}")
-            amount_to_sell = utils.prompt_for_amount(self.amount, "出售多少?")
+            amount_to_sell = prompt_for_amount(self.amount, "出售多少?")
             if amount_to_sell > 0:
                 money_to_receive = int(round(self.individual_value * 0.5 * amount_to_sell))
                 print(f"您确定要以 {money_to_receive}G 的价格出售 {amount_to_sell} {self.name} 吗? [y/n]")
@@ -46,7 +56,7 @@ class Item:
 
     def buy(self, player):
         if self.amount > 1:
-            amount_to_buy = utils.prompt_for_amount(self.amount, "买多少?")
+            amount_to_buy = prompt_for_amount(self.amount, "买多少?")
             if amount_to_buy <= 0:
                 print("取消购买")
                 return

@@ -2,7 +2,9 @@ import ast
 import csv
 from functools import lru_cache
 
-import inventory, skills
+import skills
+import others.item as item
+from others.equipment import Equipment
 from tools.load_data_from_csv import load_jewel_from_csv
 from tools.dev_tools import debug_print
 
@@ -56,7 +58,7 @@ def load_equipment_from_csv(filepath="data/csv_data/equipments.csv", skill_dict=
                 "image_path": row.get("image_path", "")
             }
 
-            equipment_dict[name] = inventory.Equipment(**kwargs)
+            equipment_dict[name] = Equipment(**kwargs)
 
     debug_print(f"从 CSV 加载装备数据，共加载 {len(equipment_dict)} 项装备")
     return equipment_dict
@@ -113,21 +115,21 @@ basic_equipments = {
 jack_weapon_shop_set.append(basic_equipments["wood_bow"])
 
 # 药水类物品
-hp_potion = inventory.Potion("生命药水 I", "恢复少量生命值的药水", 1, 25, "consumable", "hp", 70)
-mp_potion = inventory.Potion("法力药水 I", "恢复少量法力值的药水", 1, 25, "consumable", "mp", 35)
-hp_potion2 = inventory.Potion("生命药水 II", "恢复生命值的药水", 1, 55, "consumable", "hp", 170)
-mp_potion2 = inventory.Potion("法力药水 II", "恢复法力值的药水", 1, 60, "consumable", "mp", 80)
-hp_potion3 = inventory.Potion("生命药水 III", "恢复中量生命值的药水", 1, 70, "consumable", "hp", 270)
-mp_potion3 = inventory.Potion("法力药水 III", "恢复中量法力值的药水", 1, 90, "consumable", "mp", 130)
+hp_potion = item.Potion("生命药水 I", "恢复少量生命值的药水", 1, 25, "consumable", "hp", 70)
+mp_potion = item.Potion("法力药水 I", "恢复少量法力值的药水", 1, 25, "consumable", "mp", 35)
+hp_potion2 = item.Potion("生命药水 II", "恢复生命值的药水", 1, 55, "consumable", "hp", 170)
+mp_potion2 = item.Potion("法力药水 II", "恢复法力值的药水", 1, 60, "consumable", "mp", 80)
+hp_potion3 = item.Potion("生命药水 III", "恢复中量生命值的药水", 1, 70, "consumable", "hp", 270)
+mp_potion3 = item.Potion("法力药水 III", "恢复中量法力值的药水", 1, 90, "consumable", "mp", 130)
 
 # 材料类
 def item_factory(name: str, amount: int = 1):
     if name == "狼皮":
-        return inventory.Item("狼皮", "一张完整的野狼皮", amount, 50, "material")
+        return item.Item("狼皮", "一张完整的野狼皮", amount, 50, "material")
     elif name == "凝胶":
-        return inventory.Item("凝胶", "像果冻一样...", amount, 10, "material")
+        return item.Item("凝胶", "像果冻一样...", amount, 10, "material")
     elif name == "魔法草":
-        return inventory.Item("魔法草", "散发魔力的草药", amount, 30, "material")
+        return item.Item("魔法草", "散发魔力的草药", amount, 30, "material")
     else:
         return None
 
@@ -143,7 +145,7 @@ grimoire_data = [
     ("唤灵书: 骷髅召唤", "召唤骷髅战士作战。", 1, 195, skills.skills["召唤骷髅"]),
     ("唤灵书: 火精灵", "召唤火焰元素协助作战。", 1, 325, skills.skills["召唤火精灵"]),
 ]
-grimoires = [inventory.Grimoire(n, d, a, v, "consumable", s) for n, d, a, v, s in grimoire_data]
+grimoires = [item.Grimoire(n, d, a, v, "consumable", s) for n, d, a, v, s in grimoire_data]
 
 # 商店物品套装
 itz_magic_item_set = [

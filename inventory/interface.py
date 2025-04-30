@@ -1,10 +1,30 @@
 from rich.console import Console
 
 import test.fx as fx
-import inventory.utils as utils
 from test.clear_screen import clear_screen
 
 console = Console()
+
+def select_item_from_list(item_list, prompt="选择一个物品:", allow_exit=True):
+    """显示项目列表并提示用户选择一个"""
+    if not item_list:
+        print("没有可选择的物品")
+        return None
+
+    print(f"\n{prompt} {['', '[输入 0 退出]'][allow_exit]}")
+    for index, item in enumerate(item_list, start=1):
+        print(f"{index}. {item.show_info()}")
+
+    while True:
+        choice = input("> ")
+        if choice == "0" and allow_exit:
+            print("退出...")
+            return None
+        if choice.isdigit():
+            choice_num = int(choice)
+            if 1 <= choice_num <= len(item_list):
+                return item_list[choice_num - 1]
+        print("无效输入")
 
 class Inventory_interface:
     def __init__(self, inventory):
@@ -67,14 +87,14 @@ class Inventory_interface:
         if not equipments:
             print("背包中没有可装备的物品")
             return None
-        return utils.select_item_from_list(equipments, "装备什么?")
+        return select_item_from_list(equipments, "装备什么?")
 
     def use_item(self):
         consumables = self.inventory.get_consumables()
         if not consumables:
             print("背包中没有可使用的物品")
             return None
-        item = utils.select_item_from_list(consumables, "使用什么?")
+        item = select_item_from_list(consumables, "使用什么?")
         if item:
             self.inventory.decrease_item_amount(item, 1)
             return item
@@ -103,12 +123,12 @@ class Inventory_interface:
             print("需要至少两件装备才能比较")
             return
         print("选择第一件装备:")
-        equip1 = utils.select_item_from_list(equipments)
+        equip1 = select_item_from_list(equipments)
         if not equip1:
             return
         clear_screen()
         print("选择第二件装备:")
-        equip2 = utils.select_item_from_list(equipments)
+        equip2 = select_item_from_list(equipments)
         if not equip2:
             return
         clear_screen()
@@ -119,7 +139,7 @@ class Inventory_interface:
         if not equipments:
             print("没有可强化的装备")
             return
-        equipment = utils.select_item_from_list(equipments, "选择要强化的装备:")
+        equipment = select_item_from_list(equipments, "选择要强化的装备:")
         if equipment:
             equipment.upgrade()
 
@@ -128,7 +148,7 @@ class Inventory_interface:
         if not equipments:
             print("没有需要修理的装备")
             return
-        equipment = utils.select_item_from_list(equipments, "选择要修理的装备:")
+        equipment = select_item_from_list(equipments, "选择要修理的装备:")
         if equipment:
             print(f"修理 {equipment.name} (当前耐久: {equipment.durability}/{equipment.max_durability})")
             print("1. 完全修理\n2. 部分修理\n0. 取消")

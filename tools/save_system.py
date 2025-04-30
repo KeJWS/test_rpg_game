@@ -3,6 +3,8 @@ import os
 import time
 
 from player import Player
+import others.item as other
+from others.equipment import Equipment
 
 SAVE_FOLDER = "saves"
 
@@ -64,7 +66,7 @@ def player_to_dict(player):
 
 def dict_to_player(player_dict):
     """Convert dictionary back to Player object"""
-    import inventory, skills
+    import skills
 
     # 恢复咒语（参考预定义咒语）
     spell_mapping = {
@@ -107,7 +109,7 @@ def dict_to_player(player_dict):
     for item_dict in player_dict["inventory"]:
         if item_dict["type"] == "Equipment":
             combo_obj = combo_mapping.get(item_dict["combo"])
-            item = inventory.Equipment(
+            item = Equipment(
                 item_dict["name"],
                 item_dict["description"],
                 item_dict["amount"],
@@ -120,7 +122,7 @@ def dict_to_player(player_dict):
                 item_dict["tags"],
             )
         elif item_dict["type"] == "Potion":
-            item = inventory.Potion(
+            item = other.Potion(
                 item_dict["name"],
                 item_dict["description"],
                 item_dict["amount"],
@@ -131,7 +133,7 @@ def dict_to_player(player_dict):
             )
         elif item_dict["type"] == "Grimoire":
             spell_obj = spell_mapping.get(item_dict["spell"])
-            item = inventory.Grimoire(
+            item = other.Grimoire(
                 item_dict["name"],
                 item_dict["description"],
                 item_dict["amount"],
@@ -140,7 +142,7 @@ def dict_to_player(player_dict):
                 spell_obj
             )
         elif item_dict["type"] == "Jewel":
-            item = inventory.Jewel(
+            item = other.Jewel(
                 item_dict["name"],
                 item_dict["description"],
                 item_dict["amount"],
@@ -150,7 +152,7 @@ def dict_to_player(player_dict):
                 item_dict["amount_to_change"]
             )
         else:
-            item = inventory.Item(
+            item = other.Item(
                 item_dict["name"],
                 item_dict["description"],
                 item_dict["amount"],

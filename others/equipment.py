@@ -6,7 +6,7 @@ from typing import Dict, List, Optional, Tuple, Union, Any
 
 import test.fx as fx
 import data.constants as constants
-from inventory.item import Item
+from others.item import Item
 
 console = Console()
 
@@ -176,6 +176,12 @@ class Equipment(Item):
             sign = "+" if diff >= 0 else ""
             lines.append(f"  {stat}: {my.get(stat,0)} ({sign}{diff})")
         return "\n".join(lines)
+
+    def reroll_quality(self):
+        self.quality, self.quality_price_multiplier, self.quality_stat_multiplier = self._generate_quality()
+        self._apply_quality()
+        self.name = f"{self.quality}{self.base_name}"
+        self.individual_value = int(self.base_value * self.quality_price_multiplier)
 
     def clone(self, amount: int) -> 'Equipment':
         clone = self.__class__(

@@ -3,7 +3,7 @@ from rich.text import Text
 from rich.panel import Panel
 from rich import box
 
-from inventory.equipment import Equipment
+from others.equipment import Equipment
 
 class Inventory:
     def __init__(self) -> None:
