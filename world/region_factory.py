@@ -14,7 +14,12 @@ event_mapping = {
     "shop_lok_armor": events.shop_lok_armor,
     "caesarus_bandit_combat": events.Fixed_combat_event("凯撒鲁斯与他的强盗", enemies.enemy_list_caesarus_bandit),
     "shop_itz_magic": events.shop_itz_magic,
-    "wolf_king_combat": events.Fixed_combat_event("夜行狼王", enemies.enemy_list_fight_against_wolf_king)
+    "wolf_king_combat": events.Fixed_combat_event("夜行狼王", enemies.enemy_list_fight_against_wolf_king),
+    "find_coins": events.SimpleEvent("发现零钱", events.find_coins),
+    "admire_scenery": events.SimpleEvent("欣赏美景", events.admire_scenery),
+    "friendly_villager": events.SimpleEvent("村民物资", events.friendly_villager),
+    "find_herb": events.SimpleEvent("找到草药", events.find_herb),
+    "rest_spot": events.SimpleEvent("短暂休息", events.rest_spot),
 }
 
 quest_mapping = {

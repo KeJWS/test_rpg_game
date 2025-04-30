@@ -7,6 +7,12 @@ from extensions import shops
 from inventory import Inventory_interface as interface
 from test.clear_screen import enter_clear_screen, clear_screen
 
+def ask_yes_no(prompt="> "):
+    ans = input(prompt).strip().lower()
+    while ans not in ["y", "n"]:
+        ans = input(prompt).strip().lower()
+    return ans == "y"
+
 # 处理事件（遭遇敌人、商店、治疗场所......）
 class Event():
     def __init__(self, name, success_chance, is_unique) -> None:
@@ -15,19 +21,18 @@ class Event():
         self.is_unique = is_unique
 
     def check_success(self):
-        if self.success_chance < random.randint(0, 100):
-            return False
-        return True
+        return self.success_chance >= random.randint(0, 100)
 
 class Random_combat_event(Event):
     def __init__(self, name) -> None:
         super().__init__(name, 100, False)
         self.enemy_quantity_for_level = {
-            5: 1,
-            9: 2,
-            17: 3,
-            35: 4,
-            100: 5,
+            4: 1,
+            7: 2,
+            18: 3,
+            37: 4,
+            55: 5,
+            120: 6,
         }
 
     def effect(self, player):
@@ -44,50 +49,33 @@ class Fixed_combat_event(Event):
         return escaped
 
 class Shop_event(Event):
-    def __init__(self, name, is_unique, encounter_text, enter_text, talk_text, exit_text, item_set) -> None:
+    def __init__(self, name, is_unique, encounter_text, enter_text, talk_text, exit_text, item_set):
         super().__init__(name, 100, is_unique)
-        self.encounter = encounter_text
-        self.enter = enter_text
-        self.exit = exit_text
-        self.talk = talk_text
-        self.item_set = item_set
+        self.encounter, self.enter, self.talk, self.exit, self.item_set = encounter_text, enter_text, talk_text, exit_text, item_set
 
     def effect(self, player):
         print(self.encounter)
-        enter = input("> ").lower()
-        while enter not in ["y", "n"]:
-            enter = input("> ").lower()
-        if enter == "y":
+        if ask_yes_no():
             print(self.enter)
             vendor = shops.Shop(self.item_set)
-            text.shop_menu(player)
-            option = input("> ").lower()
-            while option != "e":
-                if option == "b":
-                    clear_screen()
-                    player.buy_from_vendor(vendor)
-                elif option == "s":
-                    clear_screen()
-                    player.money += interface(player.inventory).sell_item()
-                elif option == "t":
-                    clear_screen()
-                    print(self.talk)
-                elif option == "ua":
-                    clear_screen()
-                    player.unequip_all()
-                elif option == "si":
-                    vendor.inventory.show_inventory_item(); enter_clear_screen()
+            while True:
                 text.shop_menu(player)
                 option = input("> ").lower()
+                if option == "e":
+                    break
+                clear_screen()
+                match option:
+                    case "b": player.buy_from_vendor(vendor)
+                    case "s": player.money += interface(player.inventory).sell_item()
+                    case "t": print(self.talk)
+                    case "ua": player.unequip_all()
+                    case "si": vendor.inventory.show_inventory_item(); enter_clear_screen()
         print(self.exit)
 
 class Healing_event(Event):
-    def __init__(self, name, encounter_text, success_text, fail_text, refuse_text, success_chance, is_unique, healing_amount) -> None:
+    def __init__(self, name, encounter_text, success_text, fail_text, refuse_text, success_chance, is_unique, healing_amount):
         super().__init__(name, success_chance, is_unique)
-        self.encounter = encounter_text
-        self.success = success_text
-        self.fail = fail_text
-        self.refuse = refuse_text
+        self.encounter, self.success, self.fail, self.refuse = encounter_text, success_text, fail_text, refuse_text
         self.healing_amount = healing_amount
 
     def effect(self, player):
@@ -105,19 +93,14 @@ class Healing_event(Event):
             print(self.refuse)
 
 class Damage_event(Event):
-    def __init__(self, name, encounter_text, success_text, fail_text, success_chance, damage_amount) -> None:
+    def __init__(self, name, encounter_text, success_text, fail_text, success_chance, damage_amount):
         super().__init__(name, success_chance, False)
-        self.encounter = encounter_text
-        self.success = success_text
-        self.fail = fail_text
+        self.encounter, self.success, self.fail = encounter_text, success_text, fail_text
         self.damage_amount = damage_amount
 
     def effect(self, player):
         print(self.encounter)
-        accept = input(">").lower()
-        while accept not in ["y", "n"]:
-            accept = input("> ").lower()
-        if accept == "y" and self.check_success():
+        if ask_yes_no() and self.check_success():
             print(self.success)
         else:
             print(self.fail)
@@ -130,18 +113,52 @@ class Inn_event(Healing_event):
 
     def effect(self, player):
         print(self.encounter)
-        accept = input("> ").lower()
-        while accept not in ["y", "n"]:
-            accept == input("> ").lower()
-        if accept == "y":
+        if ask_yes_no():
             if player.money >= self.cost:
                 print(self.success)
                 player.heal(self.healing_amount)
                 player.money -= self.cost
             else:
                 print(self.fail)
-        elif accept == "n":
+        else:
             print(self.refuse)
+
+# 轻事件
+class SimpleEvent(Event):
+    def __init__(self, name, effect_func):
+        super().__init__(name, 100, False)
+        self._effect_func = effect_func
+
+    def effect(self, player):
+        self._effect_func(player)
+
+# 定义简化的轻事件
+def find_coins(player):
+    gold = random.randint(1, 3) * player.level
+    print(f"真幸运! 你在地上发现了一些零钱!")
+    player.add_money(gold)
+
+def admire_scenery(player):
+    exp = random.randint(5, 10) + player.level
+    print(f"你欣赏了美丽的景色, 获得了少量经验")
+    player.add_exp(exp)
+
+def friendly_villager(player):
+    gold = random.randint(5, 10)
+    healing = int(player.stats["max_hp"] * 0.1)
+    print(f"村民提供给了你一些金币, 食物")
+    player.add_money(gold)
+    player.heal(healing)
+
+def find_herb(player):
+    healing = int(player.stats["max_hp"] * 0.2)
+    print(f"你找到了一些认识的草药, 然后使用了")
+    player.heal(healing)
+
+def rest_spot(player):
+    healing = int(player.stats["max_hp"] * 0.3)
+    print(f"你在一个安静的地方短暂休息")
+    player.heal(healing)
 
 ### 生命恢复水晶 ###
 def life_recovery_crystal(my_player):

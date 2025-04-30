@@ -203,7 +203,7 @@ def shop_buy(player):
     display_shop_buy = (
         "=================================================\n"
         f"          SHOP - 💰: {player.money}\n"
-        "           ['0' to Quit]"
+        "           ['0' to Quit]\n"
         "-------------------------------------------------\n"
     )
     print(display_shop_buy)

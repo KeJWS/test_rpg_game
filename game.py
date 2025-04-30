@@ -79,7 +79,7 @@ def play(p=None):
 def game_loop(p):
     map.world_map.get_current_region_info()
     enter_clear_screen()
-    event_chances = (65, 20, 15)  # 战斗、商店、治疗的概率
+    event_chances = (55, 25, 20)  # 战斗、商店、治疗的概率
     while p.alive:
         text.play_menu()
         match cp.handle_command(input("> "), p):

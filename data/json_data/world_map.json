@@ -5,8 +5,8 @@
     "description": "一个和平的小镇, 这里没有敌人, \n但有许多商店和休息的地方。",
     "danger_level": 0,
     "possible_enemies": {},
-    "shop_events": ["shop_jack_weapon", "shop_anna_armor"],
-    "heal_events": ["inn_event"],
+    "shop_events": ["shop_jack_weapon", "shop_anna_armor", "find_coins"],
+    "heal_events": ["inn_event", "friendly_villager"],
     "special_events": [],
     "quests": [],
     "ascii_art_key": "安全镇"
@@ -23,8 +23,8 @@
       "giant_slime": [4, 19],
       "shadow_wolf": [8, 16]
     },
-    "shop_events": [],
-    "heal_events": ["heal_medussa_statue"],
+    "shop_events": ["find_coins"],
+    "heal_events": ["heal_medussa_statue", "find_herb", "rest_spot"],
     "special_events": [],
     "quests": ["hunting_slimes", "slime_king"],
     "ascii_art_key": "雾林"
@@ -41,8 +41,8 @@
       "wild_boar": [6, 15],
       "wolf": [8, 22]
     },
-    "shop_events": ["shop_rik_armor", "shop_lok_armor"],
-    "heal_events": ["heal_medussa_statue"],
+    "shop_events": ["shop_rik_armor", "shop_lok_armor", "find_coins", "admire_scenery"],
+    "heal_events": ["heal_medussa_statue", "rest_spot"],
     "special_events": [],
     "quests": ["caesarus_bandit"],
     "ascii_art_key": "龙脊山"
@@ -57,8 +57,8 @@
       "giant_slime": [3, 15],
       "lizard_scout": [4, 22]
     },
-    "shop_events": ["shop_itz_magic"],
-    "heal_events": ["heal_medussa_statue"],
+    "shop_events": ["shop_itz_magic", "find_coins"],
+    "heal_events": ["heal_medussa_statue", "find_herb"],
     "special_events": [],
     "quests": ["wolf_king"],
     "ascii_art_key": "迷雾沼泽"
