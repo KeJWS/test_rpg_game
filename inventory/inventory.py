@@ -36,6 +36,22 @@ class Inventory:
                 return True
         return False
 
+    def remove_items_by_name(self, name: str, amount: int) -> bool:
+        """尝试移除背包中指定名称的若干个物品"""
+        for item in self.items:
+            if item.name == name:
+                if item.amount >= amount:
+                    item.amount -= amount
+                    if item.amount == 0:
+                        self.items.remove(item)
+                    return True
+
+    def count_item_by_name(self, name):
+        for item in self.items:
+            if item.name == name:
+                return item.amount
+        return 0
+
     def get_item_by_name(self, name):
         for item in self.items:
             if item.name == name:

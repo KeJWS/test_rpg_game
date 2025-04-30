@@ -260,13 +260,20 @@ def show_all_quests(player):
     else:
         print("\n尚未完成任何任务")
     console.print("\n========================", style="bold green")
-    print("\n输入q数字查看任务详情 (例如: q1), 或输入任意键返回")
+    print("\n输入 q1 查看任务1详情, 输入 c1 交付任务1")
     option = input("> ").lower()
     if option.startswith('q'):
         try:
             quest_idx = int(option[1:]) - 1
             if quest_idx >= 0 and quest_idx < len(player.active_quests):
-                player.active_quests[quest_idx].show_info()
+                player.active_quests[quest_idx].show_info(player)
+        except ValueError:
+            pass
+    elif option.startswith('c'):
+        try:
+            quest_idx = int(option[1:]) - 1
+            if quest_idx >= 0 and quest_idx < len(player.active_quests):
+                player.active_quests[quest_idx].try_complete_collection(player)
         except ValueError:
             pass
 

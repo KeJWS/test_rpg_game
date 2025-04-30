@@ -38,18 +38,18 @@
       "skeleton": [3, 10],
       "bandit": [4, 12],
       "goblin": [5, 13],
-      "wild_boar": [6, 15],
-      "wolf": [8, 22]
+      "wild_boar": [5, 15],
+      "wolf": [5, 22]
     },
     "shop_events": ["shop_rik_armor", "shop_lok_armor", "find_coins", "admire_scenery", "hidden_chest_mountain"],
     "heal_events": ["heal_medussa_statue", "rest_spot"],
     "special_events": [],
-    "quests": ["caesarus_bandit"],
+    "quests": ["wolf_hide_quest", "caesarus_bandit"],
     "ascii_art_key": "龙脊山"
   },
   "swamp": {
     "name": "迷雾沼泽",
-    "description": "一个和平的小镇, 这里没有敌人, \n但有许多商店和休息的地方。",
+    "description": "一片危险的沼泽地带, 充满毒气和致命的生物。\n地面松软, 行动困难。",
     "danger_level": 3,
     "possible_enemies": {
       "forest_spider": [1, 7],

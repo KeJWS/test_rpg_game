@@ -10,6 +10,7 @@ from tools.dev_tools import debug_print
 
 def load_enemies_from_csv(filepath):
     from skills import SPELL_REGISTRY
+    import items
     enemies = {}
     with open(filepath, newline='', encoding="utf-8") as csvfile:
         reader = csv.DictReader(csvfile)
@@ -23,7 +24,18 @@ def load_enemies_from_csv(filepath):
             xp = int(row["xp_reward"])
             gold = random.randint(int(row["gold_min"]), int(row["gold_max"]))
             level = row["level"]
-            enemy = Enemy(row["name_zh"], stats, xp_reward=xp, gold_reward=gold, level=level)
+
+            drop_items = []
+            drop_field = row.get("drop_items", "").strip()
+            if drop_field:
+                for part in drop_field.split(","):
+                    if "x" in part:
+                        item_name, count = part.split("x")
+                        item = items.item_factory(item_name.strip(), int(count))
+                        if item:
+                            drop_items.append(item)
+
+            enemy = Enemy(row["name_zh"], stats, xp_reward=xp, gold_reward=gold, level=level, drop_items=drop_items)
 
             spell_names = row.get("spells", "").strip()
             if spell_names:
@@ -62,7 +74,7 @@ def assign_enemy_action_weights(enemy, enemy_type):
 
 
 class Enemy(battler.Battler):
-    def __init__(self, name, stats, xp_reward, gold_reward, level) -> None:
+    def __init__(self, name, stats, xp_reward, gold_reward, level, drop_items=None) -> None:
         super().__init__(name, stats)
         self.xp_reward = xp_reward
         self.gold_reward = gold_reward
@@ -73,9 +85,10 @@ class Enemy(battler.Battler):
             "defend": 10,
             "spell": 30
         }
+        self.drop_items = drop_items or []
 
     def clone(self, variant_name=None):
-        cloned = Enemy(self.name, deepcopy(self.original_stats), self.xp_reward, self.gold_reward, self.level)
+        cloned = Enemy(self.name, deepcopy(self.original_stats), self.xp_reward, self.gold_reward, self.level, drop_items=self.drop_items.copy())
         cloned.spells = self.spells.copy()
         if not variant_name:
             roll = random.random()
@@ -180,6 +193,7 @@ enemy_data = load_enemies_from_csv("data/csv_data/enemies.csv")
 possible_enemies = POSSIBLE_ENEMIES
 
 # Boss 固定战
+# TODO 每杀死一个, 游戏中便减少一个
 enemy_list_caesarus_bandit = [
     enemy_data["caesarus_bandit_leader"].clone(),
     enemy_data["bandit"].clone(),

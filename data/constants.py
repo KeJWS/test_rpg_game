@@ -45,4 +45,9 @@ POSSIBLE_ENEMIES = {
     "slime": (1, 3),
     "imp": (1, 5),
     "golem": (1, 7),
+    "skeleton": (2, 9),
+    "bandit": (2, 11),
+    "goblin": (3, 12),
+    "giant_slime": (4, 15),
+    "lizard_scout": (4, 19),
 }

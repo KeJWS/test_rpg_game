@@ -55,6 +55,12 @@ quest_mapping = {
         ev.quest_fight_against_wolf_king_text, 
         ev.shop_fight_against_wolf_king_text, 
         350, 700, items.equipment_data["wolf_king_proof"], event_mapping["wolf_king_combat"], 13
+    ),
+    "wolf_hide_quest": quest.Quest(
+        "收集狼皮",
+        "猎人需要 5 张狼皮制作斗篷，请前往森林击杀野狼。",
+        "嘿, 冒险者, 你愿意帮我收集狼皮吗? 我需要5张!",
+        100, 50, None, None, 5, {"狼皮": 5}
     )
 }
 

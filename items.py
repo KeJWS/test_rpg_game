@@ -120,6 +120,15 @@ mp_potion2 = inventory.Potion("法力药水 II", "恢复法力值的药水", 1, 
 hp_potion3 = inventory.Potion("生命药水 III", "恢复中量生命值的药水", 1, 70, "consumable", "hp", 270)
 mp_potion3 = inventory.Potion("法力药水 III", "恢复中量法力值的药水", 1, 90, "consumable", "mp", 130)
 
+# 材料类
+def item_factory(name: str, amount: int = 1):
+    if name == "狼皮":
+        return inventory.Item("狼皮", "一张完整的野狼皮", amount, 50, "material")
+    elif name == "魔法草":
+        return inventory.Item("魔法草", "散发魔力的草药", amount, 30, "material")
+    else:
+        return None
+
 # 宝石数据
 jewel_data = load_jewel_from_csv()
 

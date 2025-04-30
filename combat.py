@@ -113,6 +113,9 @@ class Combat_executor:
         self.battlers = Combat_manager.define_battlers(allies, enemies)
         self.enemy_exp = sum(enemy.xp_reward for enemy in enemies)
         self.enemy_money = sum(enemy.gold_reward for enemy in enemies)
+        self.enemy_drops = []
+        for enemy in enemies:
+            self.enemy_drops.extend(enemy.drop_items)
 
     def execute_combat(self) -> bool:
         """执行战斗，返回是否逃跑"""
@@ -304,6 +307,10 @@ class Combat_executor:
         self.player.combo_points = 0
         Combat_manager.recover_hp_and_mp(self.player, 0.25)
 
+        for item in self.enemy_drops:
+            print(f"[调试] 添加物品 {item.name} x{item.amount}")
+            self.player.inventory.add_item(item)
+            print(f"- {item.name} x{item.amount}")
 
 # *战斗入口
 def combat(player, enemies):
