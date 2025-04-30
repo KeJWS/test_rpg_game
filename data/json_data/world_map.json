@@ -21,9 +21,9 @@
       "bat": [1, 4],
       "imp": [2, 6],
       "giant_slime": [4, 19],
-      "shadow_wolf": [8, 16]
+      "shadow_wolf": [13, 16]
     },
-    "shop_events": ["find_coins"],
+    "shop_events": ["find_coins", "hidden_chest_forest"],
     "heal_events": ["heal_medussa_statue", "find_herb", "rest_spot"],
     "special_events": [],
     "quests": ["hunting_slimes", "slime_king"],
@@ -41,7 +41,7 @@
       "wild_boar": [6, 15],
       "wolf": [8, 22]
     },
-    "shop_events": ["shop_rik_armor", "shop_lok_armor", "find_coins", "admire_scenery"],
+    "shop_events": ["shop_rik_armor", "shop_lok_armor", "find_coins", "admire_scenery", "hidden_chest_mountain"],
     "heal_events": ["heal_medussa_statue", "rest_spot"],
     "special_events": [],
     "quests": ["caesarus_bandit"],
@@ -57,7 +57,7 @@
       "giant_slime": [3, 15],
       "lizard_scout": [4, 22]
     },
-    "shop_events": ["shop_itz_magic", "find_coins", "mysterious_businessman"],
+    "shop_events": ["shop_itz_magic", "find_coins", "mysterious_businessman", "hidden_chest_swamp"],
     "heal_events": ["heal_medussa_statue", "find_herb"],
     "special_events": [],
     "quests": ["wolf_king"],

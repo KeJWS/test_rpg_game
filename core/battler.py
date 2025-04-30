@@ -2,9 +2,8 @@ import random
 from typing import Dict
 from rich.console import Console
 
-import test.fx as fx
 from test.combat_utils import battle_log
-from test.fx import dot_loading, typewriter
+from test.fx import dot_loading, wait
 
 console = Console()
 
@@ -29,7 +28,7 @@ class Battler:
 
         self.stats["hp"] -= dmg
         console.print(f"{self.name} 受到伤害 {dmg}", style="red")
-        fx.wait()
+        wait()
         # 检查是否死亡
         if self.stats["hp"] <= 0:
             console.print(f"{self.name} 被杀死了", style="bold red")
@@ -85,11 +84,11 @@ class Battler:
 
     def recover_mp(self, amount):
         self.stats["mp"] = min(self.stats["mp"] + amount, self.stats["max_mp"])
-        typewriter(fx.blue(f"{self.name} 恢复了 {amount}MP"))
+        console.print(f"{self.name} 恢复了 {amount}MP", style="blue")
 
     def heal(self, amount):
         self.stats["hp"] = min(self.stats["hp"] + amount, self.stats["max_hp"])
-        typewriter(fx.green(f"{self.name} 治愈了 {amount}HP"))
+        console.print(f"{self.name} 治愈了 {amount}HP", style="green")
 
     def check_buff_debuff_turns(self, clear_all: bool = False) -> None:
         for bd in self.buffs_and_debuffs:

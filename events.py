@@ -41,7 +41,7 @@ class Random_combat_event(Event):
 
 class Fixed_combat_event(Event):
     def __init__(self, name, enemy_list) -> None:
-        super().__init__(name, 10, True)
+        super().__init__(name, 100, True)
         self.enemy_list = enemy_list
 
     def effect(self, player):
@@ -122,6 +122,36 @@ class Inn_event(Healing_event):
                 print(self.fail)
         else:
             print(self.refuse)
+
+class HiddenChestEvent(Event):
+    def __init__(self, name, item_name) -> None:
+        super().__init__(name, 100, False)
+        self.item_name = item_name
+
+    def effect(self, player):
+        print("你发现了一个隐藏的宝箱，尝试开锁? [y/n]")
+        accept = input("> ").lower()
+        while accept not in ["y", "n"]:
+            accept = input("> ").lower()
+
+        if accept == "y":
+            lock_chance = player.stats["luk"] * 2 + player.stats["agi"] * 1.25 + player.level
+            if random.randint(0, 200) < min(lock_chance, 125):
+                gold = random.randint(10, 20) + player.level * 2
+                exp = random.randint(5, 25) * player.level
+                item = items.equipment_data[self.item_name]
+                print(f"你成功打开了宝箱, 获得了不少好东西")
+                player.add_money(gold)
+                player.add_exp(exp)
+                item.add_to_inventory_player(player.inventory)
+            else:
+                damage = int(player.stats["max_hp"] * 0.2)
+                print("你触发了陷阱, 遭受伤害并引来了敌人!")
+                player.take_dmg(damage)
+                enemy_group = enemies.create_enemy_group(player.level, enemies.possible_enemies, {100: 4})
+                combat.combat(player, enemy_group)
+        else:
+            print("你决定不去动这个宝箱")
 
 # 轻事件
 class SimpleEvent(Event):

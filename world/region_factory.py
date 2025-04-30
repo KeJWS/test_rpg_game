@@ -1,3 +1,4 @@
+import random
 import events, enemies, items
 from world import quest
 import data.event_text as ev
@@ -15,13 +16,19 @@ event_mapping = {
     "caesarus_bandit_combat": events.Fixed_combat_event("凯撒鲁斯与他的强盗", enemies.enemy_list_caesarus_bandit),
     "shop_itz_magic": events.shop_itz_magic,
     "wolf_king_combat": events.Fixed_combat_event("夜行狼王", enemies.enemy_list_fight_against_wolf_king),
+
     "find_coins": events.SimpleEvent("发现零钱", events.find_coins),
     "admire_scenery": events.SimpleEvent("欣赏美景", events.admire_scenery),
     "friendly_villager": events.SimpleEvent("村民物资", events.friendly_villager),
     "find_herb": events.SimpleEvent("找到草药", events.find_herb),
     "rest_spot": events.SimpleEvent("短暂休息", events.rest_spot),
+
     "mysterious_businessman": events.Shop_event("神秘商人", False, ev.mysterious_businessman_encounter, ev.mysterious_businessman_enter, \
-                            ev.mysterious_businessman_talk, ev.mysterious_businessman_exit, items.rik_armor_shop_item_set)
+                            ev.mysterious_businessman_talk, ev.mysterious_businessman_exit, items.rik_armor_shop_item_set),
+
+    "hidden_chest_forest": events.HiddenChestEvent("雾林装备宝箱", random.choice(["long_sword", "dagger", "fire_staff"])),
+    "hidden_chest_mountain": events.HiddenChestEvent("龙脊山装备宝箱", random.choice(["sword_bronze", "sai", "amulet_of_health"])),
+    "hidden_chest_swamp": events.HiddenChestEvent("迷雾沼泽装备宝箱", random.choice(["hunting_knife", "ring_of_power", "ring_of_magic", "mana_charm", "bronze_mace"])),
 }
 
 quest_mapping = {

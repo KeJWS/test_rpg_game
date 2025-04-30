@@ -40,3 +40,9 @@ ENEMY_VARIANTS = {
         "gold_multiplier": 1.5,
     },
 }
+
+POSSIBLE_ENEMIES = {
+    "slime": (1, 3),
+    "imp": (1, 5),
+    "golem": (1, 7),
+}

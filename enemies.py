@@ -1,3 +1,4 @@
+from data.constants import POSSIBLE_ENEMIES
 import csv
 import random
 from copy import deepcopy
@@ -176,11 +177,7 @@ def create_enemy_group(level, possible_enemies, enemy_quantity_for_level):
 
 enemy_data = load_enemies_from_csv("data/csv_data/enemies.csv")
 
-possible_enemies = {
-    "slime": (1, 3),
-    "imp": (1, 5),
-    "golem": (1, 7),
-}
+possible_enemies = POSSIBLE_ENEMIES
 
 # Boss 固定战
 enemy_list_caesarus_bandit = [
