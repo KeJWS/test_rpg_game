@@ -1,5 +1,7 @@
 from data.constants import DEBUG
 
+from rich.console import Console
+
 import events
 import data.debug_help
 import ui.text as text
@@ -8,6 +10,8 @@ from tools import dev_tools as debug
 from inventory import Inventory_interface as interface
 from enemies import enemy_data
 from test.clear_screen import clear_screen, enter_clear_screen, screen_wrapped
+
+console = Console()
 
 SHOP_DICT = {
     # "jack": events.shop_jack_weapon,

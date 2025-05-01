@@ -84,9 +84,9 @@ def show_equipment_info(player):
 
     for equipment in player.equipment:
         if player.equipment[equipment] is not None:
-            print(f"    {player.equipment[equipment].show_info()}\n")
+            console.print(f"    {player.equipment[equipment].show_info()}\n")
         else:
-            print(f"    ---{equipment}---\n")
+            console.print(f"    ---{equipment}---\n")
 
 def show_aptitudes(player):
     pannel = Panel.fit(
@@ -130,7 +130,7 @@ def show_skills(player):
 # *combat_ui
 def combat_menu(player, allies, enemies) -> None:
     print("=================================================")
-    print(f"【{player.name}】 Lv.{getattr(player, 'level', '?')} - CP: {player.combo_points}")
+    print(f"【{player.name}】 Lv.{getattr(player.ls, 'level', '?')} - CP: {player.combo_points}")
     print_status_bar("HP", player.stats['hp'], player.stats['max_hp'], "green")
     print_status_bar("MP", player.stats['mp'], player.stats['max_mp'], "blue")
     for ally in allies:

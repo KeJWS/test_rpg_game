@@ -1,4 +1,6 @@
+from rich.console import Console
 import test.fx as fx
+console = Console()
 
 def prompt_for_amount(max_amount, prompt="多少个？") -> int:
     """提示用户输入数量并进行验证"""
@@ -87,7 +89,7 @@ class Item:
     def add_to_inventory_player(self, inventory):
         amount_added = self.amount
         self.add_to_inventory(inventory, amount_added)
-        print(f"{amount_added} 个 {fx.YELLO}{self.name}{fx.END} 已添加到库存")
+        console.print(f"{amount_added} 个 [yellow]{self.name}[/yellow] 已添加到库存")
 
     def add_to_inventory(self, inventory, amount):
         already_in_inventory = False

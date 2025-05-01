@@ -72,7 +72,7 @@ class Player(battler.Battler):
             self.spells.append(equipment.spell); print(f"现在可以使用技能: {equipment.spell.name}")
 
         self.inventory.decrease_item_amount(equipment, 1)
-        print(f"装备了 {equipment.name}\n{equipment.show_stats()}")
+        console.print(f"装备了 {equipment.name}\n{equipment.show_stats()}")
 
     def unequip_all(self):
         for slot, eq in self.equipment.items():

@@ -13,7 +13,7 @@ def select_item_from_list(item_list, prompt="选择一个物品:", allow_exit=Tr
 
     print(f"\n{prompt} {['', '[输入 0 退出]'][allow_exit]}")
     for index, item in enumerate(item_list, start=1):
-        print(f"{index}. {item.show_info()}")
+        console.print(f"{index}. {item.show_info()}")
 
     while True:
         choice = input("> ")

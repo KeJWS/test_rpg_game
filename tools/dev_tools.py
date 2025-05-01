@@ -1,8 +1,8 @@
 from data.constants import DEBUG
 
 import os
-from datetime import datetime
 import inspect
+from datetime import datetime
 
 import test.fx as fx
 

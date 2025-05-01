@@ -1,9 +1,12 @@
+from rich.console import Console
 from rich.table import Table
 from rich.text import Text
 from rich.panel import Panel
 from rich import box
 
 from others.equipment import Equipment
+
+console = Console()
 
 class Inventory:
     def __init__(self) -> None:
@@ -75,7 +78,7 @@ class Inventory:
 
     def show_inventory_item(self):
         for index, item in enumerate(self.items, start=1):
-            print(f"{index} - {item.show_info()}")
+            console.print(f"{index} - {item.show_info()}")
 
     def sort_items(self):
         """整理背包物品，按类型和名称排序"""
