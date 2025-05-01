@@ -143,7 +143,7 @@ def combat_menu(player, allies, enemies) -> None:
     print("-------------------------------------------------")
     print("         A - Attack  C - Combos")
     print("         S - Spells  D - Defense                 ")
-    print("         E - Escape")
+    print("         Q - Quit")
     print("-------------------------------------------------")
 
 def print_status_bar(label, current, max_value, color: str):
@@ -192,7 +192,7 @@ def display_status_effects(battlers: List) -> None:
 # *shop_ui
 def shop_menu(player):
     pannel = Panel.fit(
-        Text("\nB - Buy Items\nS - Sell Items\nT - Talk\nUa - Unequip all\nSi - Show inventory\nE - Exit\n", justify="left"),
+        Text("\nB - Buy Items\nS - Sell Items\nT - Talk\nUa - Unequip all\nSi - Show inventory\nQ - Quit\n", justify="left"),
         title="Use letter keys to select",
         subtitle=f"SHOP - 💰: {player.money}",
         border_style="bold green",

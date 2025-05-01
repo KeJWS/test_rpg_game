@@ -62,7 +62,7 @@ class ShopEvent(Event):
             while True:
                 text.shop_menu(player)
                 option = input("> ").lower()
-                if option == "e":
+                if option == "q":
                     break
                 clear_screen()
                 match option:

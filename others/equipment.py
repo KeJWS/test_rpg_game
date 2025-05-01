@@ -56,8 +56,7 @@ class Equipment(Item):
     def _apply_quality(self) -> None:
         """根据品质修正属性"""
         for key, val in self.base_stats.items():
-            self.base_stats[key] = int(val * self.stat_mult)
-        self.stat_change_list = self.base_stats.copy()
+            self.stat_change_list[key] = int(val * self.stat_mult)
 
     def display_image_as_ascii(self) -> str:
         path = Path(self.image_path)
@@ -106,7 +105,7 @@ class Equipment(Item):
         self.individual_value = int(self.base_value * self.price_mult)
 
     def clone(self, amount: int) -> 'Equipment':
-        return self.__class__(
+        clone = self.__class__(
             name=self.base_name,
             description=self.description,
             amount=amount,
@@ -121,3 +120,5 @@ class Equipment(Item):
             quality_data=(self.quality, self.price_mult, self.stat_mult),
             apply_quality=False,
         )
+        clone.stat_change_list = self.stat_change_list.copy()
+        return clone

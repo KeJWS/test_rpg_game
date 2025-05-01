@@ -157,7 +157,7 @@ class CombatExecutor:
 
         text.combat_menu(player, self.allies, self.enemies)
         cmd = input("> ").lower()
-        while cmd not in ["a", "c", "s", "d", "e"]:
+        while cmd not in ["a", "c", "s", "d", "q"]:
             print("请输入有效指令")
             cmd = input("> ").lower()
 
@@ -180,7 +180,7 @@ class CombatExecutor:
             enhance_weapon.effect(player, player)
             console.print("你紧握武器, 时刻准备反击!", style="yellow")
 
-        elif "e" in cmd:
+        elif "q" in cmd:
             if BattleCalculator.try_escape(player):
                 player.check_buff_debuff_turns(True)
                 typewriter(f"{player.name} 成功逃离了战斗")
