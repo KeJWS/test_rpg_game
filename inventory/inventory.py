@@ -89,7 +89,9 @@ class Inventory:
     def get_formatted_inventory_table(self):
         """返回格式化的库存表格"""
         if not self.items:
-            return Text("背包是空的", style="dim")
+            empty_panel = Panel.fit(Text("背包是空的", style="dim"), border_style="bold green")
+            empty_summary = Text("物品总数: 0 | 总价值: 0G", style="dim")
+            return empty_panel, empty_summary
     
         table = Table(
             show_header=True,

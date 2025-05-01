@@ -14,104 +14,100 @@ def prompt_for_amount(max_amount, prompt="多少个？") -> int:
     return 0
 
 class Item:
-    def __init__(self, name, description, amount, individual_value, object_type) -> None:
+    def __init__(self, name, description, amount, individual_value, object_type):
         self.name = name
         self.description = description
         self.amount = amount
         self.individual_value = individual_value
         self.object_type = object_type
 
+    def _get_valid_amount(self, prompt_text) -> int:
+        """统一处理数量输入和验证"""
+        return prompt_for_amount(self.amount, prompt_text)
+
     def drop(self):
         if self.amount == 1:
-            print(f"丢弃了一个 {self.name}")
+            console.print(f"丢弃了一个 {self.name}")
             self.amount -= 1
             return 1
-        else:
-            print(f"有 {self.amount} 个 {self.name}")
-            amount_to_drop = prompt_for_amount(self.amount, "丢弃多少?")
-            if amount_to_drop > 0:
-                self.amount -= amount_to_drop
-                print(f"丢弃了 {self.name}x{amount_to_drop}")
-                return amount_to_drop
+        amount_to_drop = self._get_valid_amount("丢弃多少?")
+        if amount_to_drop > 0:
+            self.amount -= amount_to_drop
+            console.print(f"丢弃了 {self.name}x{amount_to_drop}")
+            return amount_to_drop
         return 0
 
     def sell(self):
         if self.amount == 1:
-            money_to_receive = int(round(self.individual_value * 0.5))
-            print(f"快速售出 {self.name}x1, 获得 {money_to_receive}G")
-            return money_to_receive, 1
-        elif self.amount > 1:
-            print(f"有 {self.amount} 个 {self.name}")
-            amount_to_sell = prompt_for_amount(self.amount, "出售多少?")
-            if amount_to_sell > 0:
-                money_to_receive = int(round(self.individual_value * 0.5 * amount_to_sell))
-                print(f"您确定要以 {money_to_receive}G 的价格出售 {amount_to_sell} {self.name} 吗? [y/n]")
-                confirmation = input("> ")
-                if confirmation.lower() == "y":
-                    print(f"售出 {self.name}x{amount_to_sell}, 得 {money_to_receive}")
-                    return money_to_receive, amount_to_sell
-                else:
-                    print("取消出售")
-            else:
-                print("取消出售")
+            price = int(round(self.individual_value * 0.5))
+            console.print(f"快速售出 {self.name}x1, 获得 {price}G")
+            return price, 1
+
+        amount_to_sell = self._get_valid_amount("出售多少?")
+        if amount_to_sell <= 0:
+            print("取消出售")
+            return 0, 0
+
+        price = int(round(self.individual_value * 0.5 * amount_to_sell))
+        confirmation = input(f"您确定要以 {price}G 的价格出售 {amount_to_sell} 个 {self.name} 吗? [y/n]\n> ").lower()
+        if confirmation == "y":
+            console.print(f"售出 {self.name}x{amount_to_sell}, 得 {price}")
+            return price, amount_to_sell
+
+        print("取消出售")
         return 0, 0
 
     def buy(self, player):
         if self.amount > 1:
-            amount_to_buy = prompt_for_amount(self.amount, "买多少?")
+            amount_to_buy = self._get_valid_amount("买多少?")
             if amount_to_buy <= 0:
                 print("取消购买")
                 return
-
-            price = self.individual_value * amount_to_buy
-            if price > player.money:
+            total_price = self.individual_value * amount_to_buy
+            if total_price > player.money:
+                print("没有足够的钱")
+                return
+        else:
+            amount_to_buy, total_price = 1, self.individual_value
+            if total_price > player.money:
                 print("没有足够的钱")
                 return
 
-            item_for_player = self.clone(amount_to_buy)
-            self.amount -= amount_to_buy
-            item_for_player.add_to_inventory_player(player.inventory)
-            player.money -= price
-            print(f"💰: {player.money}")
-        elif self.amount == 1:
-            if self.individual_value <= player.money:
-                item_for_player = self.clone(1)
-                item_for_player.add_to_inventory_player(player.inventory)
-                player.money -= self.individual_value
-                self.amount = 0
-                print(f"💰: {player.money}")
-            else:
-                print("没有足够的钱")
-
-    def clone(self, amount):
-        return Item(self.name, self.description, amount, self.individual_value, self.object_type)
+        item_for_player = self.clone(amount_to_buy)
+        self.amount -= amount_to_buy
+        item_for_player.add_to_inventory_player(player.inventory)
+        player.money -= total_price
+        console.print(f"💰: {player.money}")
 
     def add_to_inventory_player(self, inventory):
+        """添加至玩家背包"""
         amount_added = self.amount
         self.add_to_inventory(inventory, amount_added)
         console.print(f"{amount_added} 个 [yellow]{self.name}[/yellow] 已添加到库存")
 
     def add_to_inventory(self, inventory, amount):
-        already_in_inventory = False
+        """添加至背包系统，如果已有则叠加"""
         for item in inventory.items:
             if self.name == item.name:
                 item.amount += amount
-                already_in_inventory = True
-                break
-        if not already_in_inventory:
-            self.amount = amount
-            inventory.items.append(self)
+                return
+        new_item = self.clone(amount)
+        inventory.items.append(new_item)
 
     def show_info(self):
         return f"[x{self.amount}] {self.name} ({self.object_type}) - {self.individual_value}G"
 
     def get_detailed_info(self):
-        info = f"名称: {self.name}\n"
-        info += f"类型: {self.object_type}\n"
-        info += f"价值: {fx.YELLO}{self.individual_value}G{fx.END}\n"
-        info += f"描述: {self.description}\n"
-        info += f"数量: x{self.amount}\n"
-        return info
+        return (
+            f"\n名称: {self.name}\n"
+            f"类型: {self.object_type}\n"
+            f"价值: {fx.YELLO}{self.individual_value}G{fx.END}\n"
+            f"描述: {self.description}\n"
+            f"数量: x{self.amount}\n"
+        )
+
+    def clone(self, amount):
+        return Item(self.name, self.description, amount, self.individual_value, self.object_type)
 
 class Potion(Item):
     def __init__(self, name, description, amount, individual_value, object_type, stat, amount_to_change) -> None:

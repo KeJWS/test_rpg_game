@@ -133,34 +133,3 @@ class Inventory_interface:
             return
         clear_screen()
         print(equip1.compare_with(equip2))
-
-    def upgrade_equipment(self):
-        equipments = self.inventory.get_equipments()
-        if not equipments:
-            print("没有可强化的装备")
-            return
-        equipment = select_item_from_list(equipments, "选择要强化的装备:")
-        if equipment:
-            equipment.upgrade()
-
-    def repair_equipment(self):
-        equipments = [eq for eq in self.inventory.get_equipments() if eq.durability < eq.max_durability]
-        if not equipments:
-            print("没有需要修理的装备")
-            return
-        equipment = select_item_from_list(equipments, "选择要修理的装备:")
-        if equipment:
-            print(f"修理 {equipment.name} (当前耐久: {equipment.durability}/{equipment.max_durability})")
-            print("1. 完全修理\n2. 部分修理\n0. 取消")
-            choice = input("> ")
-            if choice == "1":
-                equipment.repair()
-            elif choice == "2":
-                try:
-                    amount = int(input(f"修理多少点? (最多 {equipment.max_durability - equipment.durability}): "))
-                    if 0 < amount <= (equipment.max_durability - equipment.durability):
-                        equipment.repair(amount)
-                    else:
-                        print("无效的数量")
-                except ValueError:
-                    print("请输入有效数字")

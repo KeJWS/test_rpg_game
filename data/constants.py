@@ -1,6 +1,17 @@
+from typing import List, Tuple
+
 MONEY_MULTIPLIER = 1 # 金钱倍率
 EXPERIENCE_RATE = 1 # 经验倍率
 DEBUG = True
+
+# 品质配置: 名称, 价格倍率, 属性倍率, 权重
+QUALITY_CONFIG: List[Tuple[str, float, float, int]] = [
+        ("生锈的", 0.5, 0.75, 25),
+        ("普通的", 1.0, 1.0, 50),
+        ("优质的", 2.2, 1.35, 13),
+        ("魔法的", 4.5, 1.75, 9),
+        ("传奇的", 12.0, 2.35, 3)
+    ]
 
 DEFAULT_EQUIPMENT_IMAGES = {
     "weapon": "assests/equipments/default_weapon.png",
