@@ -109,9 +109,15 @@ basic_equipments = {
     "broken_dagger": equipment_data["broken_dagger"],
     "old_staff": equipment_data["old_staff"],
     "wood_bow": equipment_data["wood_bow"],
+    "wooden_club": equipment_data["wooden_club"],
+    "training_dagger": equipment_data["training_dagger"],
+    "beginner_wand": equipment_data["beginner_wand"],
+
     "novice_armor": equipment_data["novice_armor"],
     "old_robes": equipment_data["old_robes"],
+    "padded_vest": equipment_data["padded_vest"],
 }
+
 jack_weapon_shop_set.append(basic_equipments["wood_bow"])
 
 # 药水类物品

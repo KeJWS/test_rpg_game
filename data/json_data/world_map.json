@@ -39,7 +39,7 @@
       "bandit": [4, 12],
       "goblin": [5, 13],
       "wild_boar": [5, 15],
-      "wolf": [5, 22]
+      "wolf": [5, 100]
     },
     "shop_events": ["shop_rik_armor", "shop_lok_armor", "find_coins", "admire_scenery", "hidden_chest_mountain"],
     "heal_events": ["heal_medussa_statue", "rest_spot"],
@@ -52,10 +52,11 @@
     "description": "一片危险的沼泽地带, 充满毒气和致命的生物。\n地面松软, 行动困难。",
     "danger_level": 3,
     "possible_enemies": {
+      "giant_slime": [3, 15],
       "forest_spider": [1, 7],
       "poison_frog": [1, 9],
-      "giant_slime": [3, 15],
-      "lizard_scout": [4, 22]
+      "lizard_scout": [4, 22],
+      "bog_zombie": [5, 100]
     },
     "shop_events": ["shop_itz_magic", "find_coins", "mysterious_businessman", "hidden_chest_swamp"],
     "heal_events": ["heal_medussa_statue", "find_herb"],

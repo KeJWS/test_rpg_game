@@ -1,3 +1,4 @@
+import random
 import sys
 sys.path.append("..")
 import items
@@ -16,13 +17,14 @@ def give_initial_items(my_player):
     if option == "1":
         default_selection_warrior(my_player)
     elif option == "2":
-        items.basic_equipments["broken_dagger"].add_to_inventory_player(my_player.inventory)
-        items.basic_equipments["novice_armor"].add_to_inventory_player(my_player.inventory)
+        items.basic_equipments[random.choice(["training_dagger", "broken_dagger"])].add_to_inventory_player(my_player.inventory)
+        items.basic_equipments["padded_vest"].add_to_inventory_player(my_player.inventory)
         items.jewel_data["agi_gems"].add_to_inventory_player(my_player.inventory)
+        my_player.add_money(50)
         my_player.ls.class_name = "盗贼"
     elif option == "3":
         items.equipment_data["fire_staff"].add_to_inventory_player(my_player.inventory)
-        items.basic_equipments["old_robes"].add_to_inventory_player(my_player.inventory)
+        items.basic_equipments[random.choice(["old_robes", "padded_vest"])].add_to_inventory_player(my_player.inventory)
         my_player.ls.class_name = "法师"
     elif option == "4":
         items.basic_equipments["wood_bow"].add_to_inventory_player(my_player.inventory)
@@ -30,14 +32,14 @@ def give_initial_items(my_player):
         items.jewel_data["crit_gems"].add_to_inventory_player(my_player.inventory)
         my_player.ls.class_name = "弓箭手"
     elif option == "5":
-        items.basic_equipments["rusty_sword"].add_to_inventory_player(my_player.inventory)
-        items.basic_equipments["novice_armor"].add_to_inventory_player(my_player.inventory)
+        items.equipment_data[random.choice(["rusty_sword", "long_sword"])].add_to_inventory_player(my_player.inventory)
+        items.basic_equipments[random.choice(["novice_armor", "padded_vest"])].add_to_inventory_player(my_player.inventory)
         items.equipment_data["wooden_shield"].add_to_inventory_player(my_player.inventory)
         items.grimoires[1].add_to_inventory_player(my_player.inventory)
         my_player.ls.class_name = "圣骑士"
     elif option == "6":
-        items.basic_equipments["old_staff"].add_to_inventory_player(my_player.inventory)
-        items.basic_equipments["old_robes"].add_to_inventory_player(my_player.inventory)
+        items.basic_equipments[random.choice(["old_staff", "beginner_wand"])].add_to_inventory_player(my_player.inventory)
+        items.basic_equipments[random.choice(["old_robes", "padded_vest"])].add_to_inventory_player(my_player.inventory)
         items.grimoires[4].add_to_inventory_player(my_player.inventory)
         my_player.ls.class_name = "死灵法师"
     else:
@@ -68,7 +70,7 @@ def apply_class_bonuses(my_player):
         my_player.recover_mp(9999); my_player.heal(9999)
 
 def default_selection_warrior(my_player):
-    items.basic_equipments["rusty_sword"].add_to_inventory_player(my_player.inventory)
-    items.basic_equipments["novice_armor"].add_to_inventory_player(my_player.inventory)
+    items.basic_equipments[random.choice(["rusty_sword", "wooden_club"])].add_to_inventory_player(my_player.inventory)
+    items.basic_equipments[random.choice(["novice_armor", "padded_vest"])].add_to_inventory_player(my_player.inventory)
     items.jewel_data["atk_gems"].add_to_inventory_player(my_player.inventory)
     my_player.ls.class_name = "战士"
