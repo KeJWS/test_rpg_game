@@ -7,7 +7,6 @@ from core import battler
 from data.constants import ENEMY_VARIANTS
 from tools.dev_tools import debug_print
 
-
 def load_enemies_from_csv(filepath):
     from skills import SPELL_REGISTRY
     import items
@@ -15,14 +14,14 @@ def load_enemies_from_csv(filepath):
     with open(filepath, newline='', encoding="utf-8") as csvfile:
         reader = csv.DictReader(csvfile)
         for row in reader:
-            stats = {key: int(row[key]) for key in (
+            stats = {key: int(row[key]) if row[key].strip() else 0 for key in (
                 "max_hp", "max_mp", "atk", "def", "mat", "mdf", "agi", "luk", "crit", "anti_crit"
             )}
             stats["hp"] = stats["max_hp"]
             stats["mp"] = stats["max_mp"]
 
-            xp = int(row["xp_reward"])
-            gold = random.randint(int(row["gold_min"]), int(row["gold_max"]))
+            xp = int(row["xp_reward"]) if row["xp_reward"].strip() else 0
+            gold = random.randint(int(row["gold_min"]) if row["gold_min"].strip() else 0, int(row["gold_max"]) if row["gold_max"].strip() else 0)
             level = row["level"]
 
             drop_items = []
@@ -52,6 +51,7 @@ def load_enemies_from_csv(filepath):
                     enemy.spells.append(default_spell)
             assign_enemy_action_weights(enemy, row["name"])
             enemies[row["name"]] = enemy
+        debug_print(f"从 CSV 加载敌人数据, 共加载 {len(enemies)} 项数据")
     return enemies
 
 def assign_enemy_action_weights(enemy, enemy_type):

@@ -27,7 +27,7 @@ def give_initial_items(my_player):
         items.basic_equipments[random.choice(["old_robes", "padded_vest"])].add_to_inventory_player(my_player.inventory)
         my_player.ls.class_name = "法师"
     elif option == "4":
-        items.basic_equipments["wood_bow"].add_to_inventory_player(my_player.inventory)
+        items.basic_equipments[random.choice(["wood_bow", "self_bow"])].add_to_inventory_player(my_player.inventory)
         items.equipment_data["leather_armor"].add_to_inventory_player(my_player.inventory)
         items.jewel_data["crit_gems"].add_to_inventory_player(my_player.inventory)
         my_player.ls.class_name = "弓箭手"

@@ -12,10 +12,10 @@ def load_jewel_from_csv(filepath="data/csv_data/jewels.csv"):
             name = row["name"]
             name_zh = row["name_zh"]
             description = row["description"]
-            amount = int(row["amount"]) if row["amount"].strip() else 1
-            individual_value = int(row["individual_value"])
+            amount = 1
+            individual_value = int(row["individual_value"]) if row["individual_value"].strip() else 0
             stat = row["stat"]
-            amount_to_change = int(row["amount_to_change"])
+            amount_to_change = int(row["amount_to_change"]) if row["amount_to_change"].strip() else 0
             jewel = item.Jewel(name_zh, description, amount, individual_value, stat, amount_to_change)
             jewel_dict[name] = jewel
 

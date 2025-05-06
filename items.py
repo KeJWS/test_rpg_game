@@ -47,13 +47,13 @@ def load_equipment_from_csv(filepath="data/csv_data/equipments.csv", skill_dict=
             kwargs = {
                 "name": row["name_zh"],
                 "description": row["description"],
-                "amount": int(row["amount"]) if row["amount"].strip() else 1,
+                "amount": 1,
                 "individual_value": int(row["individual_value"]) if row["individual_value"].strip() else 0,
                 "object_type": row["object_type"],
                 "stat_change_list": ast.literal_eval(row["stat_change_list"]),
                 "combo": skill_dict.get(combo_name) if combo_name else None,
                 "spell": skill_dict.get(spell_name) if spell_name else None,
-                "level": int(row["level"]) if row["level"].strip() else 1,
+                "level": int(row["level"]) if row["level"].strip() else 0,
                 "tags": row.get("tags", "").split(",") if row.get("tags") else [],
                 "image_path": row.get("image_path", "")
             }
@@ -112,13 +112,12 @@ basic_equipments = {
     "wooden_club": equipment_data["wooden_club"],
     "training_dagger": equipment_data["training_dagger"],
     "beginner_wand": equipment_data["beginner_wand"],
+    "self_bow": equipment_data["self_bow"],
 
     "novice_armor": equipment_data["novice_armor"],
     "old_robes": equipment_data["old_robes"],
     "padded_vest": equipment_data["padded_vest"],
 }
-
-jack_weapon_shop_set.append(basic_equipments["wood_bow"])
 
 # 药水类物品
 hp_potion = item.Potion("生命药水 I", "恢复少量生命值的药水", 1, 25, "consumable", "hp", 70)
@@ -130,12 +129,14 @@ mp_potion3 = item.Potion("法力药水 III", "恢复中量法力值的药水", 1
 
 # 材料类
 def item_factory(name: str, amount: int = 1):
-    if name == "狼皮":
-        return item.Item("狼皮", "一张完整的野狼皮", amount, 50, "material")
+    if name == "魔法草":
+        return item.Item("魔法草", "散发魔力的草药", amount, 30, "material")
+    elif name == "狼皮":
+        return item.Item("狼皮", "一张完整的野狼皮", amount, 45, "material")
     elif name == "凝胶":
         return item.Item("凝胶", "像果冻一样...", amount, 10, "material")
-    elif name == "魔法草":
-        return item.Item("魔法草", "散发魔力的草药", amount, 30, "material")
+    elif name == "蛛丝":
+        return item.Item("蛛丝", "击败蜘蛛后的掉落物", amount, 12, "material")
     else:
         return None
 
