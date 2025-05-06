@@ -177,6 +177,8 @@ class Food(Item):
 
         if self.hp_restore > 0:
             player.heal(self.hp_restore)
+        elif self.hp_restore < 0:
+            player.take_dmg(abs(self.hp_restore))
         if self.mp_restore > 0:
             player.recover_mp(self.mp_restore)
 
