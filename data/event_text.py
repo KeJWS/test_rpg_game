@@ -39,6 +39,14 @@ jack_weapon_shop_talk = "“我这里有各种武器，从锋利的剑到强大�
 “你可以看看这些武器，也许能找到适合你的。”\n"
 jack_weapon_shop_exit = "你离开了武器店，继续你的冒险旅程。\n"
 
+# *玛丽的小吃摊
+mary_food_stall_encounter = "在镇中心的小广场，你看见一位热情的大妈在一辆小推车旁招呼客人。\n\
+招牌上写着：<玛丽的小吃摊>。\n\
+你要停下来看看她卖什么吗？[y/n]"
+mary_food_stall_enter = "“来尝尝我家的点心吧！”玛丽笑着说道，热腾腾的香味扑面而来。\n"
+mary_food_stall_talk = "“我做的烤肉和蜂蜜苹果最受冒险者欢迎啦。”玛丽骄傲地说。\n"
+mary_food_stall_exit = "你告别玛丽，继续踏上旅程，肚子还带着点满足感。\n"
+
 # 龙脊山
 # *里克的盔甲店
 rik_armor_shop_encounter = "在一个小村庄四处游荡时，你发现自己站在一家店铺前。\n\

@@ -5,7 +5,7 @@ from functools import lru_cache
 import skills
 import others.item as item
 from others.equipment import Equipment
-from tools.load_data_from_csv import load_jewel_from_csv
+from tools.load_data_from_csv import load_jewel_from_csv, load_food_from_csv
 from tools.dev_tools import debug_print
 
 # 缓存加载 ASCII 艺术资源
@@ -140,6 +140,10 @@ def item_factory(name: str, amount: int = 1):
     else:
         return None
 
+# 食物数据
+food_data = load_food_from_csv()
+bread = food_data["bread"]
+
 # 宝石数据
 jewel_data = load_jewel_from_csv()
 
@@ -154,11 +158,18 @@ grimoire_data = [
 ]
 grimoires = [item.Grimoire(n, d, a, v, "consumable", s) for n, d, a, v, s in grimoire_data]
 
-# 商店物品套装
+mary_food_stall_set = [
+    bread, bread, bread,
+    food_data["mushroom_soup"],
+    food_data["meat_skewer"],
+    food_data["honey_apple"],
+    food_data["mary_cookie"],
+]
+
 itz_magic_item_set = [
     equipment_data["staff"],
     equipment_data["cloth_armor"],
-    hp_potion,
+    hp_potion, hp_potion,
     mp_potion,
     equipment_data["sage_tunic"],
     equipment_data["sage_staff"],
@@ -171,6 +182,7 @@ itz_magic_item_set = [
 
 debug_print(f"Jack 的武器商店物品数: {len(jack_weapon_shop_set)}")
 debug_print(f"Anna 的护甲商店物品数: {len(anna_armor_shop_set)}")
+debug_print(f"Mary 的食品商店物品数: {len(mary_food_stall_set)}")
 debug_print(f"Rik 的护甲商店物品数: {len(rik_armor_shop_item_set)}")
 debug_print(f"Itz 的魔法商店物品数: {len(itz_magic_item_set)}")
 debug_print(f"Lok 的武具商店物品数: {len(lok_armor_shop_item_set)}")

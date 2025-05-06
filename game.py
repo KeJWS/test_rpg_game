@@ -83,7 +83,7 @@ def game_loop(p):
     while p.alive:
         text.play_menu()
         match cp.handle_command(input("> "), p):
-            case "w": clear_screen(); map.world_map.generate_random_event(p, *event_chances); enter_clear_screen()
+            case "w": clear_screen(); map.world_map.generate_random_event(p, *event_chances); p.decrease_hunger(1); enter_clear_screen()
             case "s": clear_screen(); text.show_stats(p); enter_clear_screen()
             case "a": clear_screen(); p.assign_aptitude_points(); enter_clear_screen()
             case "i": clear_screen(); text.inventory_menu(); interface(p.inventory).show_inventory(); inventory_selections(p)

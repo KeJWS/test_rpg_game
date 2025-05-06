@@ -1,3 +1,4 @@
+import random
 from data.constants import MONEY_MULTIPLIER
 from rich.console import Console
 
@@ -19,6 +20,7 @@ class Player(battler.Battler):
         stats = {
             "max_hp": 500, "hp": 500,
             "max_mp": 100, "mp": 100,
+            "max_hunger": 120, "hunger": 100,
             "atk": 12, "def": 10, "mat": 12, "mdf": 10,
             "agi": 10, "luk": 10, "crit": 3, "anti_crit": 3
         }
@@ -132,6 +134,24 @@ class Player(battler.Battler):
                 inv.show_inventory()
             else:
                 break
+
+    def decrease_hunger(self, amount):
+        """减少饱食度"""
+        self.stats['hunger'] = max(0, self.stats['hunger'] - amount)
+        if self.stats['hunger'] <= 20:
+            console.print(f"警告: 饱食度过低 ({self.stats['hunger']}/{self.stats['max_hunger']})，需要进食!", style="yellow")
+        if self.stats['hunger'] <= 0:
+            damage = round(100 * random.uniform(0.75, 1.25))
+            self.stats["hp"] -= damage
+            console.print(f"你因饥饿受到了{damage}点伤害!", style="red")
+            if self.stats["hp"] <= 0:
+                console.print("你因饥饿而昏倒了...", style="red")
+                self.alive = False
+
+    def increase_max_hunger(self, amount):
+        """增加最大饱食度"""
+        self.stats['max_hunger'] += amount
+        print(f"最大饱食度增加了{amount}点! 现在是{self.stats['max_hunger']}")
 
     def rebirth(self, world_map):
         print(fx.cyan("你选择了转生! 重置所有成长, 但保留了财富与物品"))

@@ -9,6 +9,8 @@ event_mapping = {
                             ev.jack_weapon_shop_talk, ev.jack_weapon_shop_exit, items.jack_weapon_shop_set),
     "shop_anna_armor": events.ShopEvent("安娜的防具店", False, ev.anna_armor_shop_encounter, ev.anna_armor_shop_enter, \
                             ev.anna_armor_shop_talk, ev.anna_armor_shop_exit, items.anna_armor_shop_set),
+    "mary_food_stall": events.ShopEvent("玛丽的小吃摊", False, ev.mary_food_stall_encounter, ev.mary_food_stall_enter, \
+                            ev.mary_food_stall_talk, ev.mary_food_stall_exit, items.mary_food_stall_set),
     "inn_event": events.InnEvent("客栈", ev.inn_event_encounter, ev.inn_event_success, ev.inn_event_fail, ev.inn_event_refuse, 150, 25),
     "heal_medussa_statue": events.HealingEvent("美杜莎雕像", ev.medussa_statue_encounter, ev.medussa_statue_success, \
                             ev.medussa_statue_fail, ev.medussa_statue_refuse, 75, False, 90),

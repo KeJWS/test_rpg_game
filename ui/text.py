@@ -47,6 +47,7 @@ def show_stats(player):
     table.add_row("LV", f"{player.ls.level}")
     table.add_row("EXP", f"{player.ls.xp}/{player.ls.xp_to_next_level}")
     table.add_row("Money", f"[yellow]{player.money}[/yellow] 💰")
+    table.add_row("Hunger", f"[yellow]{player.stats['hunger']}[/yellow]/[yellow]{player.stats['max_hunger']}[/yellow]")
     table.add_row("HP", f"[green]{player.stats['hp']}[/green]/[green]{player.stats['max_hp']}[/green]")
     table.add_row("MP", f"[blue]{player.stats['mp']}[/blue]/[blue]{player.stats['max_mp']}[/blue]")
     table.add_row("ATK / DEF", f"{player.stats['atk']} / {player.stats['def']}")
@@ -216,6 +217,7 @@ def enter_shop(name):
         case "安娜的防具店": print(ev.anna_armor_shop_encounter)
         case "杰克的武器店": print(ev.jack_weapon_shop_encounter)
         case "青铜匠武具店": print(ev.lok_armor_shop_encounter)
+        case "玛丽的小吃摊": print(ev.mary_food_stall_encounter)
 
 
 def save_load_menu():

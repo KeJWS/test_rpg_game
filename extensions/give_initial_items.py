@@ -14,6 +14,8 @@ def give_initial_items(my_player):
     items.mp_potion.add_to_inventory_player(my_player.inventory)
     items.hp_potion.add_to_inventory_player(my_player.inventory)
 
+    items.bread.add_to_inventory_player(my_player.inventory)
+
     if option == "1":
         default_selection_warrior(my_player)
     elif option == "2":

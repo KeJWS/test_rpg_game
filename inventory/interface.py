@@ -90,7 +90,8 @@ class Inventory_interface:
         return select_item_from_list(equipments, "装备什么?")
 
     def use_item(self):
-        consumables = self.inventory.get_consumables()
+        consumables = self.inventory.get_items_by_type("consumable")
+        consumables += self.inventory.get_items_by_type("food")
         if not consumables:
             print("背包中没有可使用的物品")
             return None

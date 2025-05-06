@@ -5,7 +5,7 @@
     "description": "一个和平的小镇, 这里没有敌人, \n但有许多商店和休息的地方。",
     "danger_level": 0,
     "possible_enemies": {},
-    "shop_events": ["shop_jack_weapon", "shop_anna_armor", "find_coins"],
+    "shop_events": ["shop_jack_weapon", "shop_anna_armor", "mary_food_stall", "find_coins"],
     "heal_events": ["inn_event", "friendly_villager"],
     "special_events": [],
     "quests": [],

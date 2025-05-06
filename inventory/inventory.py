@@ -73,9 +73,6 @@ class Inventory:
     def get_equipments(self):
         return self.get_items_by_class(Equipment)
 
-    def get_consumables(self):
-        return self.get_items_by_type("consumable")
-
     def show_inventory_item(self):
         for index, item in enumerate(self.items, start=1):
             console.print(f"{index} - {item.show_info()}")

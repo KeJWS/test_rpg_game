@@ -159,3 +159,36 @@ class Jewel(Item):
 
     def clone(self, amount):
         return Jewel(self.name, self.description, amount, self.individual_value, self.stat, self.amount_to_change)
+
+class Food(Item):
+    def __init__(self, name, description, amount, individual_value, hunger_restore, hp_restore=0, mp_restore=0) -> None:
+        super().__init__(name, description, amount, individual_value, "food")
+        self.hunger_restore = hunger_restore
+        self.hp_restore = hp_restore
+        self.mp_restore = mp_restore
+
+    def activate(self, player):
+        """使用食物, 恢复饱食度、HP/MP"""
+        print(f"{player.name} 吃了一个 {self.name}")
+        old_hunger = player.stats["hunger"]
+        player.stats["hunger"] = min(player.stats["max_hunger"], player.stats["hunger"] + self.hunger_restore)
+        hunger_restored = player.stats["hunger"] - old_hunger
+        print(f"饱食度恢复了 {hunger_restored} 点 ({player.stats["hunger"]}/{player.stats["max_hunger"]})")
+
+        if self.hp_restore > 0:
+            player.heal(self.hp_restore)
+        if self.mp_restore > 0:
+            player.recover_mp(self.mp_restore)
+
+    def get_detailed_info(self):
+        """显示食物的详细信息"""
+        base_info = super().get_detailed_info()
+        food_info = f"饱食度: +{self.hunger_restore}\n"
+        if self.hp_restore > 0:
+            food_info += f"生命值: +{self.hp_restore}\n"
+        if self.mp_restore > 0:
+            food_info += f"魔法值: +{self.mp_restore}\n"
+        return base_info + food_info
+
+    def clone(self, amount):
+        return Food(self.name, self.description, amount, self.individual_value, self.hunger_restore, self.hp_restore, self.mp_restore)
