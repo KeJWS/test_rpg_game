@@ -12,7 +12,7 @@ from rich.console import Console
 import events
 import data.debug_help
 import ui.text as text
-from extensions import shops
+from core import shops
 from tools import dev_tools as debug
 from inventory import Inventory_interface as interface
 from enemies import enemy_data

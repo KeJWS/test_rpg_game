@@ -62,7 +62,8 @@ def play(p=None):
     参数:
         p: 可选的玩家对象，用于继续游戏或转生。默认为None，表示创建新角色。
     """
-    from extensions.give_initial_items import give_initial_items, apply_class_bonuses
+    from tools.give_initial_items import give_initial_items, apply_class_bonuses
+
     if p is None:
         p = player.Player("Test Player")
         console.print(data.event_text.initial_event_text())

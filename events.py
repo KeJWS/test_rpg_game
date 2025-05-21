@@ -12,7 +12,7 @@ from typing import List, Callable
 import combat, items, enemies
 import ui.text as text
 import data.event_text as event_text
-from extensions import shops
+from core import shops
 from inventory import Inventory_interface as interface
 from ui.clear_screen import enter_clear_screen, clear_screen
 
