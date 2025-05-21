@@ -43,7 +43,7 @@ def inventory_selections(player):
     """
     while (option := input("> ").lower()) != "q":
         match option:
-            case "u": clear_screen(); interface(player.inventory).use_item().activate(player)
+            case "u": clear_screen(); interface(player.inventory).use_item().activate(player) # TODO 输入 0 会报错
             case "d": clear_screen(); interface(player.inventory).drop_item()
             case "e": clear_screen(); player.equip_item(interface(player.inventory).equip_item())
             case "c": clear_screen(); interface(player.inventory).compare_equipment()
@@ -60,7 +60,7 @@ def play(p=None):
     将创建一个新角色并分配初始物品和职业加成，然后进入游戏循环。
 
     参数:
-        p: 可选的玩家对象，用于继续游戏或从存档加载。默认为None，表示创建新角色。
+        p: 可选的玩家对象，用于继续游戏或转生。默认为None，表示创建新角色。
     """
     from extensions.give_initial_items import give_initial_items, apply_class_bonuses
     if p is None:
