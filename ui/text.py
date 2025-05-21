@@ -359,42 +359,6 @@ def enter_shop(name):
         case "玛丽的小吃摊": print(ev.mary_food_stall_encounter)
 
 
-def save_load_menu():
-    """
-    显示存档/读档菜单。
-
-    打印游戏存档和读档选项的菜单界面。
-    """
-    display_content = (
-        "----------------------------------\n"
-        "           S - Save game\n"
-        "           L - Load game\n"
-        "           R - Return\n"
-        "----------------------------------\n"
-    )
-    print(display_content)
-
-def display_save_list(saves):
-    """
-    显示存档列表。
-
-    列出所有可用的游戏存档，包括玩家名称、等级和保存日期。
-
-    参数:
-        saves: 存档信息列表
-    """
-    if not saves:
-        print("没有找到存档")
-        return
-    print("----------------------------------")
-    print(" 存档列表")
-    print("----------------------------------")
-    for i, save in enumerate(saves, 1):
-        print(f" {i}. {save['player_name']} (等级 {save['level']}) - {save['date']}")
-    print(" 0. 取消")
-    print("----------------------------------")
-
-
 def show_all_quests(player):
     """
     显示玩家所有任务的界面。
