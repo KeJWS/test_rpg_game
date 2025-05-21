@@ -1,5 +1,7 @@
 # Text RPG Game
 
+[![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/KeJWS/test_rpg_game)
+
 `Text RPG Game` 是一个基于 Python 实现的简单文字角色扮演游戏（RPG）框架，支持角色扮演、回合制战斗、技能释放、物品管理等核心游戏机制。该项目旨在为开发者提供一个易于扩展和定制的游戏基础框架，方便学习和二次开发。
 
 ## 项目特点

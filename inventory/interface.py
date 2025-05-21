@@ -27,9 +27,6 @@ def select_item_from_list(item_list, prompt="选择一个物品:", allow_exit=Tr
 
     返回:
         object|None: 用户选择的物品对象，如果用户退出则返回None
-
-    异常:
-        不会抛出异常，即使用户输入无效数据时也会继续提示
     """
     if not item_list:
         print("没有可选择的物品")

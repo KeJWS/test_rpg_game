@@ -1,10 +1,3 @@
-"""
-主游戏模块，包含游戏的入口点和主循环。
-
-该模块定义了游戏的主要流程控制，包括标题菜单、游戏循环、背包管理和存档加载等核心功能。
-作为游戏的主要控制中心，协调各个子系统的交互和状态管理。
-"""
-
 import sys
 from rich.console import Console
 
@@ -71,7 +64,8 @@ def save_load_game(player):
         player: 当前玩家对象，用于保存或被加载的存档替代
 
     返回:
-        player: 可能是原始玩家对象或从存档加载的新玩家对象
+        player: 正常返回当前玩家对象
+        loaded_player: 加载的玩家对象
     """
     from data.constants import DEBUG
     if not DEBUG:
@@ -119,6 +113,7 @@ def play(p=None):
     enter_clear_screen()
     game_loop(p)
 
+
 def game_loop(p):
     """
     游戏主循环，处理玩家在游戏世界中的各种交互。
@@ -150,6 +145,7 @@ def game_loop(p):
         p.rebirth(map.world_map)
         enter_clear_screen()
         play(p)
+
 
 if __name__ == "__main__":
     title_screen_selections()
