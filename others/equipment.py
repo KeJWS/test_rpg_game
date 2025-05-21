@@ -93,7 +93,7 @@ class Equipment(Item):
         self.name = f"{self.quality}{self.base_name}"
         self.individual_value = int(self.base_value * self.price_mult)
         self.image_path = image_path or constants.DEFAULT_EQUIPMENT_IMAGES.get(
-            object_type, "assests/equipments/default_unknown.png"
+            object_type, "img/equipments/default_unknown.png"
         )
 
     def _generate_quality(self) -> Tuple[str, float, float]:

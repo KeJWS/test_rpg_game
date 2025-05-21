@@ -14,13 +14,13 @@ QUALITY_CONFIG: List[Tuple[str, float, float, int]] = [
     ]
 
 DEFAULT_EQUIPMENT_IMAGES = {
-    "weapon": "assests/equipments/default_weapon.png",
-    "armor": "assests/equipments/default_armor.png",
-    "shield": "assests/equipments/default_shield.png",
-    "head": "assests/equipments/default_head.png",
-    "hand": "assests/equipments/default_hand.png",
-    "foot": "assests/equipments/default_foot.png",
-    "accessory": "assests/equipments/default_accessory.png",
+    "weapon": "img/equipments/default_weapon.png",
+    "armor": "img/equipments/default_armor.png",
+    "shield": "img/equipments/default_shield.png",
+    "head": "img/equipments/default_head.png",
+    "hand": "img/equipments/default_hand.png",
+    "foot": "img/equipments/default_foot.png",
+    "accessory": "img/equipments/default_accessory.png",
 }
 
 ENEMY_VARIANTS = {

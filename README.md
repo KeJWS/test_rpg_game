@@ -57,8 +57,8 @@
 - `items.py`  
   物品、武具、消耗品实例定义。
 
-- `assests/`  
-  游戏资源文件夹，包含装备图片和截图。
+- `img/`  
+  游戏图片文件夹，包含装备图片和截图。
 
 - `data/`  
   游戏数据文件，如 CSV、JSON 格式的配置数据。
@@ -134,11 +134,11 @@
 
 ## 截图预览
 
-![游戏截图1](assests/screenshots/233.png)  
-![游戏截图2](assests/screenshots/234.png)  
-![游戏截图3](assests/screenshots/235.png)  
-![游戏截图4](assests/screenshots/236.png)  
-![游戏截图5](assests/screenshots/237.png)  
+![游戏截图1](img/screenshots/233.png)  
+![游戏截图2](img/screenshots/234.png)  
+![游戏截图3](img/screenshots/235.png)  
+![游戏截图4](img/screenshots/236.png)  
+![游戏截图5](img/screenshots/237.png)  
 
 ## 贡献指南
 

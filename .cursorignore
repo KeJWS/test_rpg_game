@@ -3,6 +3,7 @@ dist/
 __pycache__/
 .vscode/
 assests/
+img/
 data/ascii_art/
 saves/
 The_all/
