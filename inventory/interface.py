@@ -8,8 +8,8 @@
 
 from rich.console import Console
 
-import test.fx as fx
-from test.clear_screen import clear_screen
+import ui.fx as fx
+from ui.clear_screen import clear_screen
 
 console = Console()
 

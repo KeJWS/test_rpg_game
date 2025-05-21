@@ -12,13 +12,13 @@ from rich.console import Console
 
 import inventory
 import ui.text as text
-import test.fx as fx
+import ui.fx as fx
 from skills import skills
 from core import battler
 from others.equipment import Equipment
 from core.level_system import LevelSystem
 from inventory.interface import Inventory_interface as interface
-from test.clear_screen import clear_screen
+from ui.clear_screen import clear_screen
 
 console = Console()
 

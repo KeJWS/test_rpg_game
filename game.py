@@ -6,7 +6,7 @@ import ui.text as text
 import data.event_text
 
 from world import map
-from test.clear_screen import enter_clear_screen, clear_screen
+from ui.clear_screen import enter_clear_screen, clear_screen
 from inventory import Inventory_interface as interface
 from tools import command_parser as cp
 

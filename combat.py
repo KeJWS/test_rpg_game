@@ -18,9 +18,9 @@ from typing import List
 from rich.console import Console
 
 import ui.text as text
-from test.combat_utils import battle_log
-import test.combat_utils as utils
-from test.fx import dot_loading, typewriter
+from ui.combat_utils import battle_log
+import ui.combat_utils as utils
+from ui.fx import dot_loading, typewriter
 from skills import enhance_weapon
 
 console = Console()

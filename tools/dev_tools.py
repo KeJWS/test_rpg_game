@@ -11,7 +11,7 @@ import os
 import inspect
 from datetime import datetime
 
-import test.fx as fx
+import ui.fx as fx
 
 def debug_print(*args, **kwargs):
     """

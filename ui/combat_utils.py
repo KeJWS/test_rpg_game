@@ -6,7 +6,6 @@
 提供了用户交互界面和战斗状态展示。
 """
 
-import time, sys
 from typing import List
 
 def battle_log(message: str, log_type: str = "info") -> None:

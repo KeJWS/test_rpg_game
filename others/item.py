@@ -7,7 +7,7 @@
 """
 
 from rich.console import Console
-import test.fx as fx
+import ui.fx as fx
 console = Console()
 
 def prompt_for_amount(max_amount, prompt="多少个？") -> int:

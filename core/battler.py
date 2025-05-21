@@ -10,8 +10,8 @@ import random
 from typing import Dict
 from rich.console import Console
 
-from test.combat_utils import battle_log
-from test.fx import dot_loading, wait
+from ui.combat_utils import battle_log
+from ui.fx import dot_loading, wait
 
 console = Console()
 

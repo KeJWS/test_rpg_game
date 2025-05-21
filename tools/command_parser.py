@@ -16,7 +16,7 @@ from extensions import shops
 from tools import dev_tools as debug
 from inventory import Inventory_interface as interface
 from enemies import enemy_data
-from test.clear_screen import clear_screen, enter_clear_screen, screen_wrapped
+from ui.clear_screen import clear_screen, enter_clear_screen, screen_wrapped
 
 console = Console()
 

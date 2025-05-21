@@ -10,8 +10,8 @@ import random
 import sys
 sys.path.append("..")
 import items
-import test.fx as fx
-from test.clear_screen import enter_clear_screen
+import ui.fx as fx
+from ui.clear_screen import enter_clear_screen
 
 def give_initial_items(my_player):
     """
