@@ -1,3 +1,10 @@
+"""
+敌人系统模块，处理游戏中敌人的创建、属性管理和战斗行为决策。
+
+该模块提供了从CSV文件加载敌人数据、创建敌人实例、应用不同敌人变体、
+以及生成敌人战斗组合的功能。同时实现了敌人在战斗中的行为决策逻辑。
+"""
+
 from data.constants import POSSIBLE_ENEMIES
 import csv
 import random
@@ -8,6 +15,18 @@ from data.constants import ENEMY_VARIANTS
 from tools.dev_tools import debug_print
 
 def load_enemies_from_csv(filepath):
+    """
+    从CSV文件加载敌人数据。
+
+    解析指定CSV文件中的敌人数据，创建对应的Enemy对象，
+    并设置其属性、奖励、掉落物品和技能。
+
+    参数:
+        filepath: CSV文件路径
+
+    返回:
+        dict: 以敌人ID为键，Enemy对象为值的字典
+    """
     from skills import SPELL_REGISTRY
     import items
     enemies = {}
@@ -55,6 +74,16 @@ def load_enemies_from_csv(filepath):
     return enemies
 
 def assign_enemy_action_weights(enemy, enemy_type):
+    """
+    根据敌人类型分配行动权重。
+
+    为不同类型的敌人分配攻击、防御和技能使用的概率权重，
+    以影响其在战斗中的行为模式。
+
+    参数:
+        enemy: 要设置行动权重的Enemy对象
+        enemy_type: 敌人类型标识符
+    """
     if "slime" in enemy_type:
         if "giant" in enemy_type:
             enemy.action_weights = {"attack": 60, "defend": 10, "spell": 30}
@@ -74,7 +103,27 @@ def assign_enemy_action_weights(enemy, enemy_type):
 
 
 class Enemy(battler.Battler):
+    """
+    敌人类，表示游戏中可战斗的对手角色。
+
+    继承自Battler基类，添加了敌人特有的属性如经验奖励、金币奖励、
+    物品掉落和行动决策逻辑。
+    """
+
     def __init__(self, name, stats, xp_reward, gold_reward, level, drop_items=None) -> None:
+        """
+        初始化敌人实例。
+
+        设置敌人的基本属性、战斗数值、奖励和默认行动权重。
+
+        参数:
+            name: 敌人名称
+            stats: 包含各项战斗属性的字典
+            xp_reward: 击败后获得的经验值
+            gold_reward: 击败后获得的金币
+            level: 敌人等级
+            drop_items: 击败后可能掉落的物品列表
+        """
         super().__init__(name, stats)
         self.xp_reward = xp_reward
         self.gold_reward = gold_reward
@@ -88,6 +137,18 @@ class Enemy(battler.Battler):
         self.drop_items = drop_items or []
 
     def clone(self, variant_name=None):
+        """
+        创建敌人的克隆实例，可选择应用变体效果。
+
+        复制当前敌人的所有属性和状态，并根据指定或随机选择的变体
+        修改其属性。
+
+        参数:
+            variant_name: 要应用的变体名称，若为None则随机选择
+
+        返回:
+            Enemy: 敌人的新实例，可能包含变体效果
+        """
         cloned = Enemy(self.name, deepcopy(self.original_stats), self.xp_reward, self.gold_reward, self.level, drop_items=deepcopy(self.drop_items))
         cloned.spells = self.spells.copy()
         if not variant_name:
@@ -106,6 +167,18 @@ class Enemy(battler.Battler):
         return cloned
 
     def decide_action(self, allies):
+        """
+        决定敌人在战斗中的下一步行动。
+
+        基于当前战斗状态和预设的行动权重，决定是攻击、防御还是使用技能，
+        并选择适当的目标。
+
+        参数:
+            allies: 可选择的目标列表（通常是玩家角色或队伍）
+
+        返回:
+            dict: 包含行动类型和目标的行动描述字典
+        """
         # 拷贝当前行为权重
         weights = self.action_weights.copy()
 
@@ -139,12 +212,21 @@ class Enemy(battler.Battler):
 
 
 def apply_variant(enemy, variant_name):
+    """
+    对敌人应用指定的变体效果。
+
+    根据变体定义修改敌人的名称、属性和奖励，使其具有特殊特性。
+
+    参数:
+        enemy: 要应用变体的Enemy对象
+        variant_name: 变体名称，必须在ENEMY_VARIANTS中定义
+    """
     variant = ENEMY_VARIANTS.get(variant_name)
     if not variant:
         return
 
     enemy.name += variant.get("name_suffix", "")
-    
+
     # 属性乘数
     if "stat_multiplier" in variant:
         multiplier = variant["stat_multiplier"]
@@ -168,6 +250,19 @@ def apply_variant(enemy, variant_name):
     debug_print(f"应用变体：{enemy.name} -> {variant_name}")
 
 def create_enemy_group(level, possible_enemies, enemy_quantity_for_level):
+    """
+    根据玩家等级创建敌人组合。
+
+    基于玩家等级和可能的敌人池，随机生成适合挑战难度的敌人组合。
+
+    参数:
+        level: 玩家等级
+        possible_enemies: 可选敌人池及其适用等级范围
+        enemy_quantity_for_level: 不同等级段的敌人数量上限
+
+    返回:
+        list: 包含Enemy对象的敌人组合
+    """
     valid_enemy_ids = [
         enemy_id for enemy_id, (low, high) in possible_enemies.items()
         if low <= level <= high

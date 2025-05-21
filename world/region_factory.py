@@ -1,3 +1,11 @@
+"""
+地区工厂模块，负责创建和初始化游戏世界中的各个地区。
+
+该模块包含了从数据字典创建Region对象的工厂函数，以及各种预定义的
+事件映射和任务映射。提供了标准化的地区创建机制，使游戏地图初始化
+过程更加一致和可维护。
+"""
+
 import random
 import events, enemies, items
 from world import quest
@@ -79,6 +87,19 @@ quest_mapping = {
 }
 
 def load_region_from_dict(data: dict, ascii_art_dict: dict) -> Region:
+    """
+    从数据字典创建一个Region对象。
+
+    解析提供的数据字典，提取地区的各种属性，并使用全局的事件映射和任务映射
+    转换事件和任务的引用名称为实际对象。这是实现数据驱动地区创建的核心函数。
+
+    参数:
+        data: 包含地区数据的字典，通常从JSON文件加载
+        ascii_art_dict: ASCII艺术字典，用于获取地区的视觉表示
+
+    返回:
+        Region: 新创建的地区对象
+    """
     name = data["name"]
     description = data["description"]
     danger_level = data["danger_level"]
@@ -103,6 +124,19 @@ def load_region_from_dict(data: dict, ascii_art_dict: dict) -> Region:
     )
 
 def create_redflame_canyon(ascii_art_dict):
+    """
+    创建赤焰峡谷地区。
+
+    初始化并返回一个表示赤焰峡谷的Region对象，设置其名称、描述、
+    危险等级和ASCII艺术表示。这是一个火元素主题的地区，具有高温和
+    火系魔物的特性。
+
+    参数:
+        ascii_art_dict: ASCII艺术字典，用于获取地区的视觉表示
+
+    返回:
+        Region: 表示赤焰峡谷的地区对象
+    """
     fire_canyon_enemies = {}
     redflame_canyon = Region(
         name="赤焰峡谷",
@@ -118,6 +152,19 @@ def create_redflame_canyon(ascii_art_dict):
     return redflame_canyon
 
 def create_snowlands(ascii_art_dict):
+    """
+    创建雪之边境地区。
+
+    初始化并返回一个表示雪之边境的Region对象，设置其名称、描述、
+    危险等级和ASCII艺术表示。这是一个冰雪主题的地区，具有极寒和
+    视线受限的特性。
+
+    参数:
+        ascii_art_dict: ASCII艺术字典，用于获取地区的视觉表示
+
+    返回:
+        Region: 表示雪之边境的地区对象
+    """
     snowland_enemies = {}
     snowlands = Region(
         name="雪之边境",
@@ -133,6 +180,19 @@ def create_snowlands(ascii_art_dict):
     return snowlands
 
 def create_forgotten_ruins(ascii_art_dict):
+    """
+    创建遗忘遗迹地区。
+
+    初始化并返回一个表示遗忘遗迹的Region对象，设置其名称、描述、
+    危险等级和ASCII艺术表示。这是一个古代遗迹主题的地区，具有
+    古老机关和守卫魔像的特性。
+
+    参数:
+        ascii_art_dict: ASCII艺术字典，用于获取地区的视觉表示
+
+    返回:
+        Region: 表示遗忘遗迹的地区对象
+    """
     ruins_enemies = {}
     forgotten_ruins = Region(
         name="遗忘遗迹",

@@ -1,3 +1,11 @@
+"""
+物品系统模块，处理游戏中各类物品的加载、创建和管理。
+
+该模块提供了装备、药水、食物、宝石等物品的数据加载和处理功能，
+包括从CSV文件读取物品数据、创建物品实例、筛选特定类型物品，
+以及定义各个商店的物品集合。
+"""
+
 import ast
 import csv
 from functools import lru_cache
@@ -8,9 +16,20 @@ from others.equipment import Equipment
 from tools.load_data_from_csv import load_jewel_from_csv, load_food_from_csv
 from tools.dev_tools import debug_print
 
-# 缓存加载 ASCII 艺术资源
 @lru_cache(maxsize=1)
 def load_ascii_art_library(filepath):
+    """
+    加载ASCII艺术资源并缓存结果。
+
+    从指定文件中读取并解析ASCII艺术资源，将其存储在字典中。
+    使用lru_cache装饰器缓存结果，避免重复加载。
+
+    参数:
+        filepath: ASCII艺术资源文件路径
+
+    返回:
+        dict: 以标签为键，ASCII艺术内容为值的字典
+    """
     ascii_art_dict = {}
     current_key = None
     current_lines = []
@@ -32,8 +51,20 @@ def load_ascii_art_library(filepath):
     debug_print(f"加载 ASCII 艺术资源，共加载 {len(ascii_art_dict)} 项")
     return ascii_art_dict
 
-# 加载装备数据
 def load_equipment_from_csv(filepath="data/csv_data/equipments.csv", skill_dict=skills.skills):
+    """
+    从CSV文件加载装备数据。
+
+    解析CSV文件中的装备信息，创建相应的Equipment对象。
+    处理装备属性、技能关联、标签等信息。
+
+    参数:
+        filepath: 装备数据CSV文件路径
+        skill_dict: 技能字典，用于关联装备的技能效果
+
+    返回:
+        dict: 以装备ID为键，Equipment对象为值的字典
+    """
     if skill_dict is None:
         skill_dict = {}
 
@@ -65,8 +96,21 @@ def load_equipment_from_csv(filepath="data/csv_data/equipments.csv", skill_dict=
 
 equipment_data = load_equipment_from_csv()
 
-# 装备筛选器
 def filter_equipment_by(level=None, object_type=None, tags=None, match_all_tags=False):
+    """
+    根据指定条件筛选装备。
+
+    可以按等级、物品类型和标签筛选装备，支持精确匹配和模糊匹配。
+
+    参数:
+        level: 筛选特定等级的装备
+        object_type: 筛选特定类型的装备(weapon, armor等)
+        tags: 筛选含有特定标签的装备
+        match_all_tags: 是否匹配所有提供的标签(True)或任一标签(False)
+
+    返回:
+        list: 符合筛选条件的Equipment对象列表
+    """
     result = equipment_data.values()
 
     if level is not None:
@@ -127,8 +171,19 @@ mp_potion2 = item.Potion("法力药水 II", "恢复法力值的药水", 1, 60, "
 hp_potion3 = item.Potion("生命药水 III", "恢复中量生命值的药水", 1, 70, "consumable", "hp", 270)
 mp_potion3 = item.Potion("法力药水 III", "恢复中量法力值的药水", 1, 90, "consumable", "mp", 130)
 
-# 材料类
 def item_factory(name: str, amount: int = 1):
+    """
+    创建指定名称和数量的游戏物品。
+
+    根据提供的名称创建相应类型的物品实例，主要用于创建材料类物品。
+
+    参数:
+        name: 物品名称
+        amount: 物品数量
+
+    返回:
+        Item: 创建的物品对象，如果指定名称不存在则返回None
+    """
     if name == "魔法草":
         return item.Item("魔法草", "散发魔力的草药", amount, 30, "material")
     elif name == "狼皮":

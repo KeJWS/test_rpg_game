@@ -1,3 +1,10 @@
+"""
+命令解析模块，处理游戏中的用户输入命令。
+
+该模块提供了一套命令解析系统，用于解析和执行玩家在游戏中输入的各类命令。
+包括玩家状态查询、物品管理、商店交互以及开发调试等功能的命令处理。
+"""
+
 from data.constants import DEBUG
 
 from rich.console import Console
@@ -22,10 +29,32 @@ SHOP_DICT = {
 
 @screen_wrapped
 def show_help(topic=None):
+    """
+    显示指定主题的帮助信息。
+
+    根据提供的主题参数显示对应的命令帮助文档。如果未指定主题或主题不存在，
+    则显示默认的帮助信息。此函数由screen_wrapped装饰器包装，会自动处理屏幕清理。
+
+    参数:
+        topic: 要显示帮助信息的主题名称
+    """
     command_docs = data.debug_help.command_docs
     print(command_docs.get(topic, command_docs["default"]))
 
 def handle_command(command: str, player):
+    """
+    处理用户输入的命令字符串。
+
+    解析命令字符串，识别主命令和子命令，并根据命令类型调用相应的处理函数。
+    支持玩家属性查询、物品管理、商店交互和战斗调试等命令。
+
+    参数:
+        command: 用户输入的命令字符串
+        player: 当前玩家对象，命令操作的目标
+
+    返回:
+        str: 如果命令无法识别，返回原命令字符串，否则返回None
+    """
     tokens = command.strip().split()
     if not tokens:
         show_help()
@@ -64,12 +93,34 @@ def handle_command(command: str, player):
         return command
 
 def handle_shop_command(shop_name, shop_data, tokens, player):
+    """
+    处理与商店相关的命令。
+
+    创建指定商店实例并允许玩家与商店交互。
+    当前主要处理购买物品的命令。
+
+    参数:
+        shop_name: 商店名称
+        shop_data: 商店数据对象，包含物品集合
+        tokens: 命令分割后的标记列表
+        player: 当前玩家对象
+    """
     if tokens[1] == "-buy":
         clear_screen()
         vendor = shops.Shop(shop_data.item_set)
         player.buy_from_vendor(vendor)
 
 def handle_p_command(tokens, player):
+    """
+    处理玩家(p)命令。
+
+    根据子命令执行不同的玩家相关操作，如显示属性、装备信息、治疗、
+    恢复魔法值、切换自动战斗模式等。通过映射表实现命令与函数的对应。
+
+    参数:
+        tokens: 命令分割后的标记列表
+        player: 当前玩家对象
+    """
     subcommand_map = {
         "-hp": screen_wrapped(lambda: print(f"HP: {player.stats['hp']}/{player.stats['max_hp']}")),
         "-mp": screen_wrapped(lambda: print(f"MP: {player.stats['mp']}/{player.stats['max_mp']}")),
@@ -96,6 +147,16 @@ def handle_p_command(tokens, player):
         show_help("p")
 
 def handle_pi_command(tokens, player):
+    """
+    处理玩家物品(p.i)命令。
+
+    处理与玩家背包和物品相关的各种操作，包括使用物品、丢弃物品、装备物品、
+    比较装备、查看物品详情、整理背包等。通过映射表实现命令与功能的对应。
+
+    参数:
+        tokens: 命令分割后的标记列表
+        player: 当前玩家对象
+    """
     inv = player.inventory
     subcommand_map = {
         "-U": screen_wrapped(lambda: player.use_item(interface(inv).use_item())),
@@ -126,6 +187,16 @@ def handle_pi_command(tokens, player):
         show_help("p.i")
 
 def handle_level_command(tokens, player):
+    """
+    处理玩家等级相关命令。
+
+    在调试模式下允许直接修改玩家等级。通过为玩家添加足够的经验值
+    使其升级到指定等级。仅在调试模式下可用。
+
+    参数:
+        tokens: 命令分割后的标记列表
+        player: 当前玩家对象
+    """
     if not DEBUG:
         return
     if len(tokens) > 2 and tokens[2].isdigit():
@@ -136,6 +207,16 @@ def handle_level_command(tokens, player):
                 player.add_exp(player.ls.xp_to_next_level)
 
 def handle_spawn_item_command(tokens, player):
+    """
+    处理生成物品命令。
+
+    在调试模式下，根据指定的物品名称和数量在玩家背包中生成物品。
+    如果未指定数量，默认生成1个。
+
+    参数:
+        tokens: 命令分割后的标记列表
+        player: 当前玩家对象
+    """
     if len(tokens) >= 3:
         item_name = tokens[2]
         quantity = int(tokens[3]) if len(tokens) > 3 and tokens[3].isdigit() else 1

@@ -1,3 +1,11 @@
+"""
+游戏世界地图模块，管理游戏中的地区、地理位置和事件生成系统。
+
+该模块定义了游戏世界的地理结构和交互逻辑，包括地区的特性、
+可能发生的事件、任务系统与地区的关联等。提供了玩家在世界中
+移动、探索和与环境互动的核心功能。
+"""
+
 import json
 import random
 from dataclasses import dataclass
@@ -17,6 +25,26 @@ console = Console()
 
 @dataclass
 class Region:
+    """
+    表示游戏世界中的一个地区。
+
+    地区是游戏世界的基本地理单位，包含名称、描述、危险等级、可能遇到的敌人、
+    商店事件、治疗事件、特殊事件、任务等信息。每个地区有自己的ASCII艺术表示和
+    解锁状态。
+
+    属性:
+        name: 地区名称
+        description: 地区描述
+        danger_level: 危险等级，影响战斗难度
+        possible_enemies: 可能遇到的敌人及其概率
+        shop_events: 可能发生的商店事件列表
+        heal_events: 可能发生的治疗事件列表
+        special_events: 可能发生的特殊事件列表
+        quests: 该地区可接取的任务列表
+        ascii_art: 地区的ASCII艺术表示
+        is_unlocked: 该地区是否已解锁
+        quest_events: 与任务相关的事件列表
+    """
     name: str
     description: str
     danger_level: int
@@ -30,19 +58,63 @@ class Region:
     quest_events: List[events.Event] = None
 
     def available_quests(self, player):
-        """返回该地区可接受的任务列表（未激活的）"""
+        """
+        返回该地区可接受的任务列表（未激活的）。
+
+        筛选出该地区中未开始且未完成的任务，这些任务可供玩家接取。
+
+        参数:
+            player: 当前玩家对象
+
+        返回:
+            list: 可接受任务的列表
+        """
         return [q for q in self.quests if q.status == "Not Active" and q not in player.completed_quests]
 
     def active_quests(self, player):
-        """返回该地区已激活但未完成的任务"""
+        """
+        返回该地区已激活但未完成的任务。
+
+        筛选出玩家已接取但尚未完成的该地区任务。
+
+        参数:
+            player: 当前玩家对象
+
+        返回:
+            list: 已激活未完成任务的列表
+        """
         return [q for q in self.quests if q in player.active_quests]
 
     def completed_quests(self, player):
-        """返回该地区已完成的任务"""
+        """
+        返回该地区已完成的任务。
+
+        筛选出玩家在该地区已完成的任务。
+
+        参数:
+            player: 当前玩家对象
+
+        返回:
+            list: 已完成任务的列表
+        """
         return [q for q in self.quests if q in player.completed_quests]
 
 class World_map:
+    """
+    游戏世界地图类，管理所有地区和玩家在世界中的移动。
+
+    该类负责初始化世界地图、管理地区之间的切换、生成随机事件、
+    处理任务系统以及提供地区信息的显示功能。作为玩家与游戏世界
+    交互的主要接口。
+    """
+
     def __init__(self):
+        """
+        初始化世界地图对象。
+
+        创建空的地区字典，设置当前地区为None，然后依次初始化
+        所有地区、特殊事件和任务事件。
+        """
         self.regions = {}
         self.current_region = None
         self._initialize_regions()
@@ -50,7 +122,12 @@ class World_map:
         self._initialize_quest_events()
 
     def _initialize_special_events(self):
-        """初始化各地区的特殊事件"""
+        """
+        初始化各地区的特殊事件。
+
+        为各个地区创建并添加特殊事件，如BOSS战斗、环境危害等。
+        这些事件通常具有较低的触发概率，但会对游戏进程产生较大影响。
+        """
         shadow_wolf = enemies.enemy_data["shadow_wolf"].clone()
         forest_boss_combat = events.FixedCombatEvent(
             "影狼袭击", 
@@ -78,6 +155,12 @@ class World_map:
             self.regions["swamp"].special_events.append(swamp_poison_event)
 
     def _initialize_regions(self):
+        """
+        初始化世界地图的所有地区。
+
+        从JSON文件加载地区数据，使用地区工厂创建Region对象，
+        并设置初始当前地区为城镇（town）。
+        """
         from world.region_factory import load_region_from_dict
         ascii_art_dict = items.load_ascii_art_library("data/ascii_art/ascii_art_map.txt")
         with open("data/json_data/world_map.json", "r", encoding="utf-8") as f:
@@ -93,7 +176,12 @@ class World_map:
         self.current_region = self.regions["town"]
 
     def _initialize_quest_events(self):
-        """初始化所有区域的任务事件"""
+        """
+        初始化所有区域的任务事件。
+
+        遍历所有地区的任务，提取任务关联的事件，并将其添加到
+        相应地区的quest_events列表中，以便后续随机触发。
+        """
         for region in self.regions.values():
             region.quest_events = []
             for q in region.quests:
@@ -101,21 +189,46 @@ class World_map:
                     region.quest_events.append(q.event)
 
     def unclock_region(self, region_name):
-        """解锁指定地区"""
+        """
+        解锁指定地区。
+
+        将指定名称的地区标记为已解锁状态，使玩家可以访问该地区。
+
+        参数:
+            region_name: 要解锁的地区名称
+
+        返回:
+            bool: 解锁成功返回True，地区不存在返回False
+        """
         if region_name in self.regions:
             self.regions[region_name].is_unlocked = True
             return True
         return False
 
     def change_region(self, region_name):
-        """切换到指定的地区"""
+        """
+        切换到指定的地区。
+
+        将当前地区更改为指定名称的地区。
+
+        参数:
+            region_name: 要切换到的地区名称
+
+        返回:
+            bool: 切换成功返回True，地区不存在返回False
+        """
         if region_name in self.regions:
             self.current_region = self.regions[region_name]
             return True
         return False
 
     def get_current_region_info(self):
-        """获取当前地区的信息"""
+        """
+        获取并显示当前地区的信息。
+
+        使用rich格式化输出当前地区的ASCII艺术、危险等级和描述信息。
+        如果当前地区未设置，则显示未知地区信息。
+        """
         if self.current_region:
             text = Text()
             text.append(self.current_region.ascii_art + "\n\n", style="bold white")
@@ -126,7 +239,12 @@ class World_map:
             console.print("[red]未知地区[/red]")
 
     def list_available_regions(self):
-        """列出所有可前往的地区"""
+        """
+        列出所有可前往的地区。
+
+        使用rich表格格式显示所有地区的编号、名称和危险等级，
+        帮助玩家选择要前往的地区。
+        """
         table = Table(title="可探索地区", header_style="bold green")
         table.add_column("编号", justify="center")
         table.add_column("地区名称")
@@ -136,7 +254,18 @@ class World_map:
         console.print(table)
 
     def show_region_quests(self, player):
-        """显示当前地区的任务情况"""
+        """
+        显示当前地区的任务情况。
+
+        分类显示当前地区的可接受任务、正在进行的任务和已完成的任务。
+        每个任务显示其名称和推荐等级。
+
+        参数:
+            player: 当前玩家对象
+
+        返回:
+            list: 可接受任务的列表，用于后续任务接取操作
+        """
         if not self.current_region:
             console.print("[red]未知地区, 无法查看任务[/red]")
             return
@@ -161,7 +290,17 @@ class World_map:
         return available_quests
 
     def accept_quest(self, player, quest_index, available_quests):
-        """接受地区任务"""
+        """
+        接受地区任务。
+
+        根据提供的任务索引，让玩家接受指定的任务。
+        显示任务描述并询问玩家是否接受，如接受则激活任务。
+
+        参数:
+            player: 当前玩家对象
+            quest_index: 要接受的任务在可用任务列表中的索引
+            available_quests: 可用任务列表
+        """
         if 0 <= quest_index < len(available_quests):
             quest_to_accept = available_quests[quest_index]
             print("\n" + quest_to_accept.proposal_text)
@@ -178,7 +317,19 @@ class World_map:
             print("无效的任务选择")
 
     def generate_random_event(self, player, combot_chance, shop_chance, heal_chance):
-        """根据当前地区生成随机事件"""
+        """
+        根据当前地区生成随机事件。
+
+        基于提供的概率参数，在当前地区生成战斗、商店或治疗事件。
+        优先考虑活跃任务相关的事件，其次考虑普通随机事件，
+        最后有小概率触发特殊事件。
+
+        参数:
+            player: 当前玩家对象
+            combot_chance: 战斗事件发生的概率（0-100）
+            shop_chance: 商店事件发生的概率（0-100）
+            heal_chance: 治疗事件发生的概率（0-100）
+        """
         if not self.current_region:
             return
 

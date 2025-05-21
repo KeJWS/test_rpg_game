@@ -1,3 +1,11 @@
+"""
+存档系统模块，提供游戏进度的保存与加载功能。
+
+该模块实现了完整的存档系统，包括将玩家数据序列化为JSON格式存储、
+从JSON数据还原玩家对象、管理存档文件以及提供存档列表查询等功能。
+支持玩家角色的所有属性、背包物品、技能和状态的保存与恢复。
+"""
+
 import json
 import os
 import time
@@ -9,12 +17,29 @@ from others.equipment import Equipment
 SAVE_FOLDER = "saves"
 
 def ensure_save_folder():
-    """确保存档文件夹存在"""
+    """
+    确保存档文件夹存在。
+
+    检查存档文件夹是否存在，如果不存在则创建。
+    这是一个辅助函数，用于在保存或加载游戏前确保存档目录已准备好。
+    """
     if not os.path.exists(SAVE_FOLDER):
         os.makedirs(SAVE_FOLDER)
 
 def player_to_dict(player):
-    """将玩家对象转换为 JSON 可序列化字典"""
+    """
+    将玩家对象转换为可序列化的字典。
+
+    将Player对象的所有相关属性转换为JSON可序列化的字典格式，
+    包括基本属性、统计数据、物品栏内容和技能等。处理各种物品类型，
+    确保所有复杂对象都被正确转换为简单数据类型。
+
+    参数:
+        player: 要转换的玩家对象
+
+    返回:
+        dict: 表示玩家数据的字典，可用于JSON序列化
+    """
     player_dict = {
         "name": player.name,
         "class_name": player.ls.class_name,
@@ -65,7 +90,18 @@ def player_to_dict(player):
     return player_dict
 
 def dict_to_player(player_dict):
-    """Convert dictionary back to Player object"""
+    """
+    将字典转换回玩家对象。
+
+    从字典数据重新构建Player对象，包括恢复所有属性、装备、
+    物品栏和技能。这是player_to_dict的逆操作，用于从存档加载游戏。
+
+    参数:
+        player_dict: 包含玩家数据的字典，通常来自存档文件
+
+    返回:
+        Player: 重建的玩家对象实例，包含所有恢复的数据和状态
+    """
     import skills
 
     # 恢复咒语（参考预定义咒语）
@@ -166,7 +202,19 @@ def dict_to_player(player_dict):
     return player
 
 def save_game(player, save_name=None):
-    """保存游戏进度"""
+    """
+    保存游戏进度到文件。
+
+    将当前玩家状态保存到JSON文件中，包含完整的玩家数据和存档元数据。
+    如果未提供存档名称，将使用时间戳生成默认名称。
+
+    参数:
+        player: 要保存的玩家对象
+        save_name: 可选的存档名称，默认为使用时间戳的自动生成名称
+
+    返回:
+        dict: 包含存档元数据的字典，包括名称、玩家名、等级和时间戳等
+    """
     ensure_save_folder()
 
     if not save_name:
@@ -183,13 +231,13 @@ def save_game(player, save_name=None):
 
     # 将玩家转换为字典以进行 JSON 序列化
     player_dict = player_to_dict(player)
-    
+
     # 创建一个包含元数据和玩家数据的 JSON 文件
     save_data = {
         "metadata": save_metadata,
         "player_data": player_dict
     }
-    
+
     save_path = os.path.join(SAVE_FOLDER, f"{save_name}.json")
     with open(save_path, "w", encoding="utf-8") as save_file:
         json.dump(save_data, save_file, ensure_ascii=False, indent=2)
@@ -198,16 +246,31 @@ def save_game(player, save_name=None):
 
 # TODO 读档以后任务会清空
 def load_game(save_name):
-    """加载游戏存档"""
+    """
+    从存档文件加载游戏进度。
+
+    根据提供的存档名称，从对应的JSON文件中读取游戏数据，
+    并将其转换回Player对象。如果存档不存在或加载过程中出错，
+    将返回None并显示错误信息。
+
+    参数:
+        save_name: 要加载的存档名称
+
+    返回:
+        Player: 从存档恢复的玩家对象，如果加载失败则返回None
+
+    异常:
+        捕获并处理所有可能的异常，将错误信息打印到控制台
+    """
     save_path = os.path.join(SAVE_FOLDER, f"{save_name}.json")
     if not os.path.exists(save_path):
         print(f"存档 '{save_name}' 不存在")
         return None
-    
+
     try:
         with open(save_path, "r", encoding="utf-8") as save_file:
             save_data = json.load(save_file)
-            
+
         player = dict_to_player(save_data["player_data"])
         return player
     except Exception as e:
@@ -215,10 +278,18 @@ def load_game(save_name):
         return None
 
 def get_save_list():
-    """获取所有存档列表"""
+    """
+    获取所有有效存档的列表。
+
+    扫描存档文件夹，读取所有有效的.json存档文件，提取其元数据信息，
+    并按时间戳倒序排列（最新的存档排在前面）。
+
+    返回:
+        list: 存档元数据字典的列表，每个字典包含名称、玩家名、等级和时间戳等信息
+    """
     ensure_save_folder()
     saves = []
-    
+
     for filename in os.listdir(SAVE_FOLDER):
         if filename.endswith(".json"):
             save_path = os.path.join(SAVE_FOLDER, filename)

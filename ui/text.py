@@ -1,3 +1,11 @@
+"""
+用户界面文本模块，提供游戏中各类界面的显示功能。
+
+该模块包含用于渲染游戏中各种界面元素的函数，如标题界面、游戏菜单、战斗界面、
+状态显示、物品管理界面等。使用rich库实现美观的文本UI，包括表格、面板、颜色
+文本等高级格式化输出功能。
+"""
+
 import math
 
 from typing import List
@@ -12,8 +20,13 @@ from test.clear_screen import clear_screen
 console = Console()
 
 
-# *title_ui
 def title_screen():
+    """
+    显示游戏标题屏幕。
+
+    创建并显示一个包含游戏标题和主菜单选项的面板，
+    允许玩家开始游戏、查看关于信息或退出游戏。
+    """
     pannel = Panel.fit(
         Text("\nText RPG Game\n\n1 - Play\n2 - About\n3 - Quit\n", justify="center"),
         title="Use number keys to select",
@@ -23,6 +36,11 @@ def title_screen():
     console.print(pannel)
 
 def help_menu():
+    """
+    显示游戏帮助信息。
+
+    打印游戏作者信息、参考项目以及其他帮助内容。
+    """
     print("    游戏作者: kwo, 以及 GPT(可能还是他功劳大些)。\n\
 参考项目: Python-Text-Turn-Based-RPG \n\
 还有玩的开心, 以及学的开心。\n\
@@ -30,6 +48,12 @@ def help_menu():
 好了, 你可以再次启动了。")
 
 def play_menu():
+    """
+    显示游戏主界面菜单。
+
+    创建并显示一个包含游戏主要功能选项的面板，
+    如行走、查看状态、能力分配、物品栏、任务和地图等。
+    """
     pannel = Panel.fit(
         Text("\nText RPG Game\n\nW - Walk\nS - See stats\nA - Aptitude\nI - Inventory\nQ - Quests\nM - Map\n", justify="center"),
         title="Use letter keys to select",
@@ -39,8 +63,15 @@ def play_menu():
     console.print(pannel)
 
 
-# *player_ui
 def show_stats(player):
+    """
+    显示玩家角色的详细状态信息。
+
+    创建并显示包含玩家属性、能力值和装备的表格。
+
+    参数:
+        player: 玩家对象，包含要显示的属性和装备信息
+    """
     table = Table(title=f"{player.name}'s Stats", box=box.ROUNDED, border_style="bold green")
     table.add_column("Attribute", justify="right")
     table.add_column("Value", justify="left")
@@ -70,6 +101,12 @@ def show_stats(player):
     console.print(eq_table)
 
 def inventory_menu():
+    """
+    显示物品栏菜单选项。
+
+    创建并显示一个包含物品管理选项的面板，
+    如使用物品、丢弃物品、装备物品或退出物品栏。
+    """
     pannel = Panel.fit(
         Text("\nU - Use an item\nD - Drop an item\nE - Equip an item\nQ - Quit\n", justify="center"),
         title="Use letter keys to select",
@@ -79,6 +116,14 @@ def inventory_menu():
     console.print(pannel)
 
 def show_equipment_info(player):
+    """
+    显示玩家当前装备的详细信息。
+
+    列出玩家所有装备槽位的装备情况，包括已装备物品的详细信息。
+
+    参数:
+        player: 玩家对象，包含要显示的装备信息
+    """
     print("=================================================")
     print("  EQUIPMENT")
     print("-------------------------------------------------")
@@ -90,6 +135,15 @@ def show_equipment_info(player):
             console.print(f"    ---{equipment}---\n")
 
 def show_aptitudes(player):
+    """
+    显示玩家能力值分配界面。
+
+    创建并显示包含玩家当前能力值及可分配点数的面板，
+    允许玩家选择要提升的能力值。
+
+    参数:
+        player: 玩家对象，包含当前能力值和可分配点数
+    """
     pannel = Panel.fit(
         Text(
         f"\n1 - STR (Current: {player.aptitudes['str']})\n"
@@ -107,6 +161,15 @@ def show_aptitudes(player):
     console.print(pannel)
 
 def show_skills(player):
+    """
+    显示玩家的技能和连击列表。
+
+    创建并显示包含玩家法术和连击技能的表格，
+    包括技能名称、消耗、威力和描述。
+
+    参数:
+        player: 玩家对象，包含要显示的技能列表
+    """
     spell_table = Table(title="Spells", box=box.SIMPLE)
     spell_table.add_column("Name", style="magenta")
     spell_table.add_column("Cost")
@@ -128,8 +191,17 @@ def show_skills(player):
     console.print(combo_table)
 
 
-# *combat_ui
 def combat_menu(player, allies, enemies) -> None:
+    """
+    显示战斗界面主菜单。
+
+    展示战斗中所有参与者的状态，并提供战斗选项如攻击、防御等。
+
+    参数:
+        player: 玩家角色对象
+        allies: 玩家方的所有战斗角色列表
+        enemies: 敌方的所有战斗角色列表
+    """
     print("=================================================")
     print(f"【{player.name}】 Lv.{getattr(player.ls, 'level', '?')} - CP: {player.combo_points}")
     print_status_bar("HP", player.stats['hp'], player.stats['max_hp'], "green")
@@ -148,12 +220,31 @@ def combat_menu(player, allies, enemies) -> None:
     print("-------------------------------------------------")
 
 def print_status_bar(label, current, max_value, color: str):
+    """
+    打印一个彩色的状态条。
+
+    根据当前值与最大值的比例创建视觉状态条，用于显示生命值、法力值等。
+
+    参数:
+        label: 状态条标签(如"HP", "MP")
+        current: 当前值
+        max_value: 最大值
+        color: 状态条的颜色(如"green", "blue", "red")
+    """
     bar_len = 20
     filled_len = int(bar_len * current / max_value)
     bar = f"[{color}]{'█' * filled_len}[/{color}]{'.' * (bar_len - filled_len)}"
     console.print(f"{label}: {bar} {current}/{max_value}")
 
 def spell_menu(player) -> None:
+    """
+    显示法术选择菜单。
+
+    列出玩家可用的所有法术及其消耗，供战斗中选择。
+
+    参数:
+        player: 玩家对象，包含可用法术列表
+    """
     print("=================================================")
     print("             SPELLS ['0' to Quit]")
     print("-------------------------------------------------")
@@ -161,6 +252,14 @@ def spell_menu(player) -> None:
         console.print(str(f"{index} - {spell.name} - MP: {spell.cost}"))
 
 def combo_menu(player) -> None:
+    """
+    显示连击技能选择菜单。
+
+    列出玩家可用的所有连击技能及其消耗，供战斗中选择。
+
+    参数:
+        player: 玩家对象，包含可用连击技能列表
+    """
     print("=================================================")
     print("             COMBOS ['0' to Quit]")
     print("-------------------------------------------------")
@@ -168,6 +267,14 @@ def combo_menu(player) -> None:
         console.print(str(f"{index} - {combo.name} - CP: {combo.cost}"))
 
 def select_objective(targets: List) -> None:
+    """
+    显示目标选择界面。
+
+    列出所有可选目标及其当前状态，供玩家在战斗中选择攻击目标。
+
+    参数:
+        targets: 可选目标对象列表
+    """
     print("=================================================")
     print("             Select an objective:")
     print("-------------------------------------------------")
@@ -177,6 +284,14 @@ def select_objective(targets: List) -> None:
     print("-------------------------------------------------")
 
 def display_status_effects(battlers: List) -> None:
+    """
+    显示战斗者的状态效果信息。
+
+    列出所有战斗者当前的增益和减益效果及其剩余回合数。
+
+    参数:
+        battlers: 需要显示状态效果的战斗者列表
+    """
     console.print("==== Status effect ====", style="bold green")
     for battler in battlers:
         if battler.buffs_and_debuffs:
@@ -190,8 +305,16 @@ def display_status_effects(battlers: List) -> None:
     console.print("=======================", style="bold green")
 
 
-# *shop_ui
 def shop_menu(player):
+    """
+    显示商店主菜单。
+
+    创建并显示包含商店功能选项的面板，如购买、出售物品等，
+    同时显示玩家当前的金钱数量。
+
+    参数:
+        player: 玩家对象，包含金钱信息
+    """
     pannel = Panel.fit(
         Text("\nB - Buy Items\nS - Sell Items\nT - Talk\nUa - Unequip all\nSi - Show inventory\nQ - Quit\n", justify="left"),
         title="Use letter keys to select",
@@ -201,6 +324,14 @@ def shop_menu(player):
     console.print(pannel)
 
 def shop_buy(player):
+    """
+    显示商店购买界面。
+
+    展示购买物品的界面头部，包括玩家当前金钱。
+
+    参数:
+        player: 玩家对象，包含金钱信息
+    """
     display_shop_buy = (
         "=================================================\n"
         f"          SHOP - 💰: {player.money}\n"
@@ -210,6 +341,14 @@ def shop_buy(player):
     print(display_shop_buy)
 
 def enter_shop(name):
+    """
+    显示进入特定商店的描述文本。
+
+    根据商店名称打印相应的欢迎文本。
+
+    参数:
+        name: 商店名称
+    """
     import data.event_text as ev
     match name:
         case "里克的盔甲店": print(ev.rik_armor_shop_encounter)
@@ -221,6 +360,11 @@ def enter_shop(name):
 
 
 def save_load_menu():
+    """
+    显示存档/读档菜单。
+
+    打印游戏存档和读档选项的菜单界面。
+    """
     display_content = (
         "----------------------------------\n"
         "           S - Save game\n"
@@ -231,7 +375,14 @@ def save_load_menu():
     print(display_content)
 
 def display_save_list(saves):
-    """显示存档列表"""
+    """
+    显示存档列表。
+
+    列出所有可用的游戏存档，包括玩家名称、等级和保存日期。
+
+    参数:
+        saves: 存档信息列表
+    """
     if not saves:
         print("没有找到存档")
         return
@@ -244,8 +395,15 @@ def display_save_list(saves):
     print("----------------------------------")
 
 
-# *quest_ui
 def show_all_quests(player):
+    """
+    显示玩家所有任务的界面。
+
+    列出进行中和已完成的任务，并提供查看详情和交付任务的选项。
+
+    参数:
+        player: 玩家对象，包含任务列表
+    """
     console.print("\n======= 任务列表 =======", style="bold green")
     if player.active_quests:
         print("\n进行中的任务:")
@@ -280,9 +438,18 @@ def show_all_quests(player):
             pass
 
 
-# *map_ui
 def get_quest_region(quest_obj):
-    """查找任务所在地区"""
+    """
+    查找任务所在地区。
+
+    在世界地图中搜索包含指定任务的地区。
+
+    参数:
+        quest_obj: 任务对象
+
+    返回:
+        str: 任务所在地区名称，如果未找到则返回"未知地区"
+    """
     import world.map as map
     for region_name, region in map.world_map.regions.items():
         if quest_obj in region.quests:
@@ -290,6 +457,15 @@ def get_quest_region(quest_obj):
     return "未知地区"
 
 def map_menu(player):
+    """
+    显示世界地图菜单。
+
+    展示当前地区信息、可用任务和可前往的地区列表，
+    并处理玩家的地区切换和任务接受操作。
+
+    参数:
+        player: 玩家对象
+    """
     import world.map as map
     map.world_map.get_current_region_info()
     available_quests = map.world_map.show_region_quests(player)
@@ -327,6 +503,15 @@ def map_menu(player):
 
 
 def debug_show_stats(player):
+    """
+    显示玩家详细状态的调试信息。
+
+    创建并显示一个包含玩家所有属性和状态的详细表格，
+    主要用于调试目的。
+
+    参数:
+        player: 玩家对象
+    """
     table = Table(title=f"[bold]{player.name}[/bold] 状态", box=box.ROUNDED)
     table.add_column("属性", style="bold cyan")
     table.add_column("数值", style="bold white")
@@ -345,6 +530,14 @@ def debug_show_stats(player):
     console.print(table)
 
 def backpack_item_stats(inv):
+    """
+    显示背包物品统计信息。
+
+    统计并显示背包中不同类型物品的数量和总数。
+
+    参数:
+        inv: 物品栏对象
+    """
     print("=== 背包物品统计 ===")
     item_counts = {'Equipment': 0, 'Potion': 0, 'Jewel': 0, 'Grimoire': 0, 'Other': 0}
     for item in inv.items:
@@ -363,8 +556,17 @@ def backpack_item_stats(inv):
     print(f"\n总计: {total_items} 件物品")
 
 def display_battle_stats(attacker, defender):
+    """
+    显示两个战斗者的对比状态。
+
+    分析并展示攻击者和防御者之间的属性对比、伤害预估和预计击杀回合数，
+    仅在调试模式下显示。
+
+    参数:
+        attacker: 攻击者对象
+        defender: 防御者对象
+    """
     from data.constants import DEBUG
-    """显示两个战斗者的对比状态"""
     if not DEBUG:
         return
 
