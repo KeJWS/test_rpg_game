@@ -1,0 +1,16 @@
+# 忽略整个 dist 目录
+dist/
+__pycache__/
+.vscode/
+assests/
+data/ascii_art/
+saves/
+The_all/
+z666/
+
+# 忽略所有 .log 文件
+*.log
+*.pyc
+
+# 忽略特定文件
+config.json
