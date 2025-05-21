@@ -218,11 +218,6 @@ class Inventory_interface:
 
         副作用:
             在控制台输出物品选择界面或空背包提示
-
-        示例:
-            >>> item = inv_interface.view_item()
-            >>> if item:
-            ...     print(item.get_detailed_info())
         """
         if not self.inventory.items:
             print("背包为空")

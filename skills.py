@@ -447,12 +447,44 @@ class AdvancedDamageSpell(Spell):
 
 
 class ArcaneBarrage(Spell):
+    """
+    奥术飞弹法术类，继承自Spell。
+
+    该法术在施法者和目标之间发射多枚奥术飞弹，造成多次普通攻击伤害。
+
+    属性:
+        min_hits (int): 最小飞弹数量。
+        max_hits (int): 最大飞弹数量。
+    """
+
     def __init__(self, name, description, power, cost, is_targeted, default_target, hits):
+        """
+        初始化奥术飞弹法术实例。
+
+        参数:
+            name (str): 技能名称。
+            description (str): 技能描述。
+            power (int): 技能威力。
+            cost (int): 技能消耗的魔法值。
+            is_targeted (bool): 是否需要指定目标。
+            default_target (str): 默认目标类型。
+            hits (tuple[int, int]): 飞弹数量范围，格式为(min_hits, max_hits)。
+        """
         super().__init__(name, description, power, cost, is_targeted, default_target)
         self.min_hits = hits[0]
         self.max_hits = hits[1]
 
     def effect(self, caster: Battler, target: Battler):
+        """
+        施放奥术飞弹，对目标造成多次普通攻击伤害。
+
+        参数:
+            caster (Battler): 施法者对象。
+            target (Battler): 目标对象。
+
+        副作用:
+            Exception: 如果施法者魔法值不足，技能不会生效。
+        """
         if not self.check_mp(caster): return
         hits = random.randint(self.min_hits, self.max_hits)
         console.print(f"{caster.name} 对 {target.name} 发射了 {hits} 枚奥术飞弹!", style="blue")
@@ -461,11 +493,38 @@ class ArcaneBarrage(Spell):
 
 
 class SlashCombo(Combo):
+    """
+    连击技能类，继承自Combo。
+
+    该技能对目标进行多次普通攻击。
+    """
+
     def __init__(self, name, description, cost, is_targeted, default_target, hits):
+        """
+        初始化连击技能实例。
+
+        参数:
+            name (str): 技能名称。
+            description (str): 技能描述。
+            cost (int): 技能消耗的连击点数。
+            is_targeted (bool): 是否需要指定目标。
+            default_target (str): 默认目标类型。
+            hits (int): 攻击次数。
+        """
         super().__init__(name, description, cost, is_targeted, default_target)
         self.hits = hits
 
     def effect(self, caster: Battler, target: Battler):
+        """
+        对目标进行多次普通攻击。
+
+        参数:
+            caster (Battler): 施法者对象。
+            target (Battler): 目标对象。
+
+        副作用:
+            Exception: 如果施法者连击点数不足，技能不会生效。
+        """
         if not self.check_cp(caster): return
         console.print(f"{caster.name} 攻击 {target.name} {self.hits} 次!", style="cyan")
         for _ in range(self.hits):
@@ -473,12 +532,40 @@ class SlashCombo(Combo):
 
 
 class ArmorBreakingCombo(Combo):
+    """
+    破甲连击技能类，继承自Combo。
+
+    该技能对目标施加破甲效果并进行一次普通攻击。
+    """
+
     def __init__(self, name, description, cost, is_targeted, default_target, reduction, effect_type="armor_break"):
+        """
+        初始化破甲连击技能实例。
+
+        参数:
+            name (str): 技能名称。
+            description (str): 技能描述。
+            cost (int): 技能消耗的连击点数。
+            is_targeted (bool): 是否需要指定目标。
+            default_target (str): 默认目标类型。
+            reduction (float): 破甲效果的防御力减少比例。
+            effect_type (str, optional): 效果类型，默认为"armor_break"。
+        """
         super().__init__(name, description, cost, is_targeted, default_target)
         self.reduction = reduction
         self.effect_type = effect_type
 
     def effect(self, caster: Battler, target: Battler):
+        """
+        对目标施加破甲效果并进行一次普通攻击。
+
+        参数:
+            caster (Battler): 施法者对象。
+            target (Battler): 目标对象。
+
+        副作用:
+            Exception: 如果施法者连击点数不足，技能不会生效。
+        """
         if not self.check_cp(caster): return
         if apply_buff(target, self.name, "def", self.reduction, 4, self.effect_type):
             console.print(f"{caster.name} 刺穿了 {target.name} 的盔甲!", style="red")
@@ -486,44 +573,153 @@ class ArmorBreakingCombo(Combo):
 
 
 class VampirismCombo(Combo):
+    """
+    吸血连击技能类，继承自Combo。
+
+    该技能对目标造成伤害并根据伤害量回复施法者生命值。
+    """
+
     def __init__(self, name, description, cost, is_targeted, default_target, percent):
+        """
+        初始化吸血连击技能实例。
+
+        参数:
+            name (str): 技能名称。
+            description (str): 技能描述。
+            cost (int): 技能消耗的连击点数。
+            is_targeted (bool): 是否需要指定目标。
+            default_target (str): 默认目标类型。
+            percent (float): 吸血比例，伤害的百分比。
+        """
         super().__init__(name, description, cost, is_targeted, default_target)
         self.percent = percent
 
     def effect(self, caster: Battler, target: Battler):
+        """
+        对目标造成伤害并回复施法者生命值。
+
+        参数:
+            caster (Battler): 施法者对象。
+            target (Battler): 目标对象。
+
+        副作用:
+            Exception: 如果施法者连击点数不足，技能不会生效。
+        """
         if self.check_cp(caster):
             recovered = caster.normal_attack(target, gain_cp=False) * self.percent
             caster.heal(round(recovered))
 
 
 class RecoveryCombo(Combo):
+    """
+    回复连击技能类，继承自Combo。
+
+    该技能对目标回复指定属性的生命值。
+    """
+
     def __init__(self, name, description, cost, stat, amount, is_targeted, default_target):
+        """
+        初始化回复连击技能实例。
+
+        参数:
+            name (str): 技能名称。
+            description (str): 技能描述。
+            cost (int): 技能消耗的连击点数。
+            stat (str): 回复的属性名称。
+            amount (int): 回复的数值。
+            is_targeted (bool): 是否需要指定目标。
+            default_target (str): 默认目标类型。
+        """
         super().__init__(name, description, cost, is_targeted, default_target)
         self.stat = stat
         self.amount = amount
 
     def effect(self, caster: Battler, target: Battler):
+        """
+        对目标回复指定属性的生命值。
+
+        参数:
+            caster (Battler): 施法者对象。
+            target (Battler): 目标对象。
+
+        副作用:
+            Exception: 如果施法者连击点数不足，技能不会生效。
+        """
         if self.check_cp(caster):
             heal_target(target, self.stat, self.amount)
 
 
 class DamageCombo(Combo):
+    """
+    伤害连击技能类，继承自Combo。
+
+    该技能对目标造成基于攻击力和技能威力的伤害。
+    """
+
     def __init__(self, name, description, power, cost, is_targeted, default_target):
+        """
+        初始化伤害连击技能实例。
+
+        参数:
+            name (str): 技能名称。
+            description (str): 技能描述。
+            power (int): 技能威力。
+            cost (int): 技能消耗的连击点数。
+            is_targeted (bool): 是否需要指定目标。
+            default_target (str): 默认目标类型。
+        """
         super().__init__(name, description, cost, is_targeted, default_target)
         self.power = power
 
     def effect(self, caster: Battler, target: Battler):
+        """
+        对目标造成伤害。
+
+        参数:
+            caster (Battler): 施法者对象。
+            target (Battler): 目标对象。
+
+        副作用:
+            Exception: 如果施法者连击点数不足，技能不会生效。
+        """
         if self.check_cp(caster):
             dmg = self.power + (caster.stats["atk"] * 2.7 - target.stats["def"] * 0.8 + caster.stats["luk"])
             apply_damage(target, dmg)
 
 
 class MultiTargetCombo(Combo):
+    """
+    多目标连击技能类，继承自Combo。
+
+    该技能对所有目标造成基于攻击力和倍率的伤害。
+    """
+
     def __init__(self, name, description, cost, is_targeted, default_target, damage_multiplier):
+        """
+        初始化多目标连击技能实例。
+
+        参数:
+            name (str): 技能名称。
+            description (str): 技能描述。
+            cost (int): 技能消耗的连击点数。
+            is_targeted (bool): 是否需要指定目标。
+            default_target (str): 默认目标类型。
+            damage_multiplier (float): 伤害倍率。
+        """
         super().__init__(name, description, cost, is_targeted, default_target)
         self.damage_multiplier = damage_multiplier
 
     def effect(self, caster, targets):
+        """
+        对所有目标造成伤害。
+
+        参数:
+            caster (Battler): 施法者对象。
+            targets (list[Battler]): 目标对象列表。
+
+        副作用:
+            Exception: 如果施法者连击点数不足，技能不会生效。
+        """
         if self.check_cp(caster):
             console.print(f"{caster.name} 使用了 {self.name} 攻击所有敌人!")
             for target in targets:
@@ -532,11 +728,38 @@ class MultiTargetCombo(Combo):
 
 
 class StunCombo(Combo):
+    """
+    眩晕连击技能类，继承自Combo。
+
+    该技能对目标进行普通攻击，有概率使目标进入眩晕状态。
+    """
+
     def __init__(self, name, description, cost, is_targeted, default_target, stun_chance) -> None:
+        """
+        初始化眩晕连击技能实例。
+
+        参数:
+            name (str): 技能名称。
+            description (str): 技能描述。
+            cost (int): 技能消耗的连击点数。
+            is_targeted (bool): 是否需要指定目标。
+            default_target (str): 默认目标类型。
+            stun_chance (float): 眩晕触发概率，范围0到1。
+        """
         super().__init__(name, description, cost, is_targeted, default_target)
         self.stun_chance = stun_chance
 
     def effect(self, caster, target):
+        """
+        对目标进行普通攻击，并有概率使其进入眩晕状态。
+
+        参数:
+            caster (Battler): 施法者对象。
+            target (Battler): 目标对象。
+
+        副作用:
+            Exception: 如果施法者连击点数不足，技能不会生效。
+        """
         if self.check_cp(caster):
             caster.normal_attack(target, gain_cp=False)
             if random.random() < self.stun_chance:

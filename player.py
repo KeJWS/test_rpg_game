@@ -280,13 +280,6 @@ class Player(battler.Battler):
             - 可能显示饥饿警告
             - 饱食度为0时可能造成伤害
             - 极端情况可能导致玩家死亡
-
-        示例:
-            >>> player.stats['hunger'] = 10
-            >>> player.decrease_hunger(5)
-            警告: 饱食度过低 (5/120)，需要进食!
-            >>> player.decrease_hunger(10)
-            你因饥饿受到了X点伤害!  # X为随机值
         """
         self.stats['hunger'] = max(0, self.stats['hunger'] - amount)
         if self.stats['hunger'] <= 20:
