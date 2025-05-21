@@ -1,5 +1,5 @@
-from skill.loader import load_skills_from_json, SPELL_CLASS_MAP
-from skill.skills_types import ArcaneBarrage
+from skills.loader import load_skills_from_json, SPELL_CLASS_MAP
+from skills.skills_types import ArcaneBarrage
 
 skills = load_skills_from_json()
 

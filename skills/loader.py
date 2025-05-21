@@ -1,7 +1,7 @@
 import json
 from typing import Dict
 import core.allies as allies
-from skill.skills_types import *
+from skills.skills_types import *
 
 SPELL_CLASS_MAP: Dict[str, type] = {
     "DamageSpell": DamageSpell,

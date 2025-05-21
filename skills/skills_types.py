@@ -6,7 +6,7 @@ from core.skill_base import Spell, Combo
 if TYPE_CHECKING:
     from core.battler import Battler
 
-from skill.states import BuffDebuff, PoisonEffect
+from skills.states import BuffDebuff, PoisonEffect
 
 console = Console()
 
