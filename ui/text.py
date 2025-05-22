@@ -67,7 +67,7 @@ def show_stats(player):
     """
     显示玩家角色的详细状态信息。
 
-    创建并显示包含玩家属性、能力值和装备的表格。
+    创建并显示包含玩家属性和装备的表格。
 
     参数:
         player: 玩家对象，包含要显示的属性和装备信息
@@ -85,13 +85,6 @@ def show_stats(player):
     table.add_row("MAT / MDF", f"{player.stats['mat']} / {player.stats['mdf']}")
     table.add_row("AGI / LUK", f"{player.stats['agi']} / {player.stats['luk']}")
     console.print(table)
-
-    aptitudes = Table(title="Aptitudes", box=box.ROUNDED, border_style="bold green")
-    aptitudes.add_column("Name")
-    aptitudes.add_column("Value")
-    for k, v in player.aptitudes.items():
-        aptitudes.add_row(k.upper(), str(v))
-    console.print(aptitudes)
 
     eq_table = Table(title="Equipment", box=box.ROUNDED, border_style="bold green")
     eq_table.add_column("Slot")

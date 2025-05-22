@@ -127,11 +127,12 @@
 
 ## 截图预览
 
-![游戏截图1](img/screenshots/233.png)  
-![游戏截图2](img/screenshots/234.png)  
-![游戏截图3](img/screenshots/235.png)  
-![游戏截图4](img/screenshots/236.png)  
-![游戏截图5](img/screenshots/237.png)  
+![游戏截图3](img/screenshots/235.png)
+![游戏截图5](img/screenshots/237.png)
+![游戏截图6](img/screenshots/333.png)
+![游戏截图7](img/screenshots/334.png)
+![游戏截图8](img/screenshots/335.png)
+![游戏截图9](img/screenshots/336.png)
 
 ## 贡献指南
 
