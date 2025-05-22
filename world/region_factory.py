@@ -11,8 +11,8 @@ from typing import Dict, List, Any
 
 import events
 import enemies
-import data.event_text as ev
 from data import items_data
+from data import DIALOGUE
 from data import equipment_data
 from world import quest
 from world.map import Region
@@ -20,44 +20,44 @@ from world.map import Region
 SHOP_EVENTS = {
     "shop_jack_weapon": events.ShopEvent(
         "杰克的武器店", False,
-        ev.dialogue['jack_shop']['encounter'], ev.dialogue['jack_shop']['enter'],
-        ev.dialogue['jack_shop']['talk'], ev.dialogue['jack_shop']['exit'],
+        DIALOGUE['jack_shop']['encounter'], DIALOGUE['jack_shop']['enter'],
+        DIALOGUE['jack_shop']['talk'], DIALOGUE['jack_shop']['exit'],
         items_data.jack_weapon_shop_set
     ),
     "shop_anna_armor": events.ShopEvent(
         "安娜的防具店", False,
-        ev.dialogue['anna_shop']['encounter'], ev.dialogue['anna_shop']['enter'],
-        ev.dialogue['anna_shop']['talk'], ev.dialogue['anna_shop']['exit'],
+        DIALOGUE['anna_shop']['encounter'], DIALOGUE['anna_shop']['enter'],
+        DIALOGUE['anna_shop']['talk'], DIALOGUE['anna_shop']['exit'],
         items_data.anna_armor_shop_set
     ),
     "mary_food_stall": events.ShopEvent(
         "玛丽的小吃摊", False,
-        ev.dialogue['mary_shop']['encounter'], ev.dialogue['mary_shop']['enter'],
-        ev.dialogue['mary_shop']['talk'], ev.dialogue['mary_shop']['exit'],
+        DIALOGUE['mary_shop']['encounter'], DIALOGUE['mary_shop']['enter'],
+        DIALOGUE['mary_shop']['talk'], DIALOGUE['mary_shop']['exit'],
         items_data.mary_food_stall_set
     ),
     "shop_rik_armor": events.ShopEvent(
         "里克的盔甲店", False,
-        ev.dialogue['rik_shop']['encounter'], ev.dialogue['rik_shop']['enter'],
-        ev.dialogue['rik_shop']['talk'], ev.dialogue['rik_shop']['exit'],
+        DIALOGUE['rik_shop']['encounter'], DIALOGUE['rik_shop']['enter'],
+        DIALOGUE['rik_shop']['talk'], DIALOGUE['rik_shop']['exit'],
         items_data.rik_armor_shop_item_set
     ),
     "shop_lok_armor": events.ShopEvent(
         "青铜匠武具店", False,
-        ev.dialogue['lok_shop']['encounter'], ev.dialogue['lok_shop']['enter'],
-        ev.dialogue['lok_shop']['talk'], ev.dialogue['lok_shop']['exit'],
+        DIALOGUE['lok_shop']['encounter'], DIALOGUE['lok_shop']['enter'],
+        DIALOGUE['lok_shop']['talk'], DIALOGUE['lok_shop']['exit'],
         items_data.lok_armor_shop_item_set
     ),
     "shop_itz_magic": events.ShopEvent(
         "伊兹的魔法店", False,
-        ev.dialogue['itz_shop']['encounter'], ev.dialogue['itz_shop']['enter'],
-        ev.dialogue['itz_shop']['talk'], ev.dialogue['itz_shop']['exit'],
+        DIALOGUE['itz_shop']['encounter'], DIALOGUE['itz_shop']['enter'],
+        DIALOGUE['itz_shop']['talk'], DIALOGUE['itz_shop']['exit'],
         items_data.itz_magic_item_set
     ),
     "mysterious_businessman": events.ShopEvent(
         "神秘商人", False,
-        ev.dialogue['mysterious_shop']['encounter'], ev.dialogue['mysterious_shop']['enter'],
-        ev.dialogue['mysterious_shop']['talk'], ev.dialogue['mysterious_shop']['exit'],
+        DIALOGUE['mysterious_shop']['encounter'], DIALOGUE['mysterious_shop']['enter'],
+        DIALOGUE['mysterious_shop']['talk'], DIALOGUE['mysterious_shop']['exit'],
         items_data.rik_armor_shop_item_set
     ),
 }
@@ -71,18 +71,19 @@ COMBAT_EVENTS = {
 
 OTHER_EVENTS = {
     "inn_event": events.InnEvent(
-        "客栈", ev.dialogue['inn_event']['encounter'], ev.dialogue['inn_event']['success'],
-        ev.dialogue['inn_event']['fail'], ev.dialogue['inn_event']['refuse'], 150, 25
+        "客栈", DIALOGUE['inn_event']['encounter'], DIALOGUE['inn_event']['success'],
+        DIALOGUE['inn_event']['fail'], DIALOGUE['inn_event']['refuse'], 160, 25
     ),
     "heal_medussa_statue": events.HealingEvent(
-        "美杜莎雕像", ev.dialogue['medussa_statue']['encounter'], ev.dialogue['medussa_statue']['success'],
-        ev.dialogue['medussa_statue']['fail'], ev.dialogue['medussa_statue']['refuse'], 75, False, 90
+        "美杜莎雕像", DIALOGUE['medussa_statue']['encounter'], DIALOGUE['medussa_statue']['success'],
+        DIALOGUE['medussa_statue']['fail'], DIALOGUE['medussa_statue']['refuse'], 75, False, 90
     ),
-    "find_coins": events.SimpleEvent("发现零钱", events.find_coins),
-    "admire_scenery": events.SimpleEvent("欣赏美景", events.admire_scenery),
-    "friendly_villager": events.SimpleEvent("村民物资", events.friendly_villager),
-    "find_herb": events.SimpleEvent("找到草药", events.find_herb),
-    "rest_spot": events.SimpleEvent("短暂休息", events.rest_spot),
+
+    "find_coins": events.SimpleEvent("发现金币", events.find_coins_effect),
+    "admire_scenery": events.SimpleEvent("欣赏风景", events.admire_scenery_effect),
+    "friendly_villager": events.SimpleEvent("友好村民", events.friendly_villager_effect),
+    "find_herb": events.SimpleEvent("发现草药", events.find_herb_effect),
+    "rest_spot": events.SimpleEvent("休息处", events.rest_spot_effect),
 
     "hidden_chest_forest": events.HiddenChestEvent("雾林装备宝箱", random.choice(["long_sword", "dagger", "fire_staff"])),
     "hidden_chest_mountain": events.HiddenChestEvent("龙脊山装备宝箱", random.choice(["sword_bronze", "sai", "amulet_of_health"])),
@@ -97,26 +98,26 @@ EVENT_MAPPING.update(OTHER_EVENTS)
 QUEST_MAPPING: Dict[str, quest.Quest] = {
     "hunting_slimes": quest.Quest(
         "史莱姆狩猎",
-        ev.dialogue['kill_slimes']['text'],
-        ev.dialogue['kill_slimes']['mayor_text'],
+        DIALOGUE['kill_slimes']['text'],
+        DIALOGUE['kill_slimes']['mayor_text'],
         50, 50, equipment_data["zweihander"], EVENT_MAPPING["fight_against_slime_combat"], 3
     ),
     "slime_king": quest.Quest(
         "史莱姆之王",
-        ev.dialogue['slime_king']['text'],
-        ev.dialogue['slime_king']['itz_text'],
+        DIALOGUE['slime_king']['text'],
+        DIALOGUE['slime_king']['itz_text'],
         170, 230, equipment_data["long_bow"], EVENT_MAPPING["fight_against_slime_king_combat"], 9
     ),
     "caesarus_bandit": quest.Quest(
         "凯撒鲁斯与他的强盗",
-        ev.dialogue['caesarus_bandit']['text'],
-        ev.dialogue['caesarus_bandit']['rik_text'],
+        DIALOGUE['caesarus_bandit']['text'],
+        DIALOGUE['caesarus_bandit']['rik_text'],
         150, 150, None, EVENT_MAPPING["caesarus_bandit_combat"], 5
     ),
     "wolf_king": quest.Quest(
         "夜行狼王",
-        ev.dialogue['wolf_king']['text'],
-        ev.dialogue['wolf_king']['mira_text'],
+        DIALOGUE['wolf_king']['text'],
+        DIALOGUE['wolf_king']['mira_text'],
         350, 700, equipment_data["wolf_king_proof"], EVENT_MAPPING["wolf_king_combat"], 13
     ),
     "wolf_hide_quest": quest.Quest(

@@ -12,7 +12,7 @@ import csv
 import others.item as item
 from data import ALL_SKILLS
 from others.equipment import Equipment
-from tools.load_data_from_file import load_jewel_from_csv, load_food_from_csv
+from tools import load_jewel_from_csv, load_food_from_csv
 from mods.dev_tools import debug_print
 
 def load_equipment_from_csv(filepath="data/csv_data/equipments.csv", skill_dict=ALL_SKILLS):

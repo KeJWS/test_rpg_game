@@ -11,9 +11,9 @@ from typing import List, Callable
 
 import combat
 import enemies
-import data.event_text as ev
 from ui import text
 from core import shops
+from data import DIALOGUE
 from data import POSSIBLE_ENEMIES
 from bag import InventoryInterface as interface
 from ui import enter_clear_screen, clear_screen
@@ -325,22 +325,22 @@ class HiddenChestEvent(Event):
         成功则获得金币、经验和物品；失败则受到伤害并触发战斗。
         """
         from data import equipment_data
-        print(ev.dialogue['hidden_chest']['encounter'])
+        print(DIALOGUE['hidden_chest']['encounter'])
         if not ask_yes_no():
-            print(ev.dialogue['hidden_chest']['refuse'])
+            print(DIALOGUE['hidden_chest']['refuse'])
             return
         lock_chance = player.stats["luk"] * 2 + player.stats["agi"] * 1.25 + player.ls.level
         if random.randint(0, 200) < min(lock_chance, 125):
             gold = random.randint(12, 35) + player.ls.level
             exp = random.randint(5, 25) * player.ls.level
             item = equipment_data[self.item_name]
-            print(ev.dialogue['hidden_chest']['success'])
+            print(DIALOGUE['hidden_chest']['success'])
             player.add_money(gold)
             player.add_exp(exp)
             item.add_to_inventory_player(player.inventory)
         else:
             damage = int(player.stats["max_hp"] * 0.2)
-            print(ev.dialogue['hidden_chest']['fail'])
+            print(DIALOGUE['hidden_chest']['fail'])
             player.take_dmg(damage)
             enemy_group = enemies.create_enemy_group(player.ls.level, POSSIBLE_ENEMIES, {100: 4})
             combat.combat(player, enemy_group)
@@ -371,34 +371,56 @@ class SimpleEvent(Event):
         """
         self._effect_func(player)
 
-def find_coins(player):
-    """玩家发现少量金币，金额基于玩家等级。"""
-    gold = random.randint(1, 5) * player.ls.level
-    print(ev.dialogue['simple_event']['find_coins'])
-    player.add_money(gold)
+def make_simple_reward_event(key, reward_funcs):
+    """
+    通用简单奖励事件工厂。
 
-def admire_scenery(player):
-    """玩家欣赏环境风景，获得少量经验值。"""
-    exp = random.randint(5, 15) + player.ls.level
-    print(ev.dialogue['simple_event']['admire_scenery'])
-    player.add_exp(exp)
+    参数:
+        key: DIALOGUE中的key
+        reward_funcs: 奖励分发函数列表，每个函数接受player参数
 
-def friendly_villager(player):
-    """遇到友好的村民，获得少量金币和生命恢复。"""
-    gold = random.randint(5, 10)
-    healing = int(player.stats["max_hp"] * 0.1)
-    print(ev.dialogue['simple_event']['friendly_villager'])
-    player.add_money(gold)
-    player.heal(healing)
+    返回:
+        effect_func: 可用于SimpleEvent的effect_func
+    """
+    def effect_func(player):
+        print(DIALOGUE[key][random.choice(['talk', 'talk2', 'talk3'])])
+        for func in reward_funcs:
+            func(player)
+    return effect_func
 
-def find_herb(player):
-    """玩家发现治疗草药，恢复一定量的生命值。"""
-    healing = int(player.stats["max_hp"] * 0.2)
-    print(ev.dialogue['simple_event']['find_herb'])
-    player.heal(healing)
+def give_gold(amount_func):
+    return lambda player: player.add_money(amount_func(player))
 
-def rest_spot(player):
-    """玩家发现安全的休息处，恢复较多生命值。"""
-    healing = int(player.stats["max_hp"] * 0.3)
-    print(ev.dialogue['simple_event']['rest_spot'])
-    player.heal(healing)
+def give_exp(amount_func):
+    return lambda player: player.add_exp(amount_func(player))
+
+def heal(amount_func):
+    return lambda player: player.heal(amount_func(player))
+
+find_coins_effect = make_simple_reward_event(
+    'find_coins',
+    [give_gold(lambda player: random.randint(3, 7) * player.ls.level)]
+)
+
+admire_scenery_effect = make_simple_reward_event(
+    'admire_scenery',
+    [give_exp(lambda player: random.randint(5, 15) + player.ls.level)]
+)
+
+friendly_villager_effect = make_simple_reward_event(
+    'friendly_villager',
+    [
+        give_gold(lambda player: random.randint(5, 10)),
+        heal(lambda player: int(player.stats["max_hp"] * 0.1))
+    ]
+)
+
+find_herb_effect = make_simple_reward_event(
+    'find_herb',
+    [heal(lambda player: int(player.stats["max_hp"] * 0.2))]
+)
+
+rest_spot_effect = make_simple_reward_event(
+    'rest_spot',
+    [heal(lambda player: int(player.stats["max_hp"] * 0.35))]
+)

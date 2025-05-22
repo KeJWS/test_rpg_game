@@ -215,8 +215,8 @@ def combat_menu(player, allies, enemies) -> None:
         print_status_bar("HP", enemy.stats['hp'], enemy.stats['max_hp'], "red")
     print("-------------------------------------------------")
     print("         A - Attack  C - Combos")
-    print("         S - Spells  D - Defense                 ")
-    print("         Q - Quit")
+    print("         S - Spells  D - Defense")
+    print("         I - Item    Q - Quit")
     print("-------------------------------------------------")
 
 def print_status_bar(label, current, max_value, color: str):

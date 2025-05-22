@@ -20,10 +20,12 @@ from rich.console import Console
 from ui import text
 from ui import battle_log, get_valid_input
 from ui import dot_loading, typewriter
+from tools import load_toml_data
 from data import enhance_weapon, weakened_defense
 
 console = Console()
 
+COMBAT_TEXT = load_toml_data('data/toml_data/combat_text.toml')
 
 # *战斗计算器
 class BattleCalculator:
@@ -96,11 +98,11 @@ class BattleCalculator:
         """
         escape_chance = min(90, 35 + (battler.stats["agi"] * 0.7 + battler.stats["luk"] * 0.3))
         if random.randint(1, 100) <= escape_chance:
-            console.print("逃跑成功!", style="green")
+            console.print(COMBAT_TEXT["escape"]["success"], style="green")
             return True
-        console.print("逃跑失败!", style="bold red")
+        console.print(COMBAT_TEXT["escape"]["fail"], style="bold red")
         if random.random() < 0.35:  # 35%概率降低防御
-            console.print("你因慌乱防御力下降!", style="red")
+            console.print(COMBAT_TEXT["escape"]["bad"], style="red")
             weakened_defense.effect(battler, battler)
         return False
 
@@ -296,38 +298,43 @@ class CombatExecutor:
                 CombatManager.check_if_dead(self.allies, self.enemies, self.battlers)
             return False
 
-        text.combat_menu(player, self.allies, self.enemies)
-        cmd = input("> ").lower()
-        while cmd not in ["a", "c", "s", "d", "q"]:
-            print("请输入有效指令")
+        while True:
+            text.combat_menu(player, self.allies, self.enemies)
             cmd = input("> ").lower()
 
-        if "a" in cmd:
-            targeted_enemy = CombatManager.select_target(self.enemies)
-            player.normal_attack(targeted_enemy)
-            CombatManager.check_if_dead(self.allies, self.enemies, self.battlers)
+            while cmd not in ["a", "c", "s", "d", "i", "q"]:
+                print("请输入有效指令")
+                cmd = input("> ").lower()
 
-        elif "s" in cmd:
-            self._handle_spell_casting(player)
-
-        elif "c" in cmd:
-            self._handle_combo_usage(player)
-
-        elif "d" in cmd:
-            battle_log(f"{player.name} 正在行动。", "info")
-            dot_loading()
-            player.defend()
-            player.combo_points += 1
-            enhance_weapon.effect(player, player)
-            console.print("你紧握武器, 时刻准备反击!", style="yellow")
-
-        elif "q" in cmd:
-            if BattleCalculator.try_escape(player):
-                player.check_buff_debuff_turns(True)
-                typewriter(f"{player.name} 成功逃离了战斗")
-                player.combo_points = 0
-                return True
-
+            if "a" in cmd:
+                targeted_enemy = CombatManager.select_target(self.enemies)
+                player.normal_attack(targeted_enemy)
+                CombatManager.check_if_dead(self.allies, self.enemies, self.battlers)
+                break
+            elif "s" in cmd:
+                if self._handle_spell_casting(player):
+                    break
+            elif "c" in cmd:
+                if self._handle_combo_usage(player):
+                    break
+            elif "i" in cmd:
+                if self._handle_item_usage(player):
+                    break
+            elif "d" in cmd:
+                battle_log(f"{player.name} 正在行动。", "info")
+                dot_loading()
+                player.defend()
+                player.combo_points += 1
+                enhance_weapon.effect(player, player)
+                console.print(COMBAT_TEXT["player"]["defense"], style="yellow")
+                break
+            elif "q" in cmd:
+                if BattleCalculator.try_escape(player):
+                    player.check_buff_debuff_turns(True)
+                    typewriter(f"{player.name} 成功逃离了战斗")
+                    player.combo_points = 0
+                    return True
+                break
         return False
 
     def _handle_ally_turn(self, ally):
@@ -368,7 +375,7 @@ class CombatExecutor:
                     dot_loading()
                     enemy.defend()
                     enhance_weapon.effect(enemy, enemy)
-                    console.print("敌人摆好了防御的架势!", style="yellow")
+                    console.print(COMBAT_TEXT["enemy"]["defense"], style="yellow")
                 case "spell":
                     spell = decision["spell"]
                     target = None
@@ -390,7 +397,7 @@ class CombatExecutor:
                     spell.effect(enemy, target)
                     CombatManager.check_if_dead(self.allies, self.enemies, self.battlers)
 
-    def _handle_spell_casting(self, caster):
+    def _handle_spell_casting(self, caster) -> bool:
         """
         处理施法菜单和效果。
 
@@ -399,31 +406,39 @@ class CombatExecutor:
 
         参数:
             caster: 施法者单位
+        返回:
+            bool: 是否实际释放了技能
         """
+        if not caster.spells:
+            console.print(COMBAT_TEXT["spell"]["nothing"], style="red")
+            return False
         text.spell_menu(caster)
         option = int(input("> "))
         while option not in range(len(caster.spells)+1):
-            print("请输入有效的数字")
+            print("请输入有效的数字。")
             option = int(input("> "))
-        if option != 0:
-            spell_chosen = caster.spells[option-1]
-            target = None
+        if option == 0:
+            console.print(COMBAT_TEXT["spell"]["refuse"], style="yellow")
+            return False
+        spell_chosen = caster.spells[option-1]
+        target = None
 
-            if spell_chosen.is_targeted:
-                target = CombatManager.select_target(self.battlers)
-            else:
-                match spell_chosen.default_target:
-                    case "self":
-                        target = caster
-                    case "all_enemies":
-                        target = self.enemies
-                    case "allies":
-                        target = self.allies
+        if spell_chosen.is_targeted:
+            target = CombatManager.select_target(self.battlers)
+        else:
+            match spell_chosen.default_target:
+                case "self":
+                    target = caster
+                case "all_enemies":
+                    target = self.enemies
+                case "allies":
+                    target = self.allies
 
-            spell_chosen.effect(caster, target)
-            CombatManager.check_if_dead(self.allies, self.enemies, self.battlers)
+        spell_chosen.effect(caster, target)
+        CombatManager.check_if_dead(self.allies, self.enemies, self.battlers)
+        return True
 
-    def _handle_combo_usage(self, caster):
+    def _handle_combo_usage(self, caster) -> bool:
         """
         处理连招菜单和效果。
 
@@ -432,27 +447,62 @@ class CombatExecutor:
 
         参数:
             caster: 使用连招的单位
+        返回:
+            bool: 是否实际释放了连招
         """
+        if not caster.combos:
+            console.print(COMBAT_TEXT["combo"]["nothing"], style="red")
+            return False
         text.combo_menu(caster)
         option = int(input("> "))
         while option not in range(len(caster.combos)+1):
             print("请输入有效的数字")
             option = int(input("> "))
-        if option != 0:
-            combo_chosen = caster.combos[option-1]
-            target = None
+        if option == 0:
+            console.print(COMBAT_TEXT["combo"]["refuse"], style="yellow")
+            return False
+        combo_chosen = caster.combos[option-1]
+        target = None
 
-            if combo_chosen.is_targeted:
-                target = CombatManager.select_target(self.battlers)
-            else:
-                match combo_chosen.default_target:
-                    case "self":
-                        target = caster
-                    case "all_enemies":
-                        target = self.enemies
+        if combo_chosen.is_targeted:
+            target = CombatManager.select_target(self.battlers)
+        else:
+            match combo_chosen.default_target:
+                case "self":
+                    target = caster
+                case "all_enemies":
+                    target = self.enemies
 
-            combo_chosen.effect(caster, target)
-            CombatManager.check_if_dead(self.allies, self.enemies, self.battlers)
+        combo_chosen.effect(caster, target)
+        CombatManager.check_if_dead(self.allies, self.enemies, self.battlers)
+        return True
+
+    def _handle_item_usage(self, caster) -> bool:
+        """
+        处理使用物品的效果。
+
+        显示战斗者可用的物品列表，允许选择并使用物品。
+        根据物品的目标类型选择适当的目标。
+
+        参数:
+            caster: 使用物品的单位
+        返回:
+            bool: 是否实际使用了物品
+        """
+        from bag.interface import select_item_from_list
+        consumables = caster.inventory.get_items_by_type("consumable")
+        if not consumables:
+            console.print(COMBAT_TEXT["item"]["nothing"], style="red")
+            return False
+        item = select_item_from_list(consumables, prompt="选择要使用的消耗品：")
+        if not item:
+            console.print(COMBAT_TEXT["item"]["refuse"], style="yellow")
+            return False
+        item.activate(caster)
+        caster.inventory.remove_item(item, 1)
+
+        CombatManager.check_if_dead(self.allies, self.enemies, self.battlers)
+        return True
 
     def _handle_combat_rewards(self, enemy_drops):
         """

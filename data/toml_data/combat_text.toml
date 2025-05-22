@@ -1,0 +1,23 @@
+
+[escape]
+success = "你身手敏捷，逃跑成功!"
+fail = "这只怪确实有点难缠，你没能把他甩开，逃跑失败!"
+bad = "你现在浑身是破绽，因慌乱防御力下降!"
+
+[player]
+defense = "你紧握武器, 时刻准备反击!"
+
+[enemy]
+defense = "敌人摆好了防御的架势!"
+
+[spell]
+nothing = "还未掌握任何技能。"
+refuse = "未释放任何技能。"
+
+[combo]
+nothing = "还未掌握任何连招。"
+refuse = "未释放任何连招。"
+
+[item]
+nothing = "你没有可用的消耗品。"
+refuse = "未使用任何物品。"

@@ -9,3 +9,5 @@ from .skills_data import ALL_SKILLS
 from .items_data import equipment_data, jewel_data, hp_potion, mp_potion, grimoires
 from .items_data import basic_equipments
 from .items_data import item_factory
+
+from .event_text import DIALOGUE

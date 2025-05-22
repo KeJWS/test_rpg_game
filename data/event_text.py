@@ -1,7 +1,8 @@
-import toml
 
 from rich.panel import Panel
 from rich.text import Text
+
+from tools import load_toml_data
 
 # 初始事件
 def initial_event_text():
@@ -22,14 +23,7 @@ def initial_event_text():
     )
     return pannel
 
-def load_dialogue(file_path):
-    from mods.dev_tools import debug_print
-    with open(file_path, 'r', encoding='utf-8') as f:
-        file_data = toml.load(f)
-        debug_print(f"从 TOML 加载数据，共加载 {len(file_data)} 项")
-        return file_data
-
-dialogue = load_dialogue('data/toml_data/dialogue.toml')
+DIALOGUE = load_toml_data('data/toml_data/dialogue.toml')
 
 # 安全镇
 # *安娜的防具店

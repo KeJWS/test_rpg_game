@@ -6,10 +6,18 @@ CSV数据加载模块，用于从CSV文件中加载游戏数据。
 """
 
 import csv
+import toml
 from functools import lru_cache
 
 import others.item as item
 from mods.dev_tools import debug_print
+
+def load_toml_data(file_path):
+    from mods.dev_tools import debug_print
+    with open(file_path, 'r', encoding='utf-8') as f:
+        file_data = toml.load(f)
+        debug_print(f"从 TOML 加载数据，共加载 {len(file_data)} 项")
+        return file_data
 
 @lru_cache(maxsize=1)
 def load_ascii_art_library(filepath):
