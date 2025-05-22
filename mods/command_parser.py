@@ -10,10 +10,10 @@ from data.constants import DEBUG
 from rich.console import Console
 
 import events
-import data.debug_help
+import mods.debug_help
 import ui.text as text
 from core import shops
-from tools import dev_tools as debug
+from mods import dev_tools as debug
 from inventory import Inventory_interface as interface
 from enemies import enemy_data
 from ui.clear_screen import clear_screen, enter_clear_screen, screen_wrapped
@@ -38,7 +38,7 @@ def show_help(topic=None):
     参数:
         topic: 要显示帮助信息的主题名称
     """
-    command_docs = data.debug_help.command_docs
+    command_docs = mods.debug_help.command_docs
     print(command_docs.get(topic, command_docs["default"]))
 
 def handle_command(command: str, player):

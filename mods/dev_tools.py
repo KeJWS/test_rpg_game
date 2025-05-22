@@ -44,7 +44,7 @@ def spawn_item(inventory_instance, item_name, quantity=1):
         item_name: 要生成的物品名称
         quantity: 要生成的物品数量，默认为1
     """
-    from items import equipment_data, jewel_data, hp_potion, mp_potion, grimoires
+    from data.items_data import equipment_data, jewel_data, hp_potion, mp_potion, grimoires
     # 查找装备
     if item_name in equipment_data:
         eq = equipment_data[item_name]
@@ -87,7 +87,7 @@ def spawn_all_items(inventory_instance):
     参数:
         inventory_instance: 要添加物品的背包实例
     """
-    from items import equipment_data, jewel_data, hp_potion, mp_potion, grimoires
+    from data.items_data import equipment_data, jewel_data, hp_potion, mp_potion, grimoires
     for eq in equipment_data.values():
         inventory_instance.add_item(eq.clone(amount=1))
     debug_print(f"已刷入 {len(equipment_data)} 件装备")

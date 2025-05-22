@@ -9,7 +9,9 @@
 import random
 from typing import List, Callable
 
-import combat, items, enemies
+import combat
+import data.items_data as items_data
+import enemies
 import ui.text as text
 import data.event_text as event_text
 from core import shops
@@ -351,7 +353,7 @@ class HiddenChestEvent(Event):
         if random.randint(0, 200) < min(lock_chance, 125):
             gold = random.randint(12, 35) + player.ls.level
             exp = random.randint(5, 25) * player.ls.level
-            item = items.equipment_data[self.item_name]
+            item = items_data.equipment_data[self.item_name]
             print(f"你成功打开了宝箱, 获得了不少好东西")
             player.add_money(gold)
             player.add_exp(exp)

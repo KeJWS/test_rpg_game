@@ -8,7 +8,7 @@ import data.event_text
 from world import map
 from ui.clear_screen import enter_clear_screen, clear_screen
 from inventory import Inventory_interface as interface
-from tools import command_parser as cp
+from mods import command_parser as cp
 
 console = Console()
 
@@ -43,7 +43,7 @@ def inventory_selections(player):
     """
     while (option := input("> ").lower()) != "q":
         match option:
-            case "u": clear_screen(); interface(player.inventory).use_item().activate(player) # TODO 输入 0 会报错
+            case "u": clear_screen(); item = interface(player.inventory).use_item(); item.activate(player) if item is not None else None
             case "d": clear_screen(); interface(player.inventory).drop_item()
             case "e": clear_screen(); player.equip_item(interface(player.inventory).equip_item())
             case "c": clear_screen(); interface(player.inventory).compare_equipment()

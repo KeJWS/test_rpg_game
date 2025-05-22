@@ -12,7 +12,7 @@ from copy import deepcopy
 
 from core import battler
 from data.constants import ENEMY_VARIANTS
-from tools.dev_tools import debug_print
+from mods.dev_tools import debug_print
 
 def load_enemies_from_csv(filepath):
     """
@@ -27,8 +27,9 @@ def load_enemies_from_csv(filepath):
     返回:
         dict: 以敌人ID为键，Enemy对象为值的字典
     """
-    from skills import SPELL_REGISTRY
-    import items
+    import data.items_data as items_data
+    from data.skills_data import SPELL_REGISTRY
+
     enemies = {}
     with open(filepath, newline='', encoding="utf-8") as csvfile:
         reader = csv.DictReader(csvfile)
@@ -49,7 +50,7 @@ def load_enemies_from_csv(filepath):
                 for part in drop_field.split(","):
                     if "x" in part:
                         item_name, count = part.split("x")
-                        item = items.item_factory(item_name.strip(), int(count))
+                        item = items_data.item_factory(item_name.strip(), int(count))
                         if item:
                             drop_items.append(item)
 

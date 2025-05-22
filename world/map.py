@@ -9,15 +9,16 @@
 import json
 import random
 from dataclasses import dataclass
-from copy import deepcopy
-from typing import List, Dict, Tuple, Optional
+from typing import List, Dict, Tuple
 
 from rich.console import Console
 from rich.panel import Panel
 from rich.text import Text
 from rich.table import Table
 
-import enemies, events, items
+import enemies
+import events
+import data.items_data as items_data
 import world.quest as quest
 
 console = Console()
@@ -162,7 +163,7 @@ class World_map:
         并设置初始当前地区为城镇（town）。
         """
         from world.region_factory import load_region_from_dict
-        ascii_art_dict = items.load_ascii_art_library("data/ascii_art/ascii_art_map.txt")
+        ascii_art_dict = items_data.load_ascii_art_library("data/ascii_art/ascii_art_map.txt")
         with open("data/json_data/world_map.json", "r", encoding="utf-8") as f:
             all_region_data = json.load(f)
 

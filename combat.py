@@ -21,7 +21,7 @@ import ui.text as text
 from ui.combat_utils import battle_log
 import ui.combat_utils as utils
 from ui.fx import dot_loading, typewriter
-from skills import enhance_weapon
+from data.skills_data import enhance_weapon, weakened_defense
 
 console = Console()
 
@@ -95,7 +95,6 @@ class BattleCalculator:
         副作用:
             逃跑失败时有35%概率降低单位的防御力
         """
-        from skills import weakened_defense
         escape_chance = min(90, 35 + (battler.stats["agi"] * 0.7 + battler.stats["luk"] * 0.3))
         if random.randint(1, 100) <= escape_chance:
             console.print("逃跑成功!", style="green")

@@ -13,8 +13,8 @@ from rich.console import Console
 import inventory
 import ui.text as text
 import ui.fx as fx
-from skills import skills
 from core import battler
+from data.skills_data import skills
 from others.equipment import Equipment
 from core.level_system import LevelSystem
 from inventory.interface import Inventory_interface as interface
