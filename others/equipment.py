@@ -10,10 +10,12 @@ import random
 import ascii_magic
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Tuple
+from rich.console import Console
 
-from ui import fx
 import data.constants as constants
 from others.item import Item
+
+console = Console()
 
 class Equipment(Item):
     """
@@ -184,10 +186,10 @@ class Equipment(Item):
             str: 包含多行详细信息的字符串
         """
         info = [super().get_detailed_info(), self.display_image_as_ascii()]
-        info.append(f"品质: {fx.YELLO}{self.quality}{fx.END}")
+        info.append(f"品质: \033[33m{self.quality}\033[0m")
         info.append("属性加成:")
         for stat, val in self.stat_change_list.items():
-            info.append(f"  {fx.GREEN}{stat}: {val:+d}{fx.END}")
+            info.append(f"  \033[32m{stat}: {val:+d}\033[0m")
         return "\n".join(info)
 
     def compare_with(self, other: Any) -> str:

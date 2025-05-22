@@ -9,10 +9,12 @@
 import random
 import sys
 sys.path.append("..")
+from rich.console import Console
 
-from ui import fx
-from ui.clear_screen import enter_clear_screen
+from ui import enter_clear_screen
 from data import equipment_data, jewel_data, hp_potion, mp_potion, grimoires, basic_equipments
+
+console = Console()
 
 def give_initial_items(my_player):
     """
@@ -106,9 +108,10 @@ def apply_class_bonuses(my_player):
         for stat, value in bonuses.items():
             my_player.stats[stat] += value
             if value > 0:
-                print(fx.cyan(f"{stat} +{value}"))
+                console.print(f"[cyan]{stat} +{value}[/cyan]")
             else:
-                print(fx.red(f"{stat} -{abs(value)}"))
+                console.print(f"[red]{stat} -{abs(value)}[/red]")
+        print()
         my_player.recover_mp(9999); my_player.heal(9999)
 
 def default_selection_warrior(my_player):

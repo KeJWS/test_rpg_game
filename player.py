@@ -11,14 +11,13 @@ import random
 from rich.console import Console
 
 import bag
-from ui import fx
 from ui import text
+from ui import clear_screen
 from core import battler
 from data import ALL_SKILLS
 from others.equipment import Equipment
 from core.level_system import LevelSystem
 from bag.interface import InventoryInterface as interface
-from ui.clear_screen import clear_screen
 
 console = Console()
 
@@ -156,11 +155,11 @@ class Player(battler.Battler):
         """
         for slot, eq in self.equipment.items():
             if not eq: continue
-            print(f"- 已卸下 {eq.name}")
+            console.print(f"- 已卸下 [cyan]{eq.name}[/cyan]")
             for stat, value in eq.stat_change_list.items():
-                self.stats[stat] -= value; print(fx.red(f"  {stat} -{value}"))
-            if eq.combo in self.combos: self.combos.remove(eq.combo); print(f"  不再可用连招: {eq.combo.name}")
-            if eq.spell in self.spells: self.spells.remove(eq.spell); print(f"  不再可用技能: {eq.spell.name}")
+                self.stats[stat] -= value; console.print(f"[red]  {stat} -{value}[/red]")
+            if eq.combo in self.combos: self.combos.remove(eq.combo); console.print(f"  不再可用连招: [red]{eq.combo.name}[/red]")
+            if eq.spell in self.spells: self.spells.remove(eq.spell); console.print(f"  不再可用技能: [red]{eq.spell.name}[/red]")
             self.inventory.add_item(eq)
             self.equipment[slot] = None
         print("所有装备已解除")
@@ -320,7 +319,7 @@ class Player(battler.Battler):
             - 清空所有任务状态
             - 重置世界地图上的所有任务
         """
-        print(fx.cyan("你选择了转生! 重置所有成长, 但保留了财富与物品"))
+        console.print("你选择了转生! 重置所有成长, 但保留了财富与物品", style="cyan")
         self.unequip_all()
         saved_money, saved_inventory, saved_class = self.money, self.inventory, self.ls.class_name
         self.__init__(self.name)
@@ -330,7 +329,7 @@ class Player(battler.Battler):
         for region in world_map.regions.values():
             for q in region.quests:
                 q.status = "Not Active"
-        print(fx.cyan(f"你以 Lv.{self.ls.level} 重生，保留了 {self.money} 金币和背包物品!"))
+        console.print(f"你以 Lv.{self.ls.level} 重生，保留了 {self.money} 金币和背包物品!", style="cyan")
         interface(self.inventory).show_inventory()
 
     def change_auto_mode(self):

@@ -15,7 +15,7 @@ from rich.panel import Panel
 from rich.text import Text
 from rich import box
 
-from ui.clear_screen import clear_screen
+from ui import clear_screen
 
 console = Console()
 

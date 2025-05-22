@@ -15,8 +15,8 @@ from ui import text
 from core import shops
 from mods import dev_tools as debug
 from bag import InventoryInterface as interface
-from enemies import enemy_data
-from ui.clear_screen import clear_screen, enter_clear_screen, screen_wrapped
+from enemies import ENEMY_DATA
+from ui import clear_screen, enter_clear_screen, screen_wrapped
 
 console = Console()
 
@@ -81,8 +81,8 @@ def handle_command(command: str, player):
     elif main == "a" and sub == "d":
         if len(tokens) >= 3 and tokens[1] == "-db":
             enemy_name = tokens[2]
-            if enemy_name in enemy_data:
-                enemy = enemy_data[enemy_name].clone()
+            if enemy_name in ENEMY_DATA:
+                enemy = ENEMY_DATA[enemy_name].clone()
                 clear_screen()
                 text.display_battle_stats(player, enemy)
                 enter_clear_screen()
@@ -103,7 +103,6 @@ def handle_shop_command(shop_name, shop_data, tokens, player):
         shop_name: 商店名称
         shop_data: 商店数据对象，包含物品集合
         tokens: 命令分割后的标记列表
-        player: 当前玩家对象
     """
     if tokens[1] == "-buy":
         clear_screen()
@@ -119,7 +118,6 @@ def handle_p_command(tokens, player):
 
     参数:
         tokens: 命令分割后的标记列表
-        player: 当前玩家对象
     """
     subcommand_map = {
         "-hp": screen_wrapped(lambda: print(f"HP: {player.stats['hp']}/{player.stats['max_hp']}")),
@@ -155,7 +153,6 @@ def handle_pi_command(tokens, player):
 
     参数:
         tokens: 命令分割后的标记列表
-        player: 当前玩家对象
     """
     inv = player.inventory
     subcommand_map = {
@@ -195,7 +192,6 @@ def handle_level_command(tokens, player):
 
     参数:
         tokens: 命令分割后的标记列表
-        player: 当前玩家对象
     """
     if not DEBUG:
         return
@@ -215,7 +211,6 @@ def handle_spawn_item_command(tokens, player):
 
     参数:
         tokens: 命令分割后的标记列表
-        player: 当前玩家对象
     """
     if len(tokens) >= 3:
         item_name = tokens[2]

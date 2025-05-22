@@ -53,12 +53,12 @@ ENEMY_VARIANTS = {
 }
 
 POSSIBLE_ENEMIES = {
-    "slime": (1, 3),
-    "imp": (1, 5),
-    "golem": (1, 7),
+    "slime": (1, 2),
+    "imp": (1, 3),
+    "golem": (1, 5),
     "skeleton": (2, 9),
     "bandit": (2, 11),
     "goblin": (3, 12),
     "giant_slime": (4, 15),
-    "lizard_scout": (4, 19),
+    "lizard_scout": (4, 18),
 }

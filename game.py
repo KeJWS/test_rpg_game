@@ -5,7 +5,7 @@ import player
 import data.event_text
 from ui import text
 from world import map
-from ui.clear_screen import enter_clear_screen, clear_screen
+from ui import enter_clear_screen, clear_screen
 from bag import InventoryInterface as interface
 from mods import command_parser as cp
 

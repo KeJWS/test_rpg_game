@@ -8,8 +8,7 @@
 
 from rich.console import Console
 
-from ui import fx
-from ui.clear_screen import clear_screen
+from ui import clear_screen
 
 console = Console()
 
@@ -75,7 +74,7 @@ class InventoryInterface:
 
         以表格形式展示库存中所有物品，并显示容量摘要信息。
         """
-        print(f"{fx.BOLD_UNDERLINED}背包内容:{fx.END}")
+        console.print("背包内容:", style="bold underline")
         table_panel, summary_text = self.inventory.get_formatted_inventory_table()
         console.print(table_panel)
         console.print(summary_text)
@@ -219,7 +218,7 @@ class InventoryInterface:
         if not self.inventory.items:
             print("背包为空")
             return None
-        print(f"{fx.BOLD}选择一个物品查看详情:{fx.END}")
+        console.print("选择一个物品查看详情", style="bold")
         self.show_inventory()
         while True:
             choice = input("输入编号 (或 0 取消): ")

@@ -10,8 +10,9 @@ from data import DEBUG
 import os
 import inspect
 from datetime import datetime
+from rich.console import Console
 
-from ui import fx
+console = Console()
 
 def debug_print(*args, **kwargs):
     """
@@ -29,7 +30,7 @@ def debug_print(*args, **kwargs):
         filename = os.path.basename(frame.f_code.co_filename)
         lineno = frame.f_lineno
         timestamp = datetime.now().strftime("%H:%M:%S")
-        print(f"{fx.CYAN}[DEBUG {timestamp} {filename}:{lineno}]{fx.END}", *args, **kwargs)
+        console.print(f"[cyan][DEBUG {timestamp} {filename}:{lineno}][/cyan]", *args, **kwargs)
 
 def spawn_item(inventory_instance, item_name, quantity=1):
     """

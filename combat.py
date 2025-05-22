@@ -17,10 +17,9 @@ import math, random
 from typing import List
 from rich.console import Console
 
-import ui.combat_utils as utils
 from ui import text
-from ui.combat_utils import battle_log
-from ui.fx import dot_loading, typewriter
+from ui import battle_log, get_valid_input
+from ui import dot_loading, typewriter
 from data import enhance_weapon, weakened_defense
 
 console = Console()
@@ -146,7 +145,7 @@ class CombatManager:
             Battler: 选择的目标单位
         """
         text.select_objective(targets)
-        index = utils.get_valid_input("> ", range(1, len(targets)+1), int)
+        index = get_valid_input("> ", range(1, len(targets)+1), int)
         return targets[index - 1]
 
     @staticmethod

@@ -7,7 +7,7 @@
 """
 
 from rich.console import Console
-from ui import fx
+from ui import typewriter
 
 console = Console()
 
@@ -238,7 +238,7 @@ class Item:
         return (
             f"\n名称: {self.name}\n"
             f"类型: {self.object_type}\n"
-            f"价值: {fx.YELLO}{self.individual_value}G{fx.END}\n"
+            f"价值: \033[33m{self.individual_value}G\033[0m\n"
             f"描述: {self.description}\n"
             f"数量: x{self.amount}\n"
         )
@@ -405,7 +405,7 @@ class Jewel(Item):
         print(f"{caster.name} 使用了一个 {self.name}")
         if self.stat in caster.stats:
             caster.stats[self.stat] += self.amount_to_change
-            fx.typewriter(fx.yellow(f"{self.stat} 增加了 {self.amount_to_change} 点"))
+            typewriter(f"\033[33m{self.stat} 增加了 {self.amount_to_change} 点\033[0m")
 
     def clone(self, amount):
         return Jewel(self.name, self.description, amount, self.individual_value, self.stat, self.amount_to_change)

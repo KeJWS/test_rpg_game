@@ -277,38 +277,38 @@ def create_enemy_group(level, possible_enemies, enemy_quantity_for_level):
     group = []
     for _ in range(num_enemies):
         enemy_id = random.choice(valid_enemy_ids)
-        enemy = enemy_data[enemy_id].clone()  # 这里每个 enemy 都有自己独立的变体生成逻辑
+        enemy = ENEMY_DATA[enemy_id].clone()  # 这里每个 enemy 都有自己独立的变体生成逻辑
         group.append(enemy)
     return group
 
-enemy_data = load_enemies_from_csv("data/csv_data/enemies.csv")
+ENEMY_DATA = load_enemies_from_csv("data/csv_data/enemies.csv")
 
-possible_enemies = POSSIBLE_ENEMIES
+g_possible_enemies = POSSIBLE_ENEMIES
 
 # Boss 固定战
 # TODO 每杀死一个, 游戏中便减少一个
-enemy_list_caesarus_bandit = [
-    enemy_data["caesarus_bandit_leader"].clone(),
-    enemy_data["bandit"].clone(),
-    enemy_data["bandit"].clone(),
+caesarus_bandit_lists = [
+    ENEMY_DATA["caesarus_bandit_leader"].clone(),
+    ENEMY_DATA["bandit"].clone(),
+    ENEMY_DATA["bandit"].clone(),
 ]
 
-enemy_list_fight_against_slime = [
-    enemy_data["giant_slime"].clone(),
-    enemy_data["slime"].clone(),
-    enemy_data["slime"].clone(),
-    enemy_data["slime"].clone(),
+giant_slime_lists = [
+    ENEMY_DATA["giant_slime"].clone(),
+    ENEMY_DATA["slime"].clone(),
+    ENEMY_DATA["slime"].clone(),
+    ENEMY_DATA["slime"].clone(),
 ]
 
-enemy_list_fight_against_slime_king = [
-    enemy_data["slime_king"].clone(),
-    enemy_data["giant_slime"].clone(),
-    enemy_data["giant_slime"].clone(),
+slime_king_lists = [
+    ENEMY_DATA["slime_king"].clone(),
+    ENEMY_DATA["giant_slime"].clone(),
+    ENEMY_DATA["giant_slime"].clone(),
 ]
 
-enemy_list_fight_against_wolf_king = [
-    enemy_data["wolf_king"].clone(),
-    enemy_data["wolf"].clone(),
-    enemy_data["wolf"].clone(),
-    enemy_data["wolf"].clone(),
+wolf_king_lists = [
+    ENEMY_DATA["wolf_king"].clone(),
+    ENEMY_DATA["wolf"].clone(),
+    ENEMY_DATA["wolf"].clone(),
+    ENEMY_DATA["wolf"].clone(),
 ]

@@ -63,9 +63,6 @@ class Region:
 
         筛选出该地区中未开始且未完成的任务，这些任务可供玩家接取。
 
-        参数:
-            player: 当前玩家对象
-
         返回:
             list: 可接受任务的列表
         """
@@ -77,9 +74,6 @@ class Region:
 
         筛选出玩家已接取但尚未完成的该地区任务。
 
-        参数:
-            player: 当前玩家对象
-
         返回:
             list: 已激活未完成任务的列表
         """
@@ -90,9 +84,6 @@ class Region:
         返回该地区已完成的任务。
 
         筛选出玩家在该地区已完成的任务。
-
-        参数:
-            player: 当前玩家对象
 
         返回:
             list: 已完成任务的列表
@@ -128,7 +119,7 @@ class World_map:
         为各个地区创建并添加特殊事件，如BOSS战斗、环境危害等。
         这些事件通常具有较低的触发概率，但会对游戏进程产生较大影响。
         """
-        shadow_wolf = enemies.enemy_data["shadow_wolf"].clone()
+        shadow_wolf = enemies.ENEMY_DATA["shadow_wolf"].clone()
         forest_boss_combat = events.FixedCombatEvent(
             "影狼袭击", 
             [shadow_wolf]
@@ -262,9 +253,6 @@ class World_map:
         分类显示当前地区的可接受任务、正在进行的任务和已完成的任务。
         每个任务显示其名称和推荐等级。
 
-        参数:
-            player: 当前玩家对象
-
         返回:
             list: 可接受任务的列表，用于后续任务接取操作
         """
@@ -299,7 +287,6 @@ class World_map:
         显示任务描述并询问玩家是否接受，如接受则激活任务。
 
         参数:
-            player: 当前玩家对象
             quest_index: 要接受的任务在可用任务列表中的索引
             available_quests: 可用任务列表
         """
@@ -327,7 +314,6 @@ class World_map:
         最后有小概率触发特殊事件。
 
         参数:
-            player: 当前玩家对象
             combot_chance: 战斗事件发生的概率（0-100）
             shop_chance: 商店事件发生的概率（0-100）
             heal_chance: 治疗事件发生的概率（0-100）
@@ -377,9 +363,10 @@ class World_map:
 
         if event_type == "combat":
             combat_event = events.RandomCombatEvent(f"{self.current_region.name}的随机战斗")
-            enemies.possible_enemies = self.current_region.possible_enemies
+            enemies.g_possible_enemies = self.current_region.possible_enemies
             combat_event.effect(player)
             return
+
         elif event_type == "shop":
             shop_event = random.choice(self.current_region.shop_events)
             shop_event.effect(player)

@@ -16,3 +16,6 @@ z666/
 venv/
 doc/skills.md
 doc/项目结构.md
+doc/核心代码分析.md
+ui/combat_utils.md
+ui/fx.md

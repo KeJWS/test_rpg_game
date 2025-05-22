@@ -63,10 +63,10 @@ SHOP_EVENTS = {
 }
 
 COMBAT_EVENTS = {
-    "fight_against_slime_combat": events.FixedCombatEvent("史莱姆狩猎", enemies.enemy_list_fight_against_slime),
-    "fight_against_slime_king_combat": events.FixedCombatEvent("史莱姆之王", enemies.enemy_list_fight_against_slime_king),
-    "caesarus_bandit_combat": events.FixedCombatEvent("凯撒鲁斯与他的强盗", enemies.enemy_list_caesarus_bandit),
-    "wolf_king_combat": events.FixedCombatEvent("夜行狼王", enemies.enemy_list_fight_against_wolf_king),
+    "fight_against_slime_combat": events.FixedCombatEvent("史莱姆狩猎", enemies.giant_slime_lists),
+    "fight_against_slime_king_combat": events.FixedCombatEvent("史莱姆之王", enemies.slime_king_lists),
+    "caesarus_bandit_combat": events.FixedCombatEvent("凯撒鲁斯与他的强盗", enemies.caesarus_bandit_lists),
+    "wolf_king_combat": events.FixedCombatEvent("夜行狼王", enemies.wolf_king_lists),
 }
 
 OTHER_EVENTS = {

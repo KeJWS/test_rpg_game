@@ -14,8 +14,9 @@ import enemies
 import data.event_text as ev
 from ui import text
 from core import shops
+from data import POSSIBLE_ENEMIES
 from bag import InventoryInterface as interface
-from ui.clear_screen import enter_clear_screen, clear_screen
+from ui import enter_clear_screen, clear_screen
 
 def ask_yes_no(prompt="> "):
     """
@@ -97,11 +98,8 @@ class RandomCombatEvent(Event):
         触发随机战斗事件的效果。
 
         根据玩家等级创建敌人组合并开始战斗。
-
-        参数:
-            player: 当前玩家对象
         """
-        enemy_group = enemies.create_enemy_group(player.ls.level, enemies.possible_enemies, self.enemy_quantity_for_level)
+        enemy_group = enemies.create_enemy_group(player.ls.level, enemies.g_possible_enemies, self.enemy_quantity_for_level)
         combat.combat(player, enemy_group)
 
 class FixedCombatEvent(Event):
@@ -127,9 +125,6 @@ class FixedCombatEvent(Event):
         触发固定战斗事件的效果。
 
         使用预设的敌人列表开始战斗。
-
-        参数:
-            player: 当前玩家对象
 
         返回:
             bool: 战斗结果，True表示玩家逃跑，False表示战斗结束
@@ -165,9 +160,6 @@ class ShopEvent(Event):
 
         显示商店界面，允许玩家进行各种商店操作，如购买、
         出售物品、与商人交谈等。
-
-        参数:
-            player: 当前玩家对象
         """
         print(self.encounter)
         if ask_yes_no():
@@ -218,9 +210,6 @@ class HealingEvent(Event):
 
         询问玩家是否使用治疗源，如果同意则根据成功概率
         决定是否恢复生命值。
-
-        参数:
-            player: 当前玩家对象
         """
         print(self.encounter)
         if not ask_yes_no():
@@ -261,9 +250,6 @@ class DamageEvent(Event):
 
         询问玩家是否尝试避开危险，结合成功概率决定
         玩家是否受到伤害。
-
-        参数:
-            player: 当前玩家对象
         """
         print(self.encounter)
         if ask_yes_no() and self.check_success():
@@ -301,9 +287,6 @@ class InnEvent(HealingEvent):
 
         询问玩家是否入住旅店，检查金币是否足够，
         如果条件满足则恢复生命值并扣除金币。
-
-        参数:
-            player: 当前玩家对象
         """
         print(self.encounter)
         if ask_yes_no():
@@ -340,29 +323,26 @@ class HiddenChestEvent(Event):
 
         询问玩家是否尝试开启宝箱，根据玩家属性计算成功率。
         成功则获得金币、经验和物品；失败则受到伤害并触发战斗。
-
-        参数:
-            player: 当前玩家对象
         """
         from data import equipment_data
-        print("你发现了一个隐藏的宝箱，尝试开锁? [y/n]")
+        print(ev.dialogue['hidden_chest']['encounter'])
         if not ask_yes_no():
-            print("你决定不去动这个宝箱")
+            print(ev.dialogue['hidden_chest']['refuse'])
             return
         lock_chance = player.stats["luk"] * 2 + player.stats["agi"] * 1.25 + player.ls.level
         if random.randint(0, 200) < min(lock_chance, 125):
             gold = random.randint(12, 35) + player.ls.level
             exp = random.randint(5, 25) * player.ls.level
             item = equipment_data[self.item_name]
-            print(f"你成功打开了宝箱, 获得了不少好东西")
+            print(ev.dialogue['hidden_chest']['success'])
             player.add_money(gold)
             player.add_exp(exp)
             item.add_to_inventory_player(player.inventory)
         else:
             damage = int(player.stats["max_hp"] * 0.2)
-            print("你触发了陷阱, 遭受伤害并引来了敌人!")
+            print(ev.dialogue['hidden_chest']['fail'])
             player.take_dmg(damage)
-            enemy_group = enemies.create_enemy_group(player.ls.level, enemies.possible_enemies, {100: 4})
+            enemy_group = enemies.create_enemy_group(player.ls.level, POSSIBLE_ENEMIES, {100: 4})
             combat.combat(player, enemy_group)
 
 class SimpleEvent(Event):
@@ -388,47 +368,23 @@ class SimpleEvent(Event):
         触发简单事件的效果。
 
         调用预设的效果函数并传入玩家对象。
-
-        参数:
-            player: 当前玩家对象
         """
         self._effect_func(player)
 
 def find_coins(player):
-    """
-    发现金币事件处理函数。
-
-    玩家发现少量金币，金额基于玩家等级。
-
-    参数:
-        player: 当前玩家对象
-    """
+    """玩家发现少量金币，金额基于玩家等级。"""
     gold = random.randint(1, 5) * player.ls.level
     print(ev.dialogue['simple_event']['find_coins'])
     player.add_money(gold)
 
 def admire_scenery(player):
-    """
-    欣赏风景事件处理函数。
-
-    玩家欣赏环境风景，获得少量经验值。
-
-    参数:
-        player: 当前玩家对象
-    """
+    """玩家欣赏环境风景，获得少量经验值。"""
     exp = random.randint(5, 15) + player.ls.level
     print(ev.dialogue['simple_event']['admire_scenery'])
     player.add_exp(exp)
 
 def friendly_villager(player):
-    """
-    友好村民事件处理函数。
-
-    遇到友好的村民，获得少量金币和生命恢复。
-
-    参数:
-        player: 当前玩家对象
-    """
+    """遇到友好的村民，获得少量金币和生命恢复。"""
     gold = random.randint(5, 10)
     healing = int(player.stats["max_hp"] * 0.1)
     print(ev.dialogue['simple_event']['friendly_villager'])
@@ -436,27 +392,13 @@ def friendly_villager(player):
     player.heal(healing)
 
 def find_herb(player):
-    """
-    发现草药事件处理函数。
-
-    玩家发现治疗草药，恢复一定量的生命值。
-
-    参数:
-        player: 当前玩家对象
-    """
+    """玩家发现治疗草药，恢复一定量的生命值。"""
     healing = int(player.stats["max_hp"] * 0.2)
     print(ev.dialogue['simple_event']['find_herb'])
     player.heal(healing)
 
 def rest_spot(player):
-    """
-    休息地点事件处理函数。
-
-    玩家发现安全的休息处，恢复较多生命值。
-
-    参数:
-        player: 当前玩家对象
-    """
+    """玩家发现安全的休息处，恢复较多生命值。"""
     healing = int(player.stats["max_hp"] * 0.3)
     print(ev.dialogue['simple_event']['rest_spot'])
     player.heal(healing)

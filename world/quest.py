@@ -178,9 +178,6 @@ class Quest():
 
         检查是否满足收集条件，如果满足则完成任务并从玩家背包中
         移除所需物品。适用于物品收集类型的任务。
-
-        参数:
-            player: 当前玩家对象
         """
         if self.status == "Active" and self.check_item_collection(player):
             print(f"已收集完所需物品，任务『{self.name}』完成！")
