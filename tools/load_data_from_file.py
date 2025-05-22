@@ -6,9 +6,45 @@ CSV数据加载模块，用于从CSV文件中加载游戏数据。
 """
 
 import csv
+from functools import lru_cache
 
 import others.item as item
 from mods.dev_tools import debug_print
+
+@lru_cache(maxsize=1)
+def load_ascii_art_library(filepath):
+    """
+    加载ASCII艺术资源并缓存结果。
+
+    从指定文件中读取并解析ASCII艺术资源，将其存储在字典中。
+    使用lru_cache装饰器缓存结果，避免重复加载。
+
+    参数:
+        filepath: ASCII艺术资源文件路径
+
+    返回:
+        dict: 以标签为键，ASCII艺术内容为值的字典
+    """
+    ascii_art_dict = {}
+    current_key = None
+    current_lines = []
+
+    with open(filepath, encoding='utf-8') as file:
+        for line in file:
+            line = line.rstrip('\n')
+            if line.startswith("[") and line.endswith("]"):
+                if line.startswith("[/"):  # 结束标签
+                    if current_key:
+                        ascii_art_dict[current_key] = "\n".join(current_lines)
+                        current_key = None
+                else:  # 起始标签
+                    current_key = line[1:-1].strip()
+                    current_lines = []
+            elif current_key:
+                current_lines.append(line)
+
+    debug_print(f"加载 ASCII 艺术资源，共加载 {len(ascii_art_dict)} 项")
+    return ascii_art_dict
 
 def load_jewel_from_csv(filepath="data/csv_data/jewels.csv"):
     """

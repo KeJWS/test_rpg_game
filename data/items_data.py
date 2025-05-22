@@ -8,50 +8,14 @@
 
 import ast
 import csv
-from functools import lru_cache
 
-import data.skills_data as skills_data
 import others.item as item
+from data import ALL_SKILLS
 from others.equipment import Equipment
-from tools.load_data_from_csv import load_jewel_from_csv, load_food_from_csv
+from tools.load_data_from_file import load_jewel_from_csv, load_food_from_csv
 from mods.dev_tools import debug_print
 
-@lru_cache(maxsize=1)
-def load_ascii_art_library(filepath):
-    """
-    加载ASCII艺术资源并缓存结果。
-
-    从指定文件中读取并解析ASCII艺术资源，将其存储在字典中。
-    使用lru_cache装饰器缓存结果，避免重复加载。
-
-    参数:
-        filepath: ASCII艺术资源文件路径
-
-    返回:
-        dict: 以标签为键，ASCII艺术内容为值的字典
-    """
-    ascii_art_dict = {}
-    current_key = None
-    current_lines = []
-
-    with open(filepath, encoding='utf-8') as file:
-        for line in file:
-            line = line.rstrip('\n')
-            if line.startswith("[") and line.endswith("]"):
-                if line.startswith("[/"):  # 结束标签
-                    if current_key:
-                        ascii_art_dict[current_key] = "\n".join(current_lines)
-                        current_key = None
-                else:  # 起始标签
-                    current_key = line[1:-1].strip()
-                    current_lines = []
-            elif current_key:
-                current_lines.append(line)
-
-    debug_print(f"加载 ASCII 艺术资源，共加载 {len(ascii_art_dict)} 项")
-    return ascii_art_dict
-
-def load_equipment_from_csv(filepath="data/csv_data/equipments.csv", skill_dict=skills_data.skills):
+def load_equipment_from_csv(filepath="data/csv_data/equipments.csv", skill_dict=ALL_SKILLS):
     """
     从CSV文件加载装备数据。
 
@@ -204,12 +168,12 @@ jewel_data = load_jewel_from_csv()
 
 # 魔法书数据构造
 grimoire_data = [
-    ("魔法书：火球术", "基础火焰魔法，释放灼热火球。", 1, 80, skills_data.skills["火球术"]),
-    ("魔法书：神圣祝福", "可恢复生命，带来圣光的治愈。", 1, 120, skills_data.skills["神圣祝福"]),
-    ("魔法书：增强武器", "短时间内强化武器攻击力。", 1, 120, skills_data.skills["强化武器"]),
-    ("魔法书: 地狱火", "召唤烈焰吞噬所有敌人。", 1, 210, skills_data.skills["地狱火"]),
-    ("唤灵书: 骷髅召唤", "召唤骷髅战士作战。", 1, 195, skills_data.skills["召唤骷髅"]),
-    ("唤灵书: 火精灵", "召唤火焰元素协助作战。", 1, 325, skills_data.skills["召唤火精灵"]),
+    ("魔法书：火球术", "基础火焰魔法，释放灼热火球。", 1, 80, ALL_SKILLS["火球术"]),
+    ("魔法书：神圣祝福", "可恢复生命，带来圣光的治愈。", 1, 120, ALL_SKILLS["神圣祝福"]),
+    ("魔法书：增强武器", "短时间内强化武器攻击力。", 1, 120, ALL_SKILLS["强化武器"]),
+    ("魔法书: 地狱火", "召唤烈焰吞噬所有敌人。", 1, 210, ALL_SKILLS["地狱火"]),
+    ("唤灵书: 骷髅召唤", "召唤骷髅战士作战。", 1, 195, ALL_SKILLS["召唤骷髅"]),
+    ("唤灵书: 火精灵", "召唤火焰元素协助作战。", 1, 325, ALL_SKILLS["召唤火精灵"]),
 ]
 grimoires = [item.Grimoire(n, d, a, v, "consumable", s) for n, d, a, v, s in grimoire_data]
 

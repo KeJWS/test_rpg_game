@@ -535,7 +535,7 @@ def display_battle_stats(attacker, defender):
         attacker: 攻击者对象
         defender: 防御者对象
     """
-    from data.constants import DEBUG
+    from data import DEBUG
     if not DEBUG:
         return
 

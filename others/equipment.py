@@ -11,7 +11,7 @@ import ascii_magic
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Tuple
 
-import ui.fx as fx
+from ui import fx
 import data.constants as constants
 from others.item import Item
 

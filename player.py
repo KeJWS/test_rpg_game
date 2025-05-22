@@ -6,18 +6,18 @@
 作为游戏核心组件，与战斗系统、物品系统和任务系统紧密交互。
 """
 
+from data import MONEY_MULTIPLIER
 import random
-from data.constants import MONEY_MULTIPLIER
 from rich.console import Console
 
-import inventory
-import ui.text as text
-import ui.fx as fx
+import bag
+from ui import fx
+from ui import text
 from core import battler
-from data.skills_data import skills
+from data import ALL_SKILLS
 from others.equipment import Equipment
 from core.level_system import LevelSystem
-from inventory.interface import Inventory_interface as interface
+from bag.interface import InventoryInterface as interface
 from ui.clear_screen import clear_screen
 
 console = Console()
@@ -67,7 +67,7 @@ class Player(battler.Battler):
         self.ls = LevelSystem()
         self.combo_points = 0
         self.aptitudes = {k: 0 for k in ("str", "dex", "int", "wis", "const")}
-        self.inventory = inventory.Inventory()
+        self.inventory = bag.Inventory()
         self.equipment = {
             "weapon": None,
             "shield": None,

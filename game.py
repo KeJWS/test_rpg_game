@@ -2,12 +2,11 @@ import sys
 from rich.console import Console
 
 import player
-import ui.text as text
 import data.event_text
-
+from ui import text
 from world import map
 from ui.clear_screen import enter_clear_screen, clear_screen
-from inventory import Inventory_interface as interface
+from bag import InventoryInterface as interface
 from mods import command_parser as cp
 
 console = Console()

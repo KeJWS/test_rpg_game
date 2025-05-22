@@ -8,7 +8,7 @@
 
 from rich.console import Console
 
-import ui.fx as fx
+from ui import fx
 from ui.clear_screen import clear_screen
 
 console = Console()
@@ -47,7 +47,7 @@ def select_item_from_list(item_list, prompt="选择一个物品:", allow_exit=Tr
                 return item_list[choice_num - 1]
         print("无效输入")
 
-class Inventory_interface:
+class InventoryInterface:
     """
     库存界面类，提供与物品库存交互的用户界面。
 

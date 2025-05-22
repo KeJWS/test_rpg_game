@@ -8,7 +8,7 @@
 import random
 import sys
 sys.path.append("..")
-import inventory
+import bag
 
 class Shop():
     """
@@ -32,7 +32,7 @@ class Shop():
             item_set (list): 可售卖物品的集合，商店将从中随机选择物品
         """
         self.item_set = item_set
-        self.inventory = inventory.Inventory()
+        self.inventory = bag.Inventory()
         self.add_items_to_inventory_shop()
 
     def add_items_to_inventory_shop(self):

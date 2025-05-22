@@ -1,8 +1,8 @@
 from typing import List, Tuple
 
+DEBUG = True
 MONEY_MULTIPLIER = 1 # 金钱倍率
 EXPERIENCE_RATE = 1 # 经验倍率
-DEBUG = True
 
 # 品质配置: 名称, 价格倍率, 属性倍率, 权重
 QUALITY_CONFIG: List[Tuple[str, float, float, int]] = [

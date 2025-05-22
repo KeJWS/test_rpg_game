@@ -1,10 +1,10 @@
-from skills.loader import load_skills_from_json, SPELL_CLASS_MAP
-from skills.skills_types import ArcaneBarrage
+from skills import load_skills_from_json, SPELL_CLASS_MAP
+from skills import ArcaneBarrage
 
-skills = load_skills_from_json()
+ALL_SKILLS = load_skills_from_json()
 
-enhance_weapon = skills["蓄力"]
-weakened_defense = skills["破防"]
+enhance_weapon = ALL_SKILLS["蓄力"]
+weakened_defense = ALL_SKILLS["破防"]
 
 arcane_barrage = ArcaneBarrage("奥术弹幕 I", "发射多枚奥术飞弹，对敌人造成伤害", 0, 90, True, None, (3, 5))
 arcane_barrage2 = ArcaneBarrage("奥术弹幕 II", "发射多枚奥术飞弹，对敌人造成伤害", 0, 145, True, None, (4, 7))

@@ -7,40 +7,77 @@
 """
 
 import random
+from typing import Dict, List, Any
 
 import events
 import enemies
-import data.items_data as items_data
-from world import quest
 import data.event_text as ev
+from data import items_data
+from data import equipment_data
+from world import quest
 from world.map import Region
 
-EVENT_MAPPING = {
-    "shop_jack_weapon": events.ShopEvent("杰克的武器店", False, ev.dialogue['jack_shop']['encounter'], ev.dialogue['jack_shop']['enter'], \
-                            ev.dialogue['jack_shop']['talk'], ev.dialogue['jack_shop']['exit'], items_data.jack_weapon_shop_set),
-    "shop_anna_armor": events.ShopEvent("安娜的防具店", False, ev.dialogue['anna_shop']['encounter'], ev.dialogue['anna_shop']['enter'], \
-                            ev.dialogue['anna_shop']['talk'], ev.dialogue['anna_shop']['exit'], items_data.anna_armor_shop_set),
-    "mary_food_stall": events.ShopEvent("玛丽的小吃摊", False, ev.dialogue['mary_shop']['encounter'], ev.dialogue['mary_shop']['enter'], \
-                            ev.dialogue['mary_shop']['talk'], ev.dialogue['mary_shop']['exit'], items_data.mary_food_stall_set),
-    "shop_rik_armor": events.ShopEvent("里克的盔甲店", False, ev.dialogue['rik_shop']['encounter'], ev.dialogue['rik_shop']['enter'], \
-                            ev.dialogue['rik_shop']['talk'], ev.dialogue['rik_shop']['exit'], items_data.rik_armor_shop_item_set),
-    "shop_lok_armor": events.ShopEvent("青铜匠武具店", False, ev.dialogue['lok_shop']['encounter'], ev.dialogue['lok_shop']['enter'], \
-                            ev.dialogue['lok_shop']['talk'], ev.dialogue['lok_shop']['exit'], items_data.lok_armor_shop_item_set),
-    "shop_itz_magic": events.ShopEvent("伊兹的魔法店", False, ev.dialogue['itz_shop']['encounter'], ev.dialogue['itz_shop']['enter'], \
-                            ev.dialogue['itz_shop']['talk'], ev.dialogue['itz_shop']['exit'], items_data.itz_magic_item_set),
-    "mysterious_businessman": events.ShopEvent("神秘商人", False, ev.dialogue['mysterious_shop']['encounter'], ev.dialogue['mysterious_shop']['enter'], \
-                            ev.dialogue['mysterious_shop']['talk'], ev.dialogue['mysterious_shop']['exit'], items_data.rik_armor_shop_item_set),
+SHOP_EVENTS = {
+    "shop_jack_weapon": events.ShopEvent(
+        "杰克的武器店", False,
+        ev.dialogue['jack_shop']['encounter'], ev.dialogue['jack_shop']['enter'],
+        ev.dialogue['jack_shop']['talk'], ev.dialogue['jack_shop']['exit'],
+        items_data.jack_weapon_shop_set
+    ),
+    "shop_anna_armor": events.ShopEvent(
+        "安娜的防具店", False,
+        ev.dialogue['anna_shop']['encounter'], ev.dialogue['anna_shop']['enter'],
+        ev.dialogue['anna_shop']['talk'], ev.dialogue['anna_shop']['exit'],
+        items_data.anna_armor_shop_set
+    ),
+    "mary_food_stall": events.ShopEvent(
+        "玛丽的小吃摊", False,
+        ev.dialogue['mary_shop']['encounter'], ev.dialogue['mary_shop']['enter'],
+        ev.dialogue['mary_shop']['talk'], ev.dialogue['mary_shop']['exit'],
+        items_data.mary_food_stall_set
+    ),
+    "shop_rik_armor": events.ShopEvent(
+        "里克的盔甲店", False,
+        ev.dialogue['rik_shop']['encounter'], ev.dialogue['rik_shop']['enter'],
+        ev.dialogue['rik_shop']['talk'], ev.dialogue['rik_shop']['exit'],
+        items_data.rik_armor_shop_item_set
+    ),
+    "shop_lok_armor": events.ShopEvent(
+        "青铜匠武具店", False,
+        ev.dialogue['lok_shop']['encounter'], ev.dialogue['lok_shop']['enter'],
+        ev.dialogue['lok_shop']['talk'], ev.dialogue['lok_shop']['exit'],
+        items_data.lok_armor_shop_item_set
+    ),
+    "shop_itz_magic": events.ShopEvent(
+        "伊兹的魔法店", False,
+        ev.dialogue['itz_shop']['encounter'], ev.dialogue['itz_shop']['enter'],
+        ev.dialogue['itz_shop']['talk'], ev.dialogue['itz_shop']['exit'],
+        items_data.itz_magic_item_set
+    ),
+    "mysterious_businessman": events.ShopEvent(
+        "神秘商人", False,
+        ev.dialogue['mysterious_shop']['encounter'], ev.dialogue['mysterious_shop']['enter'],
+        ev.dialogue['mysterious_shop']['talk'], ev.dialogue['mysterious_shop']['exit'],
+        items_data.rik_armor_shop_item_set
+    ),
+}
 
+COMBAT_EVENTS = {
     "fight_against_slime_combat": events.FixedCombatEvent("史莱姆狩猎", enemies.enemy_list_fight_against_slime),
     "fight_against_slime_king_combat": events.FixedCombatEvent("史莱姆之王", enemies.enemy_list_fight_against_slime_king),
     "caesarus_bandit_combat": events.FixedCombatEvent("凯撒鲁斯与他的强盗", enemies.enemy_list_caesarus_bandit),
     "wolf_king_combat": events.FixedCombatEvent("夜行狼王", enemies.enemy_list_fight_against_wolf_king),
+}
 
-    "inn_event": events.InnEvent("客栈", ev.dialogue['inn_event']['encounter'], ev.dialogue['inn_event']['success'], \
-                            ev.dialogue['inn_event']['fail'], ev.dialogue['inn_event']['refuse'], 150, 25),
-    "heal_medussa_statue": events.HealingEvent("美杜莎雕像", ev.dialogue['medussa_statue']['encounter'], ev.dialogue['medussa_statue']['success'], \
-                            ev.dialogue['medussa_statue']['fail'], ev.dialogue['medussa_statue']['refuse'], 75, False, 90),
-
+OTHER_EVENTS = {
+    "inn_event": events.InnEvent(
+        "客栈", ev.dialogue['inn_event']['encounter'], ev.dialogue['inn_event']['success'],
+        ev.dialogue['inn_event']['fail'], ev.dialogue['inn_event']['refuse'], 150, 25
+    ),
+    "heal_medussa_statue": events.HealingEvent(
+        "美杜莎雕像", ev.dialogue['medussa_statue']['encounter'], ev.dialogue['medussa_statue']['success'],
+        ev.dialogue['medussa_statue']['fail'], ev.dialogue['medussa_statue']['refuse'], 75, False, 90
+    ),
     "find_coins": events.SimpleEvent("发现零钱", events.find_coins),
     "admire_scenery": events.SimpleEvent("欣赏美景", events.admire_scenery),
     "friendly_villager": events.SimpleEvent("村民物资", events.friendly_villager),
@@ -52,30 +89,35 @@ EVENT_MAPPING = {
     "hidden_chest_swamp": events.HiddenChestEvent("迷雾沼泽装备宝箱", random.choice(["hunting_knife", "ring_of_power", "ring_of_magic", "mana_charm", "bronze_mace"])),
 }
 
-QUEST_MAPPING = {
+EVENT_MAPPING: Dict[str, Any] = {}
+EVENT_MAPPING.update(SHOP_EVENTS)
+EVENT_MAPPING.update(COMBAT_EVENTS)
+EVENT_MAPPING.update(OTHER_EVENTS)
+
+QUEST_MAPPING: Dict[str, quest.Quest] = {
     "hunting_slimes": quest.Quest(
         "史莱姆狩猎",
         ev.dialogue['kill_slimes']['text'],
         ev.dialogue['kill_slimes']['mayor_text'],
-        50, 50, items_data.equipment_data["zweihander"], EVENT_MAPPING["fight_against_slime_combat"], 3
+        50, 50, equipment_data["zweihander"], EVENT_MAPPING["fight_against_slime_combat"], 3
     ),
     "slime_king": quest.Quest(
-        "史莱姆之王", 
-        ev.dialogue['slime_king']['text'], 
-        ev.dialogue['slime_king']['itz_text'], 
-        170, 230, items_data.equipment_data["long_bow"], EVENT_MAPPING["fight_against_slime_king_combat"], 9
+        "史莱姆之王",
+        ev.dialogue['slime_king']['text'],
+        ev.dialogue['slime_king']['itz_text'],
+        170, 230, equipment_data["long_bow"], EVENT_MAPPING["fight_against_slime_king_combat"], 9
     ),
     "caesarus_bandit": quest.Quest(
-        "凯撒鲁斯与他的强盗", 
-        ev.dialogue['caesarus_bandit']['text'], 
-        ev.dialogue['caesarus_bandit']['rik_text'], 
+        "凯撒鲁斯与他的强盗",
+        ev.dialogue['caesarus_bandit']['text'],
+        ev.dialogue['caesarus_bandit']['rik_text'],
         150, 150, None, EVENT_MAPPING["caesarus_bandit_combat"], 5
     ),
     "wolf_king": quest.Quest(
-        "夜行狼王", 
-        ev.dialogue['wolf_king']['text'], 
-        ev.dialogue['wolf_king']['mira_text'], 
-        350, 700, items_data.equipment_data["wolf_king_proof"], EVENT_MAPPING["wolf_king_combat"], 13
+        "夜行狼王",
+        ev.dialogue['wolf_king']['text'],
+        ev.dialogue['wolf_king']['mira_text'],
+        350, 700, equipment_data["wolf_king_proof"], EVENT_MAPPING["wolf_king_combat"], 13
     ),
     "wolf_hide_quest": quest.Quest(
         "收集狼皮",
@@ -105,16 +147,19 @@ def load_region_from_dict(data: dict, ascii_art_dict: dict) -> Region:
     返回:
         Region: 新创建的地区对象
     """
-    name = data["name"]
-    description = data["description"]
-    danger_level = data["danger_level"]
-    possible_enemies = data["possible_enemies"]
+    name = data.get("name", "未知地区")
+    description = data.get("description", "")
+    danger_level = data.get("danger_level", 1)
+    possible_enemies = data.get("possible_enemies", {})
 
-    shop_events = [EVENT_MAPPING[name] for name in data["shop_events"]]
-    heal_events = [EVENT_MAPPING[name] for name in data["heal_events"]]
-    special_events = [EVENT_MAPPING[name] for name in data["special_events"]]
-    quests = [QUEST_MAPPING[qname] for qname in data["quests"]]
-    ascii_art = ascii_art_dict.get(data["ascii_art_key"], "")
+    def map_event_list(key: str) -> List[Any]:
+        return [EVENT_MAPPING.get(ev_name) for ev_name in data.get(key, []) if ev_name in EVENT_MAPPING]
+
+    shop_events = map_event_list("shop_events")
+    heal_events = map_event_list("heal_events")
+    special_events = map_event_list("special_events")
+    quests = [QUEST_MAPPING[qname] for qname in data.get("quests", []) if qname in QUEST_MAPPING]
+    ascii_art = ascii_art_dict.get(data.get("ascii_art_key", ""), "")
 
     return Region(
         name=name,
@@ -163,12 +208,6 @@ def create_snowlands(ascii_art_dict):
     初始化并返回一个表示雪之边境的Region对象，设置其名称、描述、
     危险等级和ASCII艺术表示。这是一个冰雪主题的地区，具有极寒和
     视线受限的特性。
-
-    参数:
-        ascii_art_dict: ASCII艺术字典，用于获取地区的视觉表示
-
-    返回:
-        Region: 表示雪之边境的地区对象
     """
     snowland_enemies = {}
     snowlands = Region(
@@ -191,12 +230,6 @@ def create_forgotten_ruins(ascii_art_dict):
     初始化并返回一个表示遗忘遗迹的Region对象，设置其名称、描述、
     危险等级和ASCII艺术表示。这是一个古代遗迹主题的地区，具有
     古老机关和守卫魔像的特性。
-
-    参数:
-        ascii_art_dict: ASCII艺术字典，用于获取地区的视觉表示
-
-    返回:
-        Region: 表示遗忘遗迹的地区对象
     """
     ruins_enemies = {}
     forgotten_ruins = Region(

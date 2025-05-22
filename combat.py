@@ -17,11 +17,11 @@ import math, random
 from typing import List
 from rich.console import Console
 
-import ui.text as text
-from ui.combat_utils import battle_log
 import ui.combat_utils as utils
+from ui import text
+from ui.combat_utils import battle_log
 from ui.fx import dot_loading, typewriter
-from data.skills_data import enhance_weapon, weakened_defense
+from data import enhance_weapon, weakened_defense
 
 console = Console()
 

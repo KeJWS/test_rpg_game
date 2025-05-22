@@ -5,16 +5,16 @@
 包括玩家状态查询、物品管理、商店交互以及开发调试等功能的命令处理。
 """
 
-from data.constants import DEBUG
+from data import DEBUG
 
 from rich.console import Console
 
 import events
 import mods.debug_help
-import ui.text as text
+from ui import text
 from core import shops
 from mods import dev_tools as debug
-from inventory import Inventory_interface as interface
+from bag import InventoryInterface as interface
 from enemies import enemy_data
 from ui.clear_screen import clear_screen, enter_clear_screen, screen_wrapped
 

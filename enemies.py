@@ -5,13 +5,12 @@
 以及生成敌人战斗组合的功能。同时实现了敌人在战斗中的行为决策逻辑。
 """
 
-from data.constants import POSSIBLE_ENEMIES
+from data import POSSIBLE_ENEMIES, ENEMY_VARIANTS
 import csv
 import random
 from copy import deepcopy
 
 from core import battler
-from data.constants import ENEMY_VARIANTS
 from mods.dev_tools import debug_print
 
 def load_enemies_from_csv(filepath):
@@ -27,8 +26,7 @@ def load_enemies_from_csv(filepath):
     返回:
         dict: 以敌人ID为键，Enemy对象为值的字典
     """
-    import data.items_data as items_data
-    from data.skills_data import SPELL_REGISTRY
+    from data import SPELL_REGISTRY, item_factory
 
     enemies = {}
     with open(filepath, newline='', encoding="utf-8") as csvfile:
@@ -50,7 +48,7 @@ def load_enemies_from_csv(filepath):
                 for part in drop_field.split(","):
                     if "x" in part:
                         item_name, count = part.split("x")
-                        item = items_data.item_factory(item_name.strip(), int(count))
+                        item = item_factory(item_name.strip(), int(count))
                         if item:
                             drop_items.append(item)
 

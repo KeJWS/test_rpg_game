@@ -10,12 +10,11 @@ import random
 from typing import List, Callable
 
 import combat
-import data.items_data as items_data
 import enemies
-import ui.text as text
 import data.event_text as ev
+from ui import text
 from core import shops
-from inventory import Inventory_interface as interface
+from bag import InventoryInterface as interface
 from ui.clear_screen import enter_clear_screen, clear_screen
 
 def ask_yes_no(prompt="> "):
@@ -345,6 +344,7 @@ class HiddenChestEvent(Event):
         参数:
             player: 当前玩家对象
         """
+        from data import equipment_data
         print("你发现了一个隐藏的宝箱，尝试开锁? [y/n]")
         if not ask_yes_no():
             print("你决定不去动这个宝箱")
@@ -353,7 +353,7 @@ class HiddenChestEvent(Event):
         if random.randint(0, 200) < min(lock_chance, 125):
             gold = random.randint(12, 35) + player.ls.level
             exp = random.randint(5, 25) * player.ls.level
-            item = items_data.equipment_data[self.item_name]
+            item = equipment_data[self.item_name]
             print(f"你成功打开了宝箱, 获得了不少好东西")
             player.add_money(gold)
             player.add_exp(exp)

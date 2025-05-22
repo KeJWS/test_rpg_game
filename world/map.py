@@ -18,7 +18,6 @@ from rich.table import Table
 
 import enemies
 import events
-import data.items_data as items_data
 import world.quest as quest
 
 console = Console()
@@ -162,8 +161,10 @@ class World_map:
         从JSON文件加载地区数据，使用地区工厂创建Region对象，
         并设置初始当前地区为城镇（town）。
         """
+        from tools import load_ascii_art_library
         from world.region_factory import load_region_from_dict
-        ascii_art_dict = items_data.load_ascii_art_library("data/ascii_art/ascii_art_map.txt")
+
+        ascii_art_dict = load_ascii_art_library("data/ascii_art/ascii_art_map.txt")
         with open("data/json_data/world_map.json", "r", encoding="utf-8") as f:
             all_region_data = json.load(f)
 

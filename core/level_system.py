@@ -5,7 +5,7 @@
 作为角色成长的核心机制，提供了随游戏进程提升角色能力的功能。
 """
 
-from data.constants import EXPERIENCE_RATE
+from data import EXPERIENCE_RATE
 from rich.console import Console
 
 console = Console()
