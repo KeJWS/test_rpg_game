@@ -397,7 +397,12 @@ def show_all_quests(player):
         try:
             quest_idx = int(option[1:]) - 1
             if quest_idx >= 0 and quest_idx < len(player.active_quests):
-                player.active_quests[quest_idx].try_complete_collection(player)
+                quest = player.active_quests[quest_idx]
+                prev_status = getattr(quest, "status", None)
+                quest.try_complete_collection(player)
+                # 若未完成，输出提示
+                if getattr(quest, "status", None) == prev_status:
+                    print(f"任务『{quest.name}』未满足交付条件，无法完成。请检查所需物品或条件。")
         except ValueError:
             pass
 

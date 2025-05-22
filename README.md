@@ -88,14 +88,7 @@
 
 2. 安装 Python 3.12 或更高版本，确保已配置好环境变量。
 
-3. （可选）建议创建虚拟环境：
-   ```bash
-   python -m venv venv
-   source venv/bin/activate  # Linux/macOS
-   venv\Scripts\activate     # Windows
-   ```
-
-4. 安装依赖：
+3. 安装依赖：
    ```bash
    pip install -r requirements.txt
    ```

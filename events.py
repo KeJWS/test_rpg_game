@@ -13,7 +13,7 @@ import combat
 import data.items_data as items_data
 import enemies
 import ui.text as text
-import data.event_text as event_text
+import data.event_text as ev
 from core import shops
 from inventory import Inventory_interface as interface
 from ui.clear_screen import enter_clear_screen, clear_screen
@@ -404,7 +404,7 @@ def find_coins(player):
         player: 当前玩家对象
     """
     gold = random.randint(1, 5) * player.ls.level
-    print(event_text.find_coins_text)
+    print(ev.dialogue['simple_event']['find_coins'])
     player.add_money(gold)
 
 def admire_scenery(player):
@@ -417,7 +417,7 @@ def admire_scenery(player):
         player: 当前玩家对象
     """
     exp = random.randint(5, 15) + player.ls.level
-    print(event_text.admire_scenery_text)
+    print(ev.dialogue['simple_event']['admire_scenery'])
     player.add_exp(exp)
 
 def friendly_villager(player):
@@ -431,7 +431,7 @@ def friendly_villager(player):
     """
     gold = random.randint(5, 10)
     healing = int(player.stats["max_hp"] * 0.1)
-    print(event_text.friendly_villager_text)
+    print(ev.dialogue['simple_event']['friendly_villager'])
     player.add_money(gold)
     player.heal(healing)
 
@@ -445,7 +445,7 @@ def find_herb(player):
         player: 当前玩家对象
     """
     healing = int(player.stats["max_hp"] * 0.2)
-    print(event_text.find_herb_text)
+    print(ev.dialogue['simple_event']['find_herb'])
     player.heal(healing)
 
 def rest_spot(player):
@@ -458,5 +458,5 @@ def rest_spot(player):
         player: 当前玩家对象
     """
     healing = int(player.stats["max_hp"] * 0.3)
-    print(event_text.rest_spot_text)
+    print(ev.dialogue['simple_event']['rest_spot'])
     player.heal(healing)
